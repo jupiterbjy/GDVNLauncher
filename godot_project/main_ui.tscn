@@ -1,0 +1,105 @@
+[gd_scene load_steps=7 format=3 uid="uid://5f1ylcxfm58a"]
+
+[ext_resource type="Texture2D" uid="uid://iqxvwj66frd3" path="res://resources/ui/tablet/add_box_48dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg" id="1_w37m7"]
+[ext_resource type="Texture2D" uid="uid://ctyd5gwmuh13a" path="res://resources/ui/sort_48dp_E3E3E3_FILL0_wght400_GRAD0_opsz48.svg" id="2_ktt6o"]
+[ext_resource type="Texture2D" uid="uid://74o0ehe8s650" path="res://resources/placeholders/placeholder_800.png" id="2_w37m7"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w37m7"]
+content_margin_left = 16.0
+content_margin_top = 16.0
+content_margin_right = 16.0
+content_margin_bottom = 16.0
+bg_color = Color(0.1, 0.1, 0.1, 0.6)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2ppmm"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.1, 0.1, 0.1, 0.6)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ktt6o"]
+content_margin_left = 16.0
+content_margin_top = 16.0
+content_margin_right = 8.0
+content_margin_bottom = 16.0
+
+[node name="MainUI" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="PanelContainer2" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_w37m7")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/PanelContainer2"]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/PanelContainer2/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_2ppmm")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer2/VBoxContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="TextureButton3" type="TextureButton" parent="VBoxContainer/PanelContainer2/VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+texture_normal = ExtResource("1_w37m7")
+
+[node name="TextureButton4" type="TextureButton" parent="VBoxContainer/PanelContainer2/VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+texture_normal = ExtResource("2_ktt6o")
+
+[node name="LineEdit" type="LineEdit" parent="VBoxContainer/PanelContainer2/VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Keyword..."
+
+[node name="Label" type="Label" parent="VBoxContainer/PanelContainer2/VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+text = "2025-08-04 22:23:56
+Total playtime: 12h 34m"
+horizontal_alignment = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/PanelContainer2/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_ktt6o")
+follow_focus = true
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 2
+
+[node name="HFlowContainer" type="HFlowContainer" parent="VBoxContainer/PanelContainer2/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 16
+theme_override_constants/v_separation = 16
+
+[node name="TextureButton" type="TextureButton" parent="VBoxContainer/PanelContainer2/VBoxContainer/ScrollContainer/HFlowContainer"]
+custom_minimum_size = Vector2(130, 200)
+layout_mode = 2
+texture_normal = ExtResource("2_w37m7")
+ignore_texture_size = true
+stretch_mode = 6

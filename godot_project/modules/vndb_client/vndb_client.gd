@@ -7,7 +7,7 @@ class_name VNDBClient
 const _INFO_REQ_DATA_TEMPLATE: String = """
 {
 	"filters": ["id", "=", "%s"],
-	"fields": "title, released, developers.name, image.url, description, tags.name, tags.spoiler, tags.category, titles.lang, titles.title"
+	"fields": "title, titles.lang, titles.title, released, developers.name, image.url, description, tags.name, tags.spoiler, tags.category, tags.rating"
 }
 """
 
@@ -20,21 +20,33 @@ const _USER_AGENT: String = "User-Agent: GDVNLauncher/0.0"
 > }' > output.json
 
 {
-  "more": false,
-  "results": [
-    {
-      "description": "Our story follows Kanoue Yuuma, ...",
-      "developers": [{"id": "p612", "name": "FAVORITE"}],
-      "id": "v5834",
-      "image": {"url": "https://t.vndb.org/cv/77/88277.jpg"},
-      "released": "2011-07-29",
-      "title": "Irotoridori no Sekai",
-      "tags": [
-        {"category": "cont", "id": "g2", "name": "Fantasy", "spoiler": 0},
-        {"category": "tech", "id": "g133", "name": "Male Protagonist", "spoiler": 0}
-      ]
-    }
-  ]
+	"more": false,
+	"results": [
+		{
+			"description": "Our story follows Kanoue Yuuma ...",
+			"developers": [{"id": "p612","name": "FAVORITE"}],
+			"id": "v5834",
+			"image": {"url": "https://t.vndb.org/cv/77/88277.jpg"},
+			"released": "2011-07-29",
+			"tags": [
+				{
+					"category": "tech",
+					"id": "g1335",
+					"name": "Central Heroine",
+					"rating": 2.85714292526245,
+					"spoiler": 2
+				},
+				...
+			],
+			"title": "Irotoridori no Sekai",
+			"titles": [
+				{"lang": "en","title": "Irotoridori No Sekai - The Colorful World"},
+				{"lang": "ja","title": "いろとりどりのセカイ"},
+				{"lang": "ko","title": "형형색색의 세계"},
+				{"lang": "zh-Hans","title": "五彩斑斓的世界"}
+			]
+		}
+	]
 }
 """
 
@@ -57,7 +69,13 @@ static func validate_user_id(id: String) -> bool:
 
 
 ## Get entry information from vndb. Returns null on failure
-static func async_post_vn(vndb_id: String) -> VndbVNInfo:
+static func async_post_vn(
+	vndb_id: String,
+	title_lang: String,
+	tag_min_rating: float = 2.1,
+	tag_max_spoiler: int = 0,
+	tag_types: String = "cont",
+) -> VndbVNInfo:
 	# TODO: test nonexistent case and workaround it
 
 	var resp := await AsyncHTTPClient.async_request(
@@ -73,7 +91,13 @@ static func async_post_vn(vndb_id: String) -> VndbVNInfo:
 	var data: String = resp.body.get_string_from_utf8()
 	var parsed: Dictionary = JSON.parse_string(data)
 
-	return VndbVNInfo.from_vndb(parsed["results"][0])
+	return VndbVNInfo.from_vndb(
+		parsed["results"][0],
+		title_lang,
+		tag_min_rating,
+		tag_max_spoiler,
+		tag_types,
+	)
 
 
 ## Get user name via user id

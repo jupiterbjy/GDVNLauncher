@@ -30,7 +30,7 @@ const _HEADER_MAPPING: Dictionary[PackedByteArray, StringName] = {
 # --- Methods ---
 
 ## Tries to load image from bytes based on magic numbers. Returns null on failure.
-static func bytes_to_image(bytes: PackedByteArray) -> Image:
+static func bytes_to_img(bytes: PackedByteArray) -> Image:
 
 	for header: PackedByteArray in _HEADER_MAPPING:
 
@@ -58,8 +58,8 @@ static func bytes_to_image(bytes: PackedByteArray) -> Image:
 
 
 ## bytes_to_image but as new Texture2D. Returns null on failure.
-static func bytes_to_texture(bytes: PackedByteArray) -> ImageTexture:
-	var img := bytes_to_image(bytes)
+static func bytes_to_tex(bytes: PackedByteArray) -> ImageTexture:
+	var img := bytes_to_img(bytes)
 	if not img:
 		return null
 

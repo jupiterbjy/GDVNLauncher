@@ -1,0 +1,34 @@
+[gd_scene load_steps=4 format=3 uid="uid://cbdft062pg284"]
+
+[ext_resource type="Script" uid="uid://c77ht8ab544xx" path="res://scenes/slice_demo.gd" id="1_lkycx"]
+[ext_resource type="Texture2D" uid="uid://c8wafgcmvlewi" path="res://resources/ui/tablet/check_circle_24dp_75FB4C_FILL0_wght400_GRAD0_opsz24.svg" id="2_y5ig5"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_jcbkg"]
+radius = 144.12494
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_lkycx")
+
+[node name="Area2D" type="Area2D" parent="."]
+position = Vector2(615, 421)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("CircleShape2D_jcbkg")
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="Area2D"]
+position = Vector2(-615, -421)
+amount = 64
+texture = ExtResource("2_y5ig5")
+lifetime = 0.1
+gravity = Vector2(0, 0)
+
+[node name="Label" type="Label" parent="."]
+anchors_preset = -1
+offset_right = 40.0
+offset_bottom = 23.0
+text = "Mouse Down"
+
+[connection signal="input_event" from="Area2D" to="." method="_on_area_2d_input_event"]
+[connection signal="mouse_exited" from="Area2D" to="." method="_on_area_2d_mouse_exited"]
+[connection signal="mouse_entered" from="Label" to="." method="_on_label_mouse_entered"]
+[connection signal="mouse_exited" from="Label" to="." method="_on_label_mouse_exited"]

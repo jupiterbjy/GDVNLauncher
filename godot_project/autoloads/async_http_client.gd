@@ -87,13 +87,13 @@ func async_request(
 	http_req.request(
 		url, headers, method, body
 	)
-	_LOGGER.debug("Request [%s %s], body: %s" % [_METHOD_NAMES[method], url, body])
+	_LOGGER.debug("Request [%s] to [%s], body: %s" % [_METHOD_NAMES[method], url, body])
 
 	# await signal directly and fetch parameters as array
 	var resp_arr: Array = await http_req.request_completed
 	var resp := Response.new(resp_arr[0], resp_arr[1], resp_arr[2], resp_arr[3])
 
-	_LOGGER.debug("Received [%d %s], body: %d bytes" % [resp.response_code, url, len(resp.body)])
+	_LOGGER.debug("Received [%d] from [%s], body: %d bytes" % [resp.response_code, url, len(resp.body)])
 
 	return resp
 

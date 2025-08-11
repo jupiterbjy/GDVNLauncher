@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://bu7ymo1b0i052"]
+
+[ext_resource type="Script" uid="uid://cufgtsjooodqt" path="res://scenes/tag_ui.gd" id="1_qb8fy"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1jo7s"]
+content_margin_left = 4.0
+content_margin_top = 2.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.522024, 0.11744163, 0.24875066, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[node name="Tag" type="Label"]
+theme_override_styles/normal = SubResource("StyleBoxFlat_1jo7s")
+text = "ADV"
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("1_qb8fy")

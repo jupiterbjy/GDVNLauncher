@@ -1,0 +1,108 @@
+[gd_scene load_steps=9 format=3 uid="uid://5f1ylcxfm58a"]
+
+[ext_resource type="Script" uid="uid://c3v7a5u0781aj" path="res://scenes/main_ui.gd" id="1_4uoxc"]
+[ext_resource type="Texture2D" uid="uid://ctyd5gwmuh13a" path="res://resources/ui/sort_48dp_E3E3E3_FILL0_wght400_GRAD0_opsz48.svg" id="2_ktt6o"]
+[ext_resource type="Texture2D" uid="uid://bwo3vfdqxend7" path="res://resources/ui/settings_48dp_E3E3E3_FILL0_wght400_GRAD0_opsz48.svg" id="2_llbac"]
+[ext_resource type="Texture2D" uid="uid://bq70qy26xakfu" path="res://resources/ui/add_48dp_E3E3E3_FILL0_wght400_GRAD0_opsz48.svg" id="3_llbac"]
+[ext_resource type="PackedScene" uid="uid://b3xdas536yxk6" path="res://scenes/vn_entry_ui.tscn" id="5_llbac"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w37m7"]
+content_margin_left = 16.0
+content_margin_top = 16.0
+content_margin_right = 16.0
+content_margin_bottom = 16.0
+bg_color = Color(0.18039216, 0.18039216, 0.18039216, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2ppmm"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.1, 0.1, 0.1, 0.6)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ktt6o"]
+content_margin_left = 16.0
+content_margin_top = 16.0
+content_margin_right = 8.0
+content_margin_bottom = 16.0
+
+[node name="MainUI" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_4uoxc")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_w37m7")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_2ppmm")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="AddButton" type="TextureButton" parent="PanelContainer/VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+texture_normal = ExtResource("3_llbac")
+
+[node name="SortButton" type="TextureButton" parent="PanelContainer/VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+texture_normal = ExtResource("2_ktt6o")
+
+[node name="SearchLineEdit" type="LineEdit" parent="PanelContainer/VBoxContainer/PanelContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Keyword..."
+alignment = 1
+
+[node name="ConfigButton" type="TextureButton" parent="PanelContainer/VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+texture_normal = ExtResource("2_llbac")
+
+[node name="PlaytimeLabel" type="Label" parent="PanelContainer/VBoxContainer/PanelContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "12.3h
+4 sessions"
+horizontal_alignment = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_ktt6o")
+follow_focus = true
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 2
+
+[node name="VNEntryFlowContainer" type="HFlowContainer" parent="PanelContainer/VBoxContainer/ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 16
+theme_override_constants/v_separation = 16
+
+[node name="VNEntry" parent="PanelContainer/VBoxContainer/ScrollContainer/VNEntryFlowContainer" instance=ExtResource("5_llbac")]
+layout_mode = 2
+
+[connection signal="pressed" from="PanelContainer/VBoxContainer/PanelContainer/HBoxContainer/AddButton" to="." method="_on_add_button_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/PanelContainer/HBoxContainer/ConfigButton" to="." method="_on_config_button_pressed"]

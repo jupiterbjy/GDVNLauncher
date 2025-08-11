@@ -1,0 +1,294 @@
+[gd_scene load_steps=11 format=3 uid="uid://bo3ykybjvk4wo"]
+
+[ext_resource type="Script" uid="uid://j71xao3y0p3a" path="res://scenes/config_ui.gd" id="1_ef4ed"]
+[ext_resource type="Texture2D" uid="uid://ptfx18rdr664" path="res://resources/ui/save_48dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg" id="2_tvbuo"]
+[ext_resource type="Texture2D" uid="uid://brmetwoow3aqv" path="res://resources/ui/cancel_48dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg" id="4_a8hpa"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w37m7"]
+content_margin_left = 16.0
+content_margin_top = 16.0
+content_margin_right = 16.0
+content_margin_bottom = 16.0
+bg_color = Color(0.18039216, 0.18039216, 0.18039216, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2ppmm"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.1, 0.1, 0.1, 0.6)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_51wph"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_65k5l"]
+content_margin_left = 16.0
+content_margin_top = 16.0
+content_margin_right = 8.0
+content_margin_bottom = 16.0
+bg_color = Color(0.1, 0.1, 0.1, 0.6)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6fx7t"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mc11l"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ef4ed"]
+
+[node name="ConfigUI" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_w37m7")
+script = ExtResource("1_ef4ed")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_2ppmm")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 2
+
+[node name="TitleLabel" type="Label" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 32
+theme_override_styles/focus = SubResource("StyleBoxEmpty_51wph")
+text = "Configuration"
+horizontal_alignment = 1
+
+[node name="SaveButton" type="TextureButton" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("2_tvbuo")
+
+[node name="CancelButton" type="TextureButton" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("4_a8hpa")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 16
+
+[node name="RightPanel" type="PanelContainer" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_65k5l")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/HBoxContainer/RightPanel"]
+layout_mode = 2
+size_flags_horizontal = 3
+follow_focus = true
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_right = 8
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 32
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "VNDB Config"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2"]
+layout_mode = 2
+alignment = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.5823756, 0.5823756, 0.5823756, 1)
+theme_override_font_sizes/font_size = 18
+text = "Preferred title language"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TitleLangOptionButton" type="OptionButton" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxEmpty_6fx7t")
+selected = 0
+item_count = 4
+popup/item_0/text = "en"
+popup/item_0/id = 0
+popup/item_1/text = "ja"
+popup/item_1/id = 1
+popup/item_2/text = "ko"
+popup/item_2/id = 2
+popup/item_3/text = "zh-Hans"
+popup/item_3/id = 3
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.5823756, 0.5823756, 0.5823756, 1)
+theme_override_font_sizes/font_size = 18
+text = "Tag filter"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ContCheckBox" type="CheckBox" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer2/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxEmpty_mc11l")
+button_pressed = true
+text = "Content"
+
+[node name="EroCheckBox" type="CheckBox" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer2/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxEmpty_mc11l")
+text = "Sexual"
+
+[node name="TechCheckBox" type="CheckBox" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer2/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxEmpty_mc11l")
+text = "Technical"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.5823756, 0.5823756, 0.5823756, 1)
+theme_override_font_sizes/font_size = 18
+text = "Tag minimum rating"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TagRatingSpinBox" type="SpinBox" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer3/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+max_value = 3.0
+step = 0.10000000000582077
+value = 2.100000000122236
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer4"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.5823756, 0.5823756, 0.5823756, 1)
+theme_override_font_sizes/font_size = 18
+text = "Optional Token (Unused for now)"
+
+[node name="VNDBTokenLineEdit" type="LineEdit" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer4"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "VNDB Token..."
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2"]
+layout_mode = 2
+
+[node name="VBoxContainer4" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer4"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Launcher config"
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer4"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer4/HBoxContainer4"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.5823756, 0.5823756, 0.5823756, 1)
+theme_override_font_sizes/font_size = 18
+text = "Playtime update interval"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer4/HBoxContainer4"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PollRateSpinBox" type="SpinBox" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer4/HBoxContainer4/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+min_value = 10.0
+max_value = 300.0
+step = 10.0
+value = 20.0
+suffix = "s"
+
+[node name="HSeparator2" type="HSeparator" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "ETC"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer"]
+layout_mode = 2
+
+[node name="ImageCacheDirButton" type="Button" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxEmpty_ef4ed")
+text = "Open Image Cache Directory"
+
+[node name="Label2" type="Label" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer"]
+layout_mode = 2
+text = "TBD"
+
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/SaveButton" to="." method="_on_save_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/CancelButton" to="." method="_on_cancel_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer/HBoxContainer/ImageCacheDirButton" to="." method="_on_image_cache_dir_button_pressed"]

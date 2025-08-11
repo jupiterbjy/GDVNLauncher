@@ -19,7 +19,14 @@ config/icon="res://icon.svg"
 
 DisplayManager="*res://autoloads/display_manager.gd"
 AsyncHTTPClient="*res://autoloads/async_http_client.gd"
-CacheManager="*res://autoloads/cache_manager.gd"
+PlaytimeTracker="*res://autoloads/playtime_tracker.gd"
+UserConfig="*res://autoloads/user_config.gd"
+EntryManager="*res://autoloads/entry_manager.gd"
+
+[debug]
+
+gdscript/warnings/unsafe_property_access=1
+gdscript/warnings/unsafe_method_access=1
 
 [display]
 
@@ -27,12 +34,28 @@ window/size/viewport_width=1280
 window/size/viewport_height=850
 window/energy_saving/keep_screen_on=false
 window/stretch/aspect="expand"
+window/stretch/scale=1.2000000000000002
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/godot-sqlite/plugin.cfg")
 
 [file_customization]
 
 folder_colors={
+"res://addons/": "red",
 "res://autoloads/": "blue",
-"res://modules/": "teal"
+"res://modules/": "teal",
+"res://resources/": "orange",
+"res://scenes/": "green"
+}
+
+[input]
+
+mouse_l={
+"deadzone": 0.2,
+"events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":1,"position":Vector2(516, 25),"global_position":Vector2(516, 69),"factor":1.0,"button_index":1,"canceled":false,"pressed":true,"double_click":false,"script":null)
+]
 }
 
 [rendering]

@@ -19,40 +19,40 @@ class_name Logging extends Node
 	func _init(logged_name: String) -> void:
 		self._name = logged_name
 
-	func debug(_msg: String) -> void:
+	func debug(_msg: Variant) -> void:
 		pass
 
-	func info(_msg: String) -> void:
+	func info(_msg: Variant) -> void:
 		pass
 
-	func warn(_msg: String) -> void:
+	func warn(_msg: Variant) -> void:
 		pass
 
-	func error(_msg: String) -> void:
+	func error(_msg: Variant) -> void:
 		pass
 
 
 ## Debug logger with expensive rich output for debug and warning.
 class DebugLogger extends _BaseLogger:
 
-	func _print_colored(msg: String, color: String = "white") -> void:
+	func _print_colored(msg: Variant, color: String = "white") -> void:
 		print_rich(
 			"%s [color=%s][%s] %s[/color]" % [
 				Time.get_time_string_from_system(), color, self._name, msg
 			]
 		)
 
-	func debug(msg: String) -> void:
+	func debug(msg: Variant) -> void:
 		self._print_colored(msg, "cyan")
 
-	func info(msg: String) -> void:
+	func info(msg: Variant) -> void:
 		self._print_colored(msg, "white")
 
-	func warn(msg: String) -> void:
+	func warn(msg: Variant) -> void:
 		self._print_colored(msg, "yellow")
 		push_warning("[%s] %s" % [self._name, msg])
 
-	func error(msg: String) -> void:
+	func error(msg: Variant) -> void:
 		self._print_colored(msg, "crimson")
 		push_error("[%s] %s" % [self._name, msg])
 
@@ -60,17 +60,17 @@ class DebugLogger extends _BaseLogger:
 ## Release Logger with log level of info.
 class ReleaseLogger extends _BaseLogger:
 
-	func _print(msg: String) -> void:
+	func _print(msg: Variant) -> void:
 		print("%s [%s] %s" % [Time.get_time_string_from_system(), self._name, msg])
 
-	func info(msg: String) -> void:
+	func info(msg: Variant) -> void:
 		self._print(msg)
 
-	func warn(msg: String) -> void:
+	func warn(msg: Variant) -> void:
 		self._print(msg)
 		push_warning(msg)
 
-	func error(msg: String) -> void:
+	func error(msg: Variant) -> void:
 		self._print(msg)
 		push_error(msg)
 

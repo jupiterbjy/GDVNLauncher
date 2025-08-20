@@ -34,6 +34,7 @@ func _reload(id: String) -> void:
 
 	# reload failed, then it's deleted - remove entry
 	self._entries[id].queue_free()
+	self.vn_entry_flow_container.remove_child(_entries[id])
 	self._entries.erase(id)
 	_LOGGER.debug("Deleted %s" % id)
 
@@ -59,7 +60,14 @@ func _add_or_reload(id: String) -> void:
 func _reload_all() -> void:
 	_LOGGER.debug("Reloading all entries")
 
+	for key: String in self._entries.keys():
+		self._entries[key].reload()
+
+	# repopulate & reorder existing nodes
 	for id in EntryManager.get_entry_ids():
+		if id in self._entries:
+			self.vn_entry_flow_container.move_child(self._entries[id], -1)
+
 		self._add_or_reload(id)
 
 
@@ -94,6 +102,8 @@ func _on_batch_add_button_pressed() -> void:
 		EntryManager.upsert_entry(
 			EntryManager.Entry.from_vndb_info(vn_info)
 		)
+
+	self._reload_all()
 
 
 ## Called on DetailUI.closed

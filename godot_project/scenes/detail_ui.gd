@@ -53,13 +53,13 @@ func _update_cover_image() -> void:
 ## Refresh UI to match self.entry
 func _reflect_to_ui() -> void:
 
-	self.status_option_button.selected = self.entry.play_status
-	self.exec_path_label.text = self.entry.exec_path
+	self.exec_path_label.text = self.entry.exec_path if self.entry.exec_path else "NOT SET"
 
 	self.description_rich_label.text = self.entry.vn_info.description
 	self.developer_label.text = self.entry.vn_info.developers
 	self.release_date_label.text = self.entry.vn_info.released
 	self.title_label.text = self.entry.vn_info.title
+	self.status_option_button.selected = self.entry.vn_info.label
 
 	self.vndb_link.text = self.entry.vn_info.id
 	self.vndb_link.uri = "https://vndb.org/" + self.entry.vn_info.id

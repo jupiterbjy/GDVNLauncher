@@ -1,11 +1,14 @@
-[gd_scene load_steps=11 format=3 uid="uid://b3xdas536yxk6"]
+[gd_scene load_steps=14 format=3 uid="uid://b3xdas536yxk6"]
 
 [ext_resource type="Script" uid="uid://wkbs2cb8a17w" path="res://scenes/vn_entry_ui.gd" id="1_bm6hf"]
 [ext_resource type="Texture2D" uid="uid://fh57vkl51qtw" path="res://resources/ui/tablet/play_circle_24dp_75FBFD_FILL0_wght400_GRAD0_opsz24.svg" id="2_c0abc"]
+[ext_resource type="Texture2D" uid="uid://don4yqhod6yrc" path="res://resources/ui/tablet/circle_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg" id="2_pf1kb"]
 [ext_resource type="Texture2D" uid="uid://c8wafgcmvlewi" path="res://resources/ui/tablet/check_circle_24dp_75FB4C_FILL0_wght400_GRAD0_opsz24.svg" id="3_blwy1"]
 [ext_resource type="Texture2D" uid="uid://b3s466w3qcva0" path="res://resources/ui/tablet/pause_circle_24dp_F19E39_FILL0_wght400_GRAD0_opsz24.svg" id="4_pf1kb"]
 [ext_resource type="Texture2D" uid="uid://bacr1irxlj0r8" path="res://resources/ui/tablet/stop_circle_24dp_EA3323_FILL0_wght400_GRAD0_opsz24.svg" id="5_8itx2"]
 [ext_resource type="Texture2D" uid="uid://u58266lwx4ws" path="res://resources/placeholders/placeholder_800 - dark.png" id="6_xpcvn"]
+[ext_resource type="Texture2D" uid="uid://dxamjmp3aviwq" path="res://resources/ui/tablet/star_24dp_FFFF55_FILL0_wght400_GRAD0_opsz24.svg" id="7_8itx2"]
+[ext_resource type="Texture2D" uid="uid://bild2ybp8oewv" path="res://resources/ui/tablet/heart_broken_24dp_8B1A10_FILL0_wght400_GRAD0_opsz24.svg" id="8_xpcvn"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o1c4u"]
 content_margin_left = 4.0
@@ -46,15 +49,21 @@ theme_override_icons/arrow = SubResource("PlaceholderTexture2D_n1q3t")
 flat = true
 icon_alignment = 1
 selected = 0
-item_count = 4
-popup/item_0/icon = ExtResource("2_c0abc")
-popup/item_0/id = 1
-popup/item_1/icon = ExtResource("3_blwy1")
-popup/item_1/id = 3
-popup/item_2/icon = ExtResource("4_pf1kb")
-popup/item_2/id = 0
-popup/item_3/icon = ExtResource("5_8itx2")
-popup/item_3/id = 2
+item_count = 7
+popup/item_0/icon = ExtResource("2_pf1kb")
+popup/item_0/id = 0
+popup/item_1/icon = ExtResource("2_c0abc")
+popup/item_1/id = 1
+popup/item_2/icon = ExtResource("3_blwy1")
+popup/item_2/id = 2
+popup/item_3/icon = ExtResource("4_pf1kb")
+popup/item_3/id = 3
+popup/item_4/icon = ExtResource("5_8itx2")
+popup/item_4/id = 4
+popup/item_5/icon = ExtResource("7_8itx2")
+popup/item_5/id = 5
+popup/item_6/icon = ExtResource("8_xpcvn")
+popup/item_6/id = 6
 
 [node name="PlaytimeLabel" type="Label" parent="VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true

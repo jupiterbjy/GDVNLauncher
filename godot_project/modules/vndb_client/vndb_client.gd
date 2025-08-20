@@ -4,38 +4,95 @@ class_name VNDBClient
 
 # --- Attributes ---
 
+#const _USER_AGENT: String = "User-Agent: GDVNLauncher/0.0"
+
 static var _VN_FIELD: String = """
-"title, titles.lang, titles.title,
+"
+title,
+titles.lang,
+titles.title,
 released,
 developers.name,
-image.thumbnail,
 description,
-tags.name, tags.spoiler, tags.category, tags.rating"
-""".strip_edges().replace("\n", " ")
+image.thumbnail,
+tags.name,
+tags.spoiler,
+tags.category,
+tags.rating
+"
+""".strip_edges().replace("\n", "")
+
+
+static var _ULIST_FIELD: String = """
+"
+vn.title,
+vn.titles.lang,
+vn.titles.title,
+vn.released,
+vn.developers.name,
+vn.description,
+vn.image.thumbnail,
+vn.tags.name,
+vn.tags.spoiler,
+vn.tags.category,
+vn.tags.rating,
+labels.id
+"
+""".strip_edges().replace("\n", "")
 
 
 static var _POST_VN_TEMPLATE: String = """
 {
-	"filters": ["id", "=", "%s"],
+	"filters": [
+		"and", [
+			["id", "=", "%s"],
+			["devstatus", "=", 0]
+		]
+	],
 	"fields": VN_FIELD
 }
 """.strip_edges().replace("VN_FIELD", _VN_FIELD)
+# TODO: add another call for ulist to get label when POST /vn
 
-#const _USER_AGENT: String = "User-Agent: GDVNLauncher/0.0"
 
 ## VNDB POST /ulist template
 static var _POST_ULIST_TEMPLATE: String = """
 {
 	"user": "%s",
 	"fields": VN_FIELD,
+	"filters": [
+		"and",
+		["devstatus", "=", 0],
+		["label", "!=", 5],
+		["label", "!=", 6]
+	],
 	"sort": "added",
 	"results": 75,
 	"page": %d
 }
-""".strip_edges().replace("VN_FIELD", _VN_FIELD)
+""".strip_edges().replace("VN_FIELD", _ULIST_FIELD)
+# ["label", "!=", 6],
 
 static var _VN_ID_VALIDATE_PATTERN := RegEx.new()
 static var _USER_ID_VALIDATE_PATTERN := RegEx.new()
+
+
+## VNDB label flag
+enum LABEL {UNSET, PLAYING, FINISHED, STALLED, DROPPED, WISHLIST, BLACKLIST, VOTED}
+
+
+"""
+{
+	"more": true,
+	"results": [
+		{
+			"id": v1281,
+			"vn": /vn POST results without id,
+			"labels":[{"id":2,"label":"Finished"}, ...]
+		}
+	]
+}
+"""
 
 
 # --- Methods ---
@@ -77,6 +134,7 @@ static func async_post_vn(
 
 	return VndbVNInfo.from_vndb(
 		parsed["results"][0],
+		[],
 		title_lang,
 		tag_min_rating,
 		tag_max_spoiler,
@@ -143,6 +201,7 @@ static func async_get_ulist(
 
 		# on failure return results accumulated so far
 		if resp.response_code != 200:
+			print(resp.body.get_string_from_utf8())
 			return results
 
 		var data: String = resp.body.get_string_from_utf8()
@@ -150,9 +209,15 @@ static func async_get_ulist(
 
 		# TODO: get as variant and check for null
 		for vn_data: Dictionary in parsed["results"]:
+
+			# move missing id back into data
+			var _vn_info_data: Dictionary = vn_data["vn"]
+			_vn_info_data["id"] = vn_data["id"]
+
 			results.append(
 				VndbVNInfo.from_vndb(
-					vn_data,
+					_vn_info_data,
+					vn_data["labels"],
 					title_lang,
 					tag_min_rating,
 					tag_max_spoiler,

@@ -1,6 +1,8 @@
 class_name EditUI
 extends PanelContainer
 
+# TODO: add check for overlapping vndb id
+
 
 # --- Signals ---
 
@@ -61,7 +63,6 @@ func _update_cover_image() -> void:
 ## Refresh UI to match self.entry
 func _reflect_to_ui() -> void:
 
-	self.status_option_button.selected = self.entry.play_status
 	self.exec_path_line_edit.text = self.entry.exec_path
 
 	self.vndb_id_line_edit.text = self.entry.vn_info.id
@@ -70,6 +71,7 @@ func _reflect_to_ui() -> void:
 	self.developer_line_edit.text = self.entry.vn_info.developers
 	self.release_date_line_edit.text = self.entry.vn_info.released
 	self.tag_line_edit.text = self.entry.vn_info.tags
+	self.status_option_button.selected = self.entry.vn_info.label
 
 	self._update_cover_image()
 
@@ -77,7 +79,6 @@ func _reflect_to_ui() -> void:
 ## Refresh self.entry to match UI
 func _reflect_from_ui() -> void:
 
-	self.entry.play_status = self.status_option_button.selected
 	self.entry.exec_path = self.exec_path_line_edit.text.strip_edges()
 
 	self.entry.vn_info.id = self.vndb_id_line_edit.text.strip_edges()
@@ -86,6 +87,7 @@ func _reflect_from_ui() -> void:
 	self.entry.vn_info.developers = self.developer_line_edit.text.strip_edges()
 	self.entry.vn_info.released = self.release_date_line_edit.text.strip_edges()
 	self.entry.vn_info.tags = self.tag_line_edit.text.strip_edges()
+	self.entry.vn_info.label = self.status_option_button.selected
 
 
 # --- Handlers ---

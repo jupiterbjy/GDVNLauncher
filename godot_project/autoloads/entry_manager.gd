@@ -28,28 +28,23 @@ class Entry:
 	## Executable path
 	var exec_path: String = ""
 
-	## Play status
-	var play_status: int = 2
-
 	var vn_info: VndbVNInfo = null
 
 	# This feels like wasting a lot of computations but well..
-	func _init(path: String = "", play_status_: int = 2, vn_info_: VndbVNInfo = null) -> void:
+	func _init(path: String = "", vn_info_: VndbVNInfo = null) -> void:
 		self.exec_path = path
-		self.play_status = play_status_
 		self.vn_info = vn_info_ if vn_info_ else VndbVNInfo.new()
 
 	## DB Record based named constructor
 	static func from_db(data: Dictionary) -> Entry:
 		return Entry.new(
 			data["exec_path"],
-			data["play_status"],
 			VndbVNInfo.from_db(data),
 		)
 
 	## VNInfo based named constructor
 	static func from_vndb_info(vn_info_: VndbVNInfo) -> Entry:
-		return Entry.new("", 2, vn_info_)
+		return Entry.new("", vn_info_)
 
 	func _to_string() -> String:
 		return "Entry(id=%d)" % self.id
@@ -72,8 +67,8 @@ class _Query:
 		released TEXT,
 		tags TEXT,
 		cover_url TEXT,
-		exec_path TEXT,
-		play_status INT
+		label INT,
+		exec_path TEXT
 	)
 	"""
 	# db_id INTEGER PRIMARY KEY,
@@ -104,8 +99,8 @@ class _Query:
 		released = ?,
 		tags = ?,
 		cover_url = ?,
-		exec_path = ?,
-		play_status = ?
+		label = ?,
+		exec_path = ?
 	WHERE id = ?
 	"""
 	# WHERE rowid = ?
@@ -121,12 +116,12 @@ class _Query:
 		released = ?,
 		tags = ?,
 		cover_url = ?,
-		exec_path = ?,
-		play_status = ?
+		label = ?,
+		exec_path = ?
 	"""
 
 	const update_entry_play_status := """
-	UPDATE "entries" SET play_status = ? WHERE id = ?
+	UPDATE "entries" SET label = ? WHERE id = ?
 	"""
 
 	const get_entry_ids := """
@@ -188,7 +183,7 @@ func add_entry(entry: Entry) -> bool:
 			entry.vn_info.tags,
 			entry.vn_info.cover_url,
 			entry.exec_path,
-			entry.play_status,
+			entry.vn_info.label,
 		]
 	).success:
 		self.entry_added.emit(entry)
@@ -211,8 +206,8 @@ func update_entry(entry: Entry) -> bool:
 			entry.vn_info.released,
 			entry.vn_info.tags,
 			entry.vn_info.cover_url,
+			entry.vn_info.label,
 			entry.exec_path,
-			entry.play_status,
 			entry.id,
 		]
 	).success
@@ -230,8 +225,8 @@ func upsert_entry(entry: Entry) -> bool:
 			entry.vn_info.released,
 			entry.vn_info.tags,
 			entry.vn_info.cover_url,
+			entry.vn_info.label,
 			entry.exec_path,
-			entry.play_status,
 
 			entry.vn_info.title,
 			entry.vn_info.developers,
@@ -239,8 +234,8 @@ func upsert_entry(entry: Entry) -> bool:
 			entry.vn_info.released,
 			entry.vn_info.tags,
 			entry.vn_info.cover_url,
+			entry.vn_info.label,
 			entry.exec_path,
-			entry.play_status,
 
 			entry.id,
 		]

@@ -19,6 +19,8 @@ var tags: String
 
 var cover_url: String
 
+## Active labels for this vn. Wont think about multi label situation with id < 7
+var label: int
 
 # example json response from vndb
 """
@@ -49,6 +51,15 @@ var cover_url: String
 		{"lang": "zh-Hans","title": "五彩斑斓的世界"}
 	]
 }
+
+{
+	"id": "v19073",
+	"labels": [
+		{"id": 2, "label": "Finished"},
+		{"id": 7, "label": "Voted"}
+	],
+	"vn": {"title":"Senren * Banka"}
+}
 """
 
 
@@ -64,12 +75,14 @@ static func from_db(record: Dictionary) -> VndbVNInfo:
 		record["developers"],
 		record["tags"],
 		record["cover_url"],
+		record["label"],
 	)
 
 
 ## Named Constructor to create new VNData instance from vndb's json response
 static func from_vndb(
 	json: Dictionary,
+	labels: Array,
 	title_lang: String,
 	tag_min_rating: float,
 	tag_max_spoiler: int,
@@ -91,24 +104,39 @@ static func from_vndb(
 		):
 			_tags.append(tag["name"])
 
+	# extract dev names
 	var _devs: Array[String]
 
 	for dev: Dictionary in json["developers"]:
 		_devs.append(dev["name"])
 
+	# extract translated titles
 	var titles: Dictionary[String, String]
 	for dict: Dictionary in json["titles"]:
 		titles[dict["lang"]] = dict["title"]
 
+	# extract label
+	var label_id: int = 0
+
+	for dict: Dictionary in labels:
+		if dict["id"] < 7:
+			label_id = dict["id"]
+			break
+
+	# TODO: add vndb label
 	var instance := VndbVNInfo.new(
 		json["id"],
 		titles[title_lang] if title_lang in titles else json["title"],
-		json["description"],
-		json["released"],
+
+		# could be null if not released
+		json["description"] if json["description"] else "",
+		json["released"] if json["released"] else "",
+
 		",".join(_devs),
 		",".join(_tags),
 		#json["image"]["url"],
 		json["image"]["thumbnail"],
+		label_id,
 	)
 
 	return instance
@@ -140,6 +168,7 @@ func _init(
 	developers_: String = "",
 	tags_: String = "",
 	cover_url_: String = "",
+	label_: int = 0,
 ) -> void:
 	# I miss TypedDicts
 
@@ -150,6 +179,7 @@ func _init(
 	self.developers = developers_
 	self.tags = tags_
 	self.cover_url = cover_url_
+	self.label = label_
 
 
 func _to_string() -> String:

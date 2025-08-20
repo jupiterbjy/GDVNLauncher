@@ -41,7 +41,7 @@ func reload() -> bool:
 
 	# TODO: add playtime reload
 
-	self.status_option_button.selected = entry.play_status
+	self.status_option_button.selected = entry.vn_info.label
 
 	if self._current_img_url != entry.vn_info.cover_url:
 		self._current_img_url = entry.vn_info.cover_url

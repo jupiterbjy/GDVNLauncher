@@ -19,7 +19,7 @@ static func sanitize_to_ascii(string: String) -> String:
 	return "".join(parts)
 
 
-# --- Drivers ---
+# --- Handlers ---
 
 static func _static_init() -> void:
 	_RE_ASCII_FILTER.compile("[ -~]")

@@ -49,8 +49,6 @@ static func create_instance(db_id: int = -1) -> EditUI:
 	return instance
 
 
-# --- Utilities ---
-
 func _update_cover_image() -> void:
 	if not self.entry.vn_info.cover_url:
 		return
@@ -92,7 +90,7 @@ func _reflect_from_ui() -> void:
 	self.entry.vn_info.tags = self.tag_line_edit.text.strip_edges()
 
 
-# --- Drivers ---
+# --- Handlers ---
 
 func _ready() -> void:
 	ControlUtils.option_button_hide_radio(self.status_option_button)

@@ -42,8 +42,6 @@ static func create_instance(db_id: int) -> DetailUI:
 	return instance
 
 
-# --- Utilities ---
-
 func _update_cover_image() -> void:
 	var tex := await self.entry.vn_info.get_cover_tex()
 	if tex:
@@ -77,7 +75,7 @@ func _reflect_to_ui() -> void:
 	self._update_cover_image()
 
 
-# --- Drivers ---
+# --- Handlers ---
 
 func _ready() -> void:
 	ControlUtils.option_button_hide_radio(self.status_option_button)

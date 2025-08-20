@@ -13,7 +13,7 @@ const _CONFIG_SCENE = preload("uid://bo3ykybjvk4wo")
 static var _LOGGER := Logging.get_logger("MainUI")
 
 
-# --- Utilities ---
+# --- Methods ---
 
 ## Just bunch of random library testing bits
 func _test() -> void:
@@ -56,6 +56,8 @@ func _reload_all() -> void:
 	for db_id in EntryManager.get_entry_db_ids():
 		self._reload_one(db_id, false)
 
+
+# --- Handlers ---
 
 func _ready() -> void:
 	_test()

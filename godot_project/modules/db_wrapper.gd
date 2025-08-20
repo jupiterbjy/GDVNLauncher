@@ -85,7 +85,7 @@ static func _test() -> void:
 	_LOGGER.debug("--- Test Done ---")
 
 
-# --- Drivers ---
+# --- Handlers ---
 
 func _init(path_: String) -> void:
 	self.path = path_

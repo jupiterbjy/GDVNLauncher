@@ -234,7 +234,7 @@ func remove_entry(db_id: int) -> bool:
 	return false
 
 
-# --- Drivers ---
+# --- Handlers ---
 
 func _init() -> void:
 	self.create_table()

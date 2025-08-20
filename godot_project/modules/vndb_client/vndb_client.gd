@@ -11,7 +11,7 @@ const _INFO_REQ_DATA_TEMPLATE: String = """
 }
 """
 
-const _USER_AGENT: String = "User-Agent: GDVNLauncher/0.0"
+#const _USER_AGENT: String = "User-Agent: GDVNLauncher/0.0"
 
 """
 ❯ curl https://api.vndb.org/kana/vn --header 'Content-Type: application/json' --data '{
@@ -129,7 +129,7 @@ static func async_get_auth_info(token: String) -> VndbAuthInfo:
 	return VndbAuthInfo.from_vndb(parsed)
 
 
-# --- Drivers ---
+# --- Hanlders ---
 
 static func _static_init() -> void:
 	_VN_ID_VALIDATE_PATTERN.compile("^v[0-9]*$")

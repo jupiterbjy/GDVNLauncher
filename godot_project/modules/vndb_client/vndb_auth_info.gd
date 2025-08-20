@@ -27,7 +27,18 @@ const PERMISSION_LIST_WRITE := &"listwrite"
 """
 
 
-# --- Constructors ---
+# --- Methods ---
+
+## Named Constructor to create new VNData instance from vndb's json response
+static func from_vndb(json: Dictionary) -> VndbAuthInfo:
+	return VndbAuthInfo.new(
+		json["id"],
+		json["username"],
+		json["permissions"],
+	)
+
+
+# --- Handlers ---
 
 func _init(
 	id_: String = "",
@@ -38,12 +49,3 @@ func _init(
 	self.id = id_
 	self.username = username_
 	self.permissions = permissions_
-
-
-## Create new VNData instance from vndb's json response
-static func from_vndb(json: Dictionary) -> VndbAuthInfo:
-	return VndbAuthInfo.new(
-		json["id"],
-		json["username"],
-		json["permissions"],
-	)

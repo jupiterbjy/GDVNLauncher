@@ -71,6 +71,7 @@ const _METHOD_NAMES: PackedStringArray = [
 	"GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS", "TRACE", "CONNECT", "PATCH"
 ]
 
+
 # --- Methods ---
 
 ## Create new request and return result asynchronously, since signal connecting is annoying

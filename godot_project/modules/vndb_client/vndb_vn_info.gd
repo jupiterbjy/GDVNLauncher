@@ -49,29 +49,9 @@ var cover_url: String
 """
 
 
-# --- Constructors ---
+# --- Methods ---
 
-func _init(
-	id_: String = "",
-	title_: String = "",
-	description_: String = "",
-	released_: String = "",
-	developers_: String = "",
-	tags_: String = "",
-	cover_url_: String = "",
-) -> void:
-	# I miss TypedDicts
-
-	self.id = id_
-	self.title = title_
-	self.description = description_
-	self.released = released_
-	self.developers = developers_
-	self.tags = tags_
-	self.cover_url = cover_url_
-
-
-## Create new VNData instance from DB Record
+## Named Constructor to create new VNData instance from DB Record
 static func from_db(record: Dictionary) -> VndbVNInfo:
 	return VndbVNInfo.new(
 		record["id"],
@@ -84,7 +64,7 @@ static func from_db(record: Dictionary) -> VndbVNInfo:
 	)
 
 
-## Create new VNData instance from vndb's json response
+## Named Constructor to create new VNData instance from vndb's json response
 static func from_vndb(
 	json: Dictionary,
 	title_lang: String,
@@ -131,8 +111,6 @@ static func from_vndb(
 	return instance
 
 
-# --- Methods ---
-
 ## Fetch cover image from given url or from cache. Returns null on failure.
 func get_cover_tex(refresh_cache := false) -> ImageTexture:
 	if not self.cover_url:
@@ -149,7 +127,27 @@ func get_cover_tex(refresh_cache := false) -> ImageTexture:
 	return ImageLoader.bytes_to_tex(bytes)
 
 
-# --- Drivers ---
+# --- Handlers ---
+
+func _init(
+	id_: String = "",
+	title_: String = "",
+	description_: String = "",
+	released_: String = "",
+	developers_: String = "",
+	tags_: String = "",
+	cover_url_: String = "",
+) -> void:
+	# I miss TypedDicts
+
+	self.id = id_
+	self.title = title_
+	self.description = description_
+	self.released = released_
+	self.developers = developers_
+	self.tags = tags_
+	self.cover_url = cover_url_
+
 
 func _to_string() -> String:
 	return "VndbVNInfo(id=%s)" % self.id

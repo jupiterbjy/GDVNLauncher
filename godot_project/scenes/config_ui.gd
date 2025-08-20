@@ -33,7 +33,7 @@ const _LANG_IDX_MAP: Dictionary[String, int] = {
 }
 
 
-# --- Utilities ---
+# --- Methods ---
 
 func _reflect_from_config() -> void:
 	self.title_lang_option_button.selected = _LANG_IDX_MAP[UserConfig.title_lang]
@@ -64,6 +64,8 @@ func _reflect_to_config() -> void:
 
 	UserConfig.save_config()
 
+
+# --- Handlers ---
 
 func _ready() -> void:
 	self._reflect_from_config()

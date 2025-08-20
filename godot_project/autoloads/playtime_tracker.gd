@@ -97,7 +97,7 @@ func _update_runtime(processes: Dictionary[String, int]) -> void:
 	self._time_since_update = 0
 
 
-# --- Drivers ---
+# --- Handlers ---
 
 func _ready() -> void:
 	self._thread.start(self._thread_action)

@@ -90,7 +90,7 @@ func save_config() -> bool:
 	return true
 
 
-# --- Drivers ---
+# --- Handlers ---
 
 func _init() -> void:
 	self.load_config()

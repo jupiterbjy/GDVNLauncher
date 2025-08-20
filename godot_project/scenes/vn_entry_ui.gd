@@ -26,7 +26,7 @@ static var _LOGGER := Logging.get_logger("VNEntryUI")
 const _SCENE = preload("uid://b3xdas536yxk6")
 
 
-# --- Utilities ---
+# --- Methods ---
 
 ## Load and apply data from db index. Returns false on failure
 func reload() -> bool:
@@ -49,8 +49,6 @@ func reload() -> bool:
 	return true
 
 
-# --- Methods ---
-
 static func create_instance(db_id_: int) -> VNEntryUI:
 	var instance: VNEntryUI = _SCENE.instantiate()
 	instance.db_id = db_id_
@@ -58,7 +56,7 @@ static func create_instance(db_id_: int) -> VNEntryUI:
 	return instance
 
 
-# --- Drivers ---
+# --- Handlers ---
 
 func _ready() -> void:
 	ControlUtils.option_button_hide_radio(self.status_option_button)

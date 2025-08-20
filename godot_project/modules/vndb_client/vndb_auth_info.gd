@@ -4,14 +4,19 @@ class_name VndbAuthInfo
 
 # --- Attributes ---
 
-## user id
 var id: String
 var username: String
 var permissions: Array[StringName]
 
+## Does this token has read perm?
+var read: bool:
+	get():
+		return &"listread" in self.permissions
 
-const PERMISSION_LIST_READ := &"listread"
-const PERMISSION_LIST_WRITE := &"listwrite"
+## Does this token has write perm?
+var write: bool:
+	get():
+		return &"listwrite" in self.permissions
 
 
 # example json response from vndb

@@ -4,51 +4,35 @@ class_name VNDBClient
 
 # --- Attributes ---
 
-const _INFO_REQ_DATA_TEMPLATE: String = """
+static var _VN_FIELD: String = """
+"title, titles.lang, titles.title,
+released,
+developers.name,
+image.thumbnail,
+description,
+tags.name, tags.spoiler, tags.category, tags.rating
+""".replace("\n", "")
+
+
+static var _POST_VN_TEMPLATE: String = """
 {
 	"filters": ["id", "=", "%s"],
-	"fields": "title, titles.lang, titles.title, released, developers.name, image.thumbnail, description, tags.name, tags.spoiler, tags.category, tags.rating"
+	"fields": VN_FIELD
 }
-"""
+""".strip_edges().replace("VN_FIELD", _VN_FIELD)
 
 #const _USER_AGENT: String = "User-Agent: GDVNLauncher/0.0"
 
-"""
-❯ curl https://api.vndb.org/kana/vn --header 'Content-Type: application/json' --data '{
->     "filters": ["id", "=", "v5834"],
->     "fields": "title, released, developers.name, image.url, description, tags.name, tags.spoiler, tags.category"
-> }' > output.json
-
+## VNDB POST /ulist template
+static var _POST_ULIST_TEMPLATE: String = """
 {
-	"more": false,
-	"results": [
-		{
-			"description": "Our story follows Kanoue Yuuma ...",
-			"developers": [{"id": "p612","name": "FAVORITE"}],
-			"id": "v5834",
-			"image": {"url": "https://t.vndb.org/cv/77/88277.jpg"},
-			"released": "2011-07-29",
-			"tags": [
-				{
-					"category": "tech",
-					"id": "g1335",
-					"name": "Central Heroine",
-					"rating": 2.85714292526245,
-					"spoiler": 2
-				},
-				...
-			],
-			"title": "Irotoridori no Sekai",
-			"titles": [
-				{"lang": "en","title": "Irotoridori No Sekai - The Colorful World"},
-				{"lang": "ja","title": "いろとりどりのセカイ"},
-				{"lang": "ko","title": "형형색색의 세계"},
-				{"lang": "zh-Hans","title": "五彩斑斓的世界"}
-			]
-		}
-	]
+	"user": "%s",
+	"fields": VN_FIELD,
+	"sort": "added",
+	"results": 75,
+	"page": %d
 }
-"""
+""".strip_edges().replace("VN_FIELD", _VN_FIELD)
 
 static var _VN_ID_VALIDATE_PATTERN := RegEx.new()
 static var _USER_ID_VALIDATE_PATTERN := RegEx.new()
@@ -68,7 +52,7 @@ static func validate_user_id(id: String) -> bool:
 	return matched and matched.get_string() == id
 
 
-## Get entry information from vndb. Returns null on failure
+## Get entry information from vndb. Returns null on failure.
 static func async_post_vn(
 	vndb_id: String,
 	title_lang: String,
@@ -82,10 +66,10 @@ static func async_post_vn(
 		"https://api.vndb.org/kana/vn",
 		["Content-Type: application/json"],
 		HTTPClient.Method.METHOD_POST,
-		_INFO_REQ_DATA_TEMPLATE % vndb_id,
+		_POST_VN_TEMPLATE % vndb_id,
 	)
 
-	if resp.result != HTTPRequest.Result.RESULT_SUCCESS:
+	if resp.response_code != 200:
 		return null
 
 	var data: String = resp.body.get_string_from_utf8()
@@ -100,7 +84,7 @@ static func async_post_vn(
 	)
 
 
-## Get user name via user id
+## Get user name via user id. Returns emptry string on failure
 static func async_get_user(u_id: String) -> String:
 	# TODO: test nonexistent case and workaround it
 
@@ -108,13 +92,16 @@ static func async_get_user(u_id: String) -> String:
 		"https://api.vndb.org/kana/user?q=%s" % u_id
 	)
 
+	if resp.response_code != 200:
+		return ""
+
 	var data: String = resp.body.get_string_from_utf8()
 	var parsed: Dictionary = JSON.parse_string(data)
 
 	return parsed[u_id]["username"]
 
 
-## Get user auth info via token
+## Get user auth info via token. Returns null on failure.
 static func async_get_auth_info(token: String) -> VndbAuthInfo:
 	# TODO: test nonexistent case and workaround it
 
@@ -123,10 +110,61 @@ static func async_get_auth_info(token: String) -> VndbAuthInfo:
 		["Authorization: token " + token],
 	)
 
+	if resp.response_code != 200:
+		return null
+
 	var data: String = resp.body.get_string_from_utf8()
 	var parsed: Dictionary = JSON.parse_string(data)
 
 	return VndbAuthInfo.from_vndb(parsed)
+
+
+## Get user vn list
+static func async_get_ulist(
+	u_id: String,
+	title_lang: String,
+	tag_min_rating: float = 2.1,
+	tag_max_spoiler: int = 0,
+	tag_types: String = "cont",
+) -> Array[VndbVNInfo]:
+
+	var results: Array[VndbVNInfo]
+	var page: int = 0
+
+	while true:
+		page += 1
+
+		var resp := await AsyncHTTPClient.async_request(
+			"https://api.vndb.org/kana/ulist",
+			["Content-Type: application/json"],
+			HTTPClient.Method.METHOD_POST,
+			_POST_ULIST_TEMPLATE % [u_id, page]
+		)
+
+		# on failure return results accumulated so far
+		if resp.response_code != 200:
+			return results
+
+		var data: String = resp.body.get_string_from_utf8()
+		var parsed: Dictionary = JSON.parse_string(data)
+
+		# TODO: get as variant and check for null
+		for vn_data: Dictionary in parsed["results"]:
+			results.append(
+				VndbVNInfo.from_vndb(
+					vn_data,
+					title_lang,
+					tag_min_rating,
+					tag_max_spoiler,
+					tag_types,
+				)
+			)
+
+		# if result is drained, end here
+		if not parsed["more"]:
+			return results
+
+	return results
 
 
 # --- Hanlders ---

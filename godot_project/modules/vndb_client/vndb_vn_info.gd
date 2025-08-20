@@ -124,7 +124,8 @@ static func from_vndb(
 		json["released"],
 		",".join(_devs),
 		",".join(_tags),
-		json["image"]["url"],
+		#json["image"]["url"],
+		json["image"]["thumbnail"],
 	)
 
 	return instance

@@ -7,7 +7,7 @@ class_name VNDBClient
 const _INFO_REQ_DATA_TEMPLATE: String = """
 {
 	"filters": ["id", "=", "%s"],
-	"fields": "title, titles.lang, titles.title, released, developers.name, image.url, description, tags.name, tags.spoiler, tags.category, tags.rating"
+	"fields": "title, titles.lang, titles.title, released, developers.name, image.thumbnail, description, tags.name, tags.spoiler, tags.category, tags.rating"
 }
 """
 

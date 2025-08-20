@@ -23,13 +23,15 @@ class _Query:
 	# Should I cascade? idk
 
 	const create_table := """
-	CREATE TABLE IF NOT EXISTS "%s" (start_utc INTEGER, end_utc INTEGER, time REAL, PRIMARY KEY(start_utc))
+	CREATE TABLE IF NOT EXISTS "%s"
+	(start_utc INTEGER, end_utc INTEGER, time REAL, PRIMARY KEY(start_utc))
 	"""
 
 	const drop_table := 'DROP TABLE IF EXISTS "%s"'
 
 	const add_or_update_time := """
-	INSERT INTO "%s" VALUES (?, ?, ?) ON CONFLICT(start_utc) DO UPDATE SET end_utc=?, time=time+?
+	INSERT INTO "%s" VALUES (?, ?, ?)
+	ON CONFLICT(start_utc) DO UPDATE SET end_utc=?, time=time+?
 	"""
 
 	const get_total_time := 'SELECT SUM(time) FROM "%s"'
@@ -45,9 +47,9 @@ class _Query:
 ## to compensate for system sleep.
 var _time_since_update: float = 0
 
-## Path to db_id mapping for faster lookup
-## Dict[Process path, [db_id,]] in case for identical path for multiple VN for whatever reason.
-var _path_to_db_id: Dictionary[String, PackedInt32Array]
+## Path to id mapping for faster lookup
+## Dict[Process path, [id,]] in case for identical path for multiple VN for whatever reason.
+var _path_to_id: Dictionary[String, PackedStringArray]
 
 
 # --- Methods ---
@@ -72,20 +74,22 @@ func _update_runtime(processes: Dictionary[String, int]) -> void:
 	var now := int(Time.get_unix_time_from_system())
 
 	# filter whitelisted (I miss set() & set())
-	for proc in processes:
-		if proc not in self._path_to_db_id:
+	for proc: String in processes:
+
+		# if nonexistent append new
+		if proc not in self._path_to_id:
 			continue
 
-			proc_in_whitelist.append(proc)
+		proc_in_whitelist.append(proc)
 
-		# if this process just found set start time
+		# if this process is just found, set start time
 		if proc not in self._started:
 			self._started[proc] = now
 
 		# update time; this is looped in case of same path for different vn...
-		for db_id in self._path_to_db_id[proc]:
+		for id: String in self._path_to_id[proc]:
 			self._db.execute(
-				_Query.add_or_update_time % db_id,
+				_Query.add_or_update_time % id,
 				[self._started[proc], now, self._time_since_update, now, self._time_since_update]
 			)
 
@@ -97,23 +101,7 @@ func _update_runtime(processes: Dictionary[String, int]) -> void:
 	self._time_since_update = 0
 
 
-# --- Handlers ---
-
-func _ready() -> void:
-	self._thread.start(self._thread_action)
-
-	EntryManager.entry_added.connect(self._on_entry_added)
-	EntryManager.entry_removed.connect(self._on_entry_removed)
-
-	# populate cache; this is cursed
-	for entry in EntryManager.get_entries():
-		(
-			self._path_to_db_id.get_or_add(entry.exec_path, PackedInt32Array()) as PackedInt32Array
-		).append(
-			entry.db_id
-		)
-
-
+## Function running in thread, constantly polling
 func _thread_action() -> void:
 
 	while true:
@@ -130,6 +118,19 @@ func _thread_action() -> void:
 			return
 
 		self._mutex.unlock()
+
+
+# --- Handlers ---
+
+func _ready() -> void:
+	self._thread.start(self._thread_action)
+
+	#EntryManager.entry_added.connect(self._on_entry_added)
+	EntryManager.entry_removed.connect(self._on_entry_removed)
+
+	# populate cache; this is cursed
+	for entry in EntryManager.get_entries():
+		self._on_entry_added(entry)
 
 
 func _notification(what: int) -> void:
@@ -150,14 +151,13 @@ func _process(delta: float) -> void:
 ## If entry is added, add or append db_id to cache
 func _on_entry_added(entry: EntryManager.Entry) -> void:
 	(
-		self._path_to_db_id.get_or_add(entry.exec_path, PackedInt32Array()) as PackedInt32Array
+		self._path_to_id.get_or_add(entry.exec_path, PackedStringArray()) as PackedStringArray
 	).append(
-		entry.db_id
+		entry.id
 	)
 
 
 ## If entry is removed, remove corresponding db_id cache and drop table
 func _on_entry_removed(entry: EntryManager.Entry) -> void:
-	self._path_to_db_id[entry.exec_path].erase(entry.db_id)
-
-	self._db.execute(_Query.drop_table % entry.db_id)
+	self._path_to_id[entry.exec_path].erase(entry.id)
+	self._db.execute(_Query.drop_table % entry.id)

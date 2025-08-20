@@ -18,26 +18,41 @@ class Entry:
 	# TODO: convert this to store dict directly and access via properties instead
 
 	## Entry's ID in local DB(actually just rowid alias), not to be confused with `VndbVNInfo.id`
-	var db_id: int = -1
-	var exec_path: String
-	var play_status: int
+	#var db_id: int = -1
+
+	## VNDB(vxxxx) or user-defined(cvxxxx) id
+	var id: String:
+		get():
+			return self.vn_info.id
+
+	## Executable path
+	var exec_path: String = ""
+
+	## Play status
+	var play_status: int = 2
+
 	var vn_info: VndbVNInfo = null
 
 	# This feels like wasting a lot of computations but well..
-	func _init(data: Dictionary = {}) -> void:
-		if data:
-			self.db_id = data["db_id"]
-			self.exec_path = data["exec_path"]
-			self.play_status = data["play_status"]
+	func _init(path: String = "", play_status_: int = 2, vn_info_: VndbVNInfo = null) -> void:
+		self.exec_path = path
+		self.play_status = play_status_
+		self.vn_info = vn_info_ if vn_info_ else VndbVNInfo.new()
 
-			self.vn_info = VndbVNInfo.from_db(data)
-		else:
-			# if no data is provided, create empty
-			self.vn_info = VndbVNInfo.new()
+	## DB Record based named constructor
+	static func from_db(data: Dictionary) -> Entry:
+		return Entry.new(
+			data["exec_path"],
+			data["play_status"],
+			VndbVNInfo.from_db(data),
+		)
+
+	## VNInfo based named constructor
+	static func from_vndb_info(vn_info_: VndbVNInfo) -> Entry:
+		return Entry.new("", 2, vn_info_)
 
 	func _to_string() -> String:
-		return "Entry(db_id=%d, vndb_info.id=%s)" % [self.db_id, self.vn_info.id]
-
+		return "Entry(id=%d)" % self.id
 
 
 # --- Attributes ---
@@ -47,68 +62,83 @@ var _db := DBWrapper.new("user://entry.sqlite")
 
 ## Namespace for SQL Query templates
 class _Query:
+
 	const create_table := """
-	CREATE TABLE IF NOT EXISTS "entries"
-	(
-		db_id INTEGER PRIMARY KEY,
-		exec_path TEXT,
-		play_status INT,
+	CREATE TABLE IF NOT EXISTS "entries" (
+		id TEXT PRIMARY KEY,
 		title TEXT,
-		id TEXT,
 		developers TEXT,
 		description TEXT,
 		released TEXT,
 		tags TEXT,
-		cover_url TEXT
+		cover_url TEXT,
+		exec_path TEXT,
+		play_status INT
 	)
 	"""
+	# db_id INTEGER PRIMARY KEY,
 
 	const get_entry := """
-	SELECT * FROM "entries" WHERE db_id=?
+	SELECT * FROM "entries" WHERE id = ?
 	"""
 
 	const get_entries := """
 	SELECT * FROM "entries"
 	"""
 
-	const get_last_entry := """
-	SELECT * FROM "entries" ORDER BY db_id LIMIT 1
-	"""
+	#const get_last_entry := """
+	#SELECT * FROM "entries" ORDER BY db_id LIMIT 1
+	#"""
 
 	const add_entry := """
-	INSERT INTO "entries" VALUES (
-		NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?
+	INSERT INTO "entries" VALUES(
+		?, ?, ?, ?, ?, ?, ?, ?, ?,
 	)
 	"""
 
 	const update_entry := """
 	UPDATE "entries" SET
-		exec_path = ?,
-		play_status = ?,
 		title = ?,
-		id = ?,
 		developers = ?,
 		description = ?,
 		released = ?,
 		tags = ?,
-		cover_url = ?
-	WHERE rowid = ?
+		cover_url = ?,
+		exec_path = ?,
+		play_status = ?
+	WHERE id = ?
+	"""
+	# WHERE rowid = ?
+
+	const upsert_entry := """
+	INSERT INTO "entries" VALUES(
+		?, ?, ?, ?, ?, ?, ?, ?, ?
+	)
+	ON CONFLICT(id) DO UPDATE SET
+		title = ?,
+		developers = ?,
+		description = ?,
+		released = ?,
+		tags = ?,
+		cover_url = ?,
+		exec_path = ?,
+		play_status = ?
 	"""
 
 	const update_entry_play_status := """
-	UPDATE "entries" SET play_status = ? WHERE rowid = ?
+	UPDATE "entries" SET play_status = ? WHERE id = ?
 	"""
 
-	const get_entry_db_ids := """
-	SELECT db_id FROM "entries"
+	const get_entry_ids := """
+	SELECT id FROM "entries"
 	"""
 
-	const get_last_entry_db_id := """
-	SELECT db_id FROM "entries" ORDER BY db_id DESC LIMIT 1
-	"""
+	#const get_last_entry_db_id := """
+	#SELECT db_id FROM "entries" ORDER BY db_id DESC LIMIT 1
+	#"""
 
 	const remove_entry := """
-	DELETE FROM "entries" WHERE db_id=?
+	DELETE FROM "entries" WHERE id = ?
 	"""
 
 
@@ -120,25 +150,28 @@ func create_table() -> bool:
 
 
 ## Fetch entry from db id, else return null
-func get_entry(id: int) -> Entry:
+func get_entry(id: String) -> Entry:
 	var result := self._db.execute(_Query.get_entry, [id])
-	return Entry.new(result.fetchone()) if result.success and result._rows else null
+	return Entry.from_db(result.fetchone()) if result.success and result._rows else null
 
 
 ## Fetch entry from db id
 func get_entries() -> Array[Entry]:
+
 	var result := self._db.execute(_Query.get_entries)
+
 	var entries: Array[Entry]
+
 	for dict in result.fetchall():
-		entries.append(Entry.new(dict))
+		entries.append(Entry.from_db(dict))
 
 	return entries
 
 
 ## Fetch last entry from db id, else return null
-func get_last_entry() -> Entry:
-	var result := self._db.execute(_Query.get_last_entry)
-	return Entry.new(result.fetchone()) if result.success else null
+#func get_last_entry() -> Entry:
+	#var result := self._db.execute(_Query.get_last_entry)
+	#return Entry.new(result.fetchone()) if result.success else null
 
 
 ## Returns false on failure
@@ -147,15 +180,15 @@ func add_entry(entry: Entry) -> bool:
 	if self._db.execute(
 		_Query.add_entry,
 		[
-			entry.exec_path,
-			entry.play_status,
-			entry.vn_info.title,
 			entry.vn_info.id,
+			entry.vn_info.title,
 			entry.vn_info.developers,
 			entry.vn_info.description,
 			entry.vn_info.released,
 			entry.vn_info.tags,
 			entry.vn_info.cover_url,
+			entry.exec_path,
+			entry.play_status,
 		]
 	).success:
 		self.entry_added.emit(entry)
@@ -163,72 +196,95 @@ func add_entry(entry: Entry) -> bool:
 
 	return false
 
-	# TODO: return newly saved entry's rowid to let UI decide wheter to refresh or not?
 
-
-## Returns false on failure.
-## If `entry.db_id == -1` will add new entry instead
+## Returns false on failure
 func update_entry(entry: Entry) -> bool:
-	if entry.db_id == -1:
-		return self.add_entry(entry)
+	#if entry.db_id == -1:
+		#return self.add_entry(entry)
 
 	return self._db.execute(
 		_Query.update_entry,
 		[
-			entry.exec_path,
-			entry.play_status,
 			entry.vn_info.title,
-			entry.vn_info.id,
 			entry.vn_info.developers,
 			entry.vn_info.description,
 			entry.vn_info.released,
 			entry.vn_info.tags,
 			entry.vn_info.cover_url,
-			entry.db_id,
+			entry.exec_path,
+			entry.play_status,
+			entry.id,
+		]
+	).success
+
+
+## Returns false on failure
+func upsert_entry(entry: Entry) -> bool:
+	return self._db.execute(
+		_Query.upsert_entry,
+		[
+			entry.id,
+			entry.vn_info.title,
+			entry.vn_info.developers,
+			entry.vn_info.description,
+			entry.vn_info.released,
+			entry.vn_info.tags,
+			entry.vn_info.cover_url,
+			entry.exec_path,
+			entry.play_status,
+
+			entry.vn_info.title,
+			entry.vn_info.developers,
+			entry.vn_info.description,
+			entry.vn_info.released,
+			entry.vn_info.tags,
+			entry.vn_info.cover_url,
+			entry.exec_path,
+			entry.play_status,
+
+			entry.id,
 		]
 	).success
 
 
 ## Returns false on failure.
-func update_entry_play_status(db_id: int, play_status: int) -> bool:
+func update_entry_play_status(id: String, play_status: int) -> bool:
+
 	return self._db.execute(
 		_Query.update_entry_play_status,
-		[
-			play_status,
-			db_id,
-		]
+		[play_status, id],
 	).success
 
 
 ## Returns all entries' `db_id`
-func get_entry_db_ids() -> Array[int]:
-	var result := self._db.execute(
-		_Query.get_entry_db_ids
-	)
+func get_entry_ids() -> Array[String]:
+
+	var result := self._db.execute(_Query.get_entry_ids)
+
 	if not result.success:
 		return []
 
-	var data: Array[int]
+	var data: Array[String]
 	for record in result.fetchall():
-		data.append(record["db_id"])
+		data.append(record["id"])
 
 	return data
 
 
 ## Fetch last entry's db_id, else returns -1
-func get_last_entry_db_id() -> int:
-	var result := self._db.execute(_Query.get_last_entry_db_id)
-	return result.fetchone()["db_id"] if result.success else -1
+#func get_last_entry_id() -> int:
+	#var result := self._db.execute(_Query.get_last_entry_db_id)
+	#return result.fetchone()["db_id"] if result.success else -1
 
 
 ## Delete given entry
-func remove_entry(db_id: int) -> bool:
+func remove_entry(id: String) -> bool:
 	#return self._db.execute(_Query.remove_entry, [db_id]).success
 
-	var entry := self.get_entry(db_id)
+	#var entry := self.get_entry(db_id)
 
-	if self._db.execute(_Query.remove_entry, [db_id]).success:
-		self.entry_removed.emit(entry)
+	if self._db.execute(_Query.remove_entry, [id]).success:
+		self.entry_removed.emit(id)
 		return true
 
 	return false

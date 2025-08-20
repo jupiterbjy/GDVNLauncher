@@ -4,7 +4,7 @@ extends MarginContainer
 # --- Attributes ---
 
 ## Dict[DB_ID, VNEntry]
-var _entries: Dictionary[int, VNEntryUI]
+var _entries: Dictionary[String, VNEntryUI]
 
 @onready var vn_entry_flow_container: HFlowContainer = %VNEntryFlowContainer
 
@@ -24,39 +24,43 @@ func _test() -> void:
 	#print(ActiveProcesses.poll())
 
 
-## Reload or add UI Entry of given db_idx
-func _reload_one(db_id: int, deleted: bool) -> void:
+## Reload existing entry. Does not checks for missing id
+func _reload(id: String) -> void:
 
-	assert(db_id != -1, "invalid entry(%d) received" % db_id)
-
-	# if delete remove it
-	if deleted:
-		self._entries[db_id].queue_free()
-		self._entries.erase(db_id)
+	# try reload
+	if await self._entries[id].reload():
+		_LOGGER.debug("Refreshed %s" % id)
 		return
 
-	# if exists reload it
-	if db_id in self._entries:
-		assert(await self._entries[db_id].reload(), "Reload failed for %s" % db_id)
+	# reload failed, then it's deleted - remove entry
+	self._entries[id].queue_free()
+	self._entries.erase(id)
+	_LOGGER.debug("Deleted %s" % id)
+
+
+## Convenient func for add/removing on single go
+func _add_or_reload(id: String) -> void:
+
+	if id in self._entries:
+		self._reload(id)
 		return
 
 	# else create new
-	var instance := VNEntryUI.create_instance(db_id)
+	var instance := VNEntryUI.create_instance(id)
 	instance.cover_clicked.connect(self._on_cover_pressed)
 
-	self._entries[db_id] = instance
+	self._entries[id] = instance
 
 	# TODO: Think about sorting options
 	self.vn_entry_flow_container.add_child(instance)
 
 
-## Reload all UI Entry from DB. Does not factor in for deletions
+## Reload all UI Entry from DB. Does not factor in for deletion.
 func _reload_all() -> void:
 	_LOGGER.debug("Reloading all entries")
 
-	# this is dumb and makes n queries to DB but sufficent for now...
-	for db_id in EntryManager.get_entry_db_ids():
-		self._reload_one(db_id, false)
+	for id in EntryManager.get_entry_ids():
+		self._add_or_reload(id)
 
 
 # --- Handlers ---
@@ -67,15 +71,8 @@ func _ready() -> void:
 
 
 ## Called on EditUI.entry_saved
-func _on_edit_ui_saved(db_id: int) -> void:
-
-	# if -1 should be new, fetch from db
-	self._reload_one(
-		EntryManager.get_last_entry_db_id()
-		if db_id == -1
-		else db_id,
-		false,
-	)
+func _on_edit_ui_saved(id: String) -> void:
+	self._add_or_reload(id)
 
 
 ## Handler for adding new VN
@@ -87,17 +84,18 @@ func _on_add_button_pressed() -> void:
 
 
 ## Called on DetailUI.closed
-func _on_detail_ui_closed(db_id: int, deleted: bool) -> void:
-	self._reload_one(db_id, deleted)
+func _on_detail_ui_closed(id: String) -> void:
+	# TODO: remove deleted param if it stays unused
+	self._add_or_reload(id)
 
 
 ## Handler for VN cover image press on VNEntryUI
-func _on_cover_pressed(db_id: int) -> void:
-	var instance := DetailUI.create_instance(db_id)
+func _on_cover_pressed(id: String) -> void:
+	var instance := DetailUI.create_instance(id)
 	instance.closed.connect(self._on_detail_ui_closed)
 
-	self.add_child(instance)
+	self.add_sibling(instance)
 
 
 func _on_config_button_pressed() -> void:
-	self.add_child(_CONFIG_SCENE.instantiate())
+	self.add_sibling(_CONFIG_SCENE.instantiate())

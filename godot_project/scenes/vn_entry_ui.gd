@@ -5,12 +5,13 @@ extends PanelContainer
 # --- Signals ---
 
 ## Emitted when cover is clicked
-signal cover_clicked(db_id_: int)
+signal cover_clicked(id: String)
 
 
 # --- Attributes ---
 
-var db_id: int = -1
+## VNDB ID or custom ID
+var id: String = ""
 
 @onready var _cover_button: TextureButton = %CoverButton
 
@@ -30,9 +31,9 @@ const _SCENE = preload("uid://b3xdas536yxk6")
 
 ## Load and apply data from db index. Returns false on failure
 func reload() -> bool:
-	_LOGGER.debug("Reloading db_id=%d" % self.db_id)
+	_LOGGER.debug("Reloading id=%s" % self.id)
 
-	var entry := EntryManager.get_entry(self.db_id)
+	var entry := EntryManager.get_entry(self.id)
 
 	# if failed it's deleted
 	if not entry:
@@ -49,9 +50,9 @@ func reload() -> bool:
 	return true
 
 
-static func create_instance(db_id_: int) -> VNEntryUI:
+static func create_instance(id_: String) -> VNEntryUI:
 	var instance: VNEntryUI = _SCENE.instantiate()
-	instance.db_id = db_id_
+	instance.id = id_
 
 	return instance
 
@@ -62,7 +63,7 @@ func _ready() -> void:
 	ControlUtils.option_button_hide_radio(self.status_option_button)
 
 	# must be placeholder for UI design, free self
-	if self.db_id == -1:
+	if not self.id:
 		self.queue_free()
 		return
 
@@ -72,8 +73,8 @@ func _ready() -> void:
 
 
 func _on_status_option_button_item_selected(index: int) -> void:
-	EntryManager.update_entry_play_status(self.db_id, index)
+	EntryManager.update_entry_play_status(self.id, index)
 
 
 func _on_cover_button_pressed() -> void:
-	self.cover_clicked.emit(self.db_id)
+	self.cover_clicked.emit(self.id)

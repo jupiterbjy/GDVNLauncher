@@ -8,7 +8,7 @@ extends PanelContainer
 # --- Signals ---
 
 ## Emitted when closing
-signal closed(db_id: int, deleted: bool)
+signal closed(id: String)
 
 
 # --- Attributes ---
@@ -35,9 +35,9 @@ const _SCENE = preload("uid://coektos3qbfg1")
 
 # --- Methods ---
 
-static func create_instance(db_id: int) -> DetailUI:
+static func create_instance(id: String) -> DetailUI:
 	var instance: DetailUI = _SCENE.instantiate()
-	instance.entry = EntryManager.get_entry(db_id)
+	instance.entry = EntryManager.get_entry(id)
 
 	return instance
 
@@ -90,25 +90,26 @@ func _on_description_rich_label_meta_clicked(meta: Variant) -> void:
 
 
 func _on_edit_button_pressed() -> void:
-	var instance := EditUI.create_instance(self.entry.db_id)
+	var instance := EditUI.create_instance(self.entry.id)
 	instance.entry_saved.connect(self._on_entry_saved)
 
 	self.add_sibling(instance)
 
 
 ## Called on EditUI.entry_saved
-func _on_entry_saved(db_id: int) -> void:
-	self.entry = EntryManager.get_entry(db_id)
+func _on_entry_saved(id: String) -> void:
+	self.entry = EntryManager.get_entry(id)
 	self._reflect_to_ui()
 
 
+## Free self & emit entry id via signal
 func _on_close_button_pressed() -> void:
-	self.closed.emit(self.entry.db_id, false)
+	self.closed.emit(self.entry.id)
 	self.queue_free()
 
 
 func _on_status_option_button_item_selected(index: int) -> void:
-	EntryManager.update_entry_play_status(self.entry.db_id, index)
+	EntryManager.update_entry_play_status(self.entry.id, index)
 
 
 func _on_delete_button_pressed() -> void:
@@ -117,7 +118,7 @@ func _on_delete_button_pressed() -> void:
 	self.add_sibling(instance)
 
 
+## Delete from db and signal & free self
 func _on_delete_confirmed() -> void:
-	EntryManager.remove_entry(self.entry.db_id)
-	self.closed.emit(self.entry.db_id, true)
-	self.queue_free()
+	EntryManager.remove_entry(self.entry.id)
+	self._on_close_button_pressed()

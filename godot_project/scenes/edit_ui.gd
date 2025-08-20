@@ -5,7 +5,7 @@ extends PanelContainer
 # --- Signals ---
 
 ## Emitted on save.
-signal entry_saved(db_id: int)
+signal entry_saved(id: String)
 # emit entry or db_id? changed least 3 times back and forth
 
 
@@ -38,12 +38,10 @@ const _SCENE = preload("uid://2henmqt3po33")
 
 # --- Methods ---
 
-static func create_instance(db_id: int = -1) -> EditUI:
+static func create_instance(id: String = "") -> EditUI:
 	var instance: EditUI = _SCENE.instantiate()
 	instance.entry = (
-		EntryManager.Entry.new()
-		if db_id == -1
-		else EntryManager.get_entry(db_id)
+		EntryManager.get_entry(id) if id else EntryManager.Entry.new()
 	)
 
 	return instance
@@ -95,7 +93,7 @@ func _reflect_from_ui() -> void:
 func _ready() -> void:
 	ControlUtils.option_button_hide_radio(self.status_option_button)
 
-	if self.entry.db_id != -1:
+	if self.entry.id:
 		self._reflect_to_ui()
 
 
@@ -136,9 +134,9 @@ func _on_save_button_pressed() -> void:
 
 	# save results to DB and emit result
 	self._reflect_from_ui()
-	EntryManager.update_entry(self.entry)
+	EntryManager.upsert_entry(self.entry)
 
-	self.entry_saved.emit(self.entry.db_id)
+	self.entry_saved.emit(self.entry.id)
 	self.queue_free()
 
 

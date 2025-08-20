@@ -10,8 +10,8 @@ released,
 developers.name,
 image.thumbnail,
 description,
-tags.name, tags.spoiler, tags.category, tags.rating
-""".replace("\n", "")
+tags.name, tags.spoiler, tags.category, tags.rating"
+""".strip_edges().replace("\n", " ")
 
 
 static var _POST_VN_TEMPLATE: String = """

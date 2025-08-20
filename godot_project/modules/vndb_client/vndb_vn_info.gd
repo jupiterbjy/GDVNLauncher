@@ -26,7 +26,10 @@ var cover_url: String
 	"description": "Our story follows Kanoue Yuuma ...",
 	"developers": [{"id": "p612","name": "FAVORITE"}],
 	"id": "v5834",
-	"image": {"url": "https://t.vndb.org/cv/77/88277.jpg"},
+	"image": {
+		"url": "https://t.vndb.org/cv/77/88277.jpg",
+		"thumbnail": "https://t.vndb.org/cv.t/77/88277.jpg"
+	},
 	"released": "2011-07-29",
 	"tags": [
 		{

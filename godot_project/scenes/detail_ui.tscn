@@ -116,6 +116,7 @@ theme_override_font_sizes/font_size = 32
 theme_override_styles/focus = SubResource("StyleBoxEmpty_51wph")
 text = "VN Name"
 horizontal_alignment = 1
+text_overrun_behavior = 5
 
 [node name="EditButton" type="TextureButton" parent="VBoxContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2

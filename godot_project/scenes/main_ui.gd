@@ -23,16 +23,19 @@ func _test() -> void:
 
 
 ## Reload or add UI Entry of given db_idx
-func _reload_one(db_id: int) -> void:
+func _reload_one(db_id: int, deleted: bool) -> void:
 
 	assert(db_id != -1, "invalid entry(%d) received" % db_id)
 
+	# if delete remove it
+	if deleted:
+		self._entries[db_id].queue_free()
+		self._entries.erase(db_id)
+		return
+
 	# if exists reload it
 	if db_id in self._entries:
-		if not await self._entries[db_id].reload():
-			self._entries[db_id].queue_free()
-			self._entries.erase(db_id)
-
+		assert(await self._entries[db_id].reload(), "Reload failed for %s" % db_id)
 		return
 
 	# else create new
@@ -45,13 +48,13 @@ func _reload_one(db_id: int) -> void:
 	self.vn_entry_flow_container.add_child(instance)
 
 
-## Reload all UI Entry from DB
+## Reload all UI Entry from DB. Does not factor in for deletions
 func _reload_all() -> void:
 	_LOGGER.debug("Reloading all entries")
 
 	# this is dumb and makes n queries to DB but sufficent for now...
 	for db_id in EntryManager.get_entry_db_ids():
-		self._reload_one(db_id)
+		self._reload_one(db_id, false)
 
 
 func _ready() -> void:
@@ -66,7 +69,8 @@ func _on_edit_ui_saved(db_id: int) -> void:
 	self._reload_one(
 		EntryManager.get_last_entry_db_id()
 		if db_id == -1
-		else db_id
+		else db_id,
+		false,
 	)
 
 
@@ -80,7 +84,7 @@ func _on_add_button_pressed() -> void:
 
 ## Called on DetailUI.closed
 func _on_detail_ui_closed(db_id: int, deleted: bool) -> void:
-	self._reload_one(db_id)
+	self._reload_one(db_id, deleted)
 
 
 ## Handler for VN cover image press on VNEntryUI

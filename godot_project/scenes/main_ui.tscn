@@ -1,8 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://5f1ylcxfm58a"]
+[gd_scene load_steps=10 format=3 uid="uid://5f1ylcxfm58a"]
 
 [ext_resource type="Script" uid="uid://c3v7a5u0781aj" path="res://scenes/main_ui.gd" id="1_4uoxc"]
 [ext_resource type="Texture2D" uid="uid://ctyd5gwmuh13a" path="res://resources/ui/sort_48dp_E3E3E3_FILL0_wght400_GRAD0_opsz48.svg" id="2_ktt6o"]
 [ext_resource type="Texture2D" uid="uid://bwo3vfdqxend7" path="res://resources/ui/settings_48dp_E3E3E3_FILL0_wght400_GRAD0_opsz48.svg" id="2_llbac"]
+[ext_resource type="Texture2D" uid="uid://dkw5647cw2l8l" path="res://resources/ui/tablet/cloud_download_48dp_E3E3E3_FILL0_wght400_GRAD0_opsz48.svg" id="3_i1gbh"]
 [ext_resource type="Texture2D" uid="uid://bq70qy26xakfu" path="res://resources/ui/add_48dp_E3E3E3_FILL0_wght400_GRAD0_opsz48.svg" id="3_llbac"]
 [ext_resource type="PackedScene" uid="uid://b3xdas536yxk6" path="res://scenes/vn_entry_ui.tscn" id="5_llbac"]
 
@@ -64,6 +65,10 @@ theme_override_constants/separation = 8
 layout_mode = 2
 texture_normal = ExtResource("3_llbac")
 
+[node name="BatchAddButton" type="TextureButton" parent="PanelContainer/VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+texture_normal = ExtResource("3_i1gbh")
+
 [node name="SortButton" type="TextureButton" parent="PanelContainer/VBoxContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
 texture_normal = ExtResource("2_ktt6o")
@@ -105,4 +110,5 @@ theme_override_constants/v_separation = 16
 layout_mode = 2
 
 [connection signal="pressed" from="PanelContainer/VBoxContainer/PanelContainer/HBoxContainer/AddButton" to="." method="_on_add_button_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/PanelContainer/HBoxContainer/BatchAddButton" to="." method="_on_batch_add_button_pressed"]
 [connection signal="pressed" from="PanelContainer/VBoxContainer/PanelContainer/HBoxContainer/ConfigButton" to="." method="_on_config_button_pressed"]

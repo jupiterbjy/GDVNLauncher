@@ -80,7 +80,20 @@ func _on_add_button_pressed() -> void:
 	var instance: EditUI = EditUI.create_instance()
 	instance.entry_saved.connect(self._on_edit_ui_saved)
 
-	self.add_child(instance)
+	self.add_sibling(instance)
+
+
+func _on_batch_add_button_pressed() -> void:
+	for vn_info: VndbVNInfo in await VNDBClient.async_get_ulist(
+		await UserConfig.async_get_user_id(),
+		UserConfig.title_lang,
+		UserConfig.vndb_tag_min_rating,
+		0,
+		UserConfig.vndb_tag_types,
+	):
+		EntryManager.upsert_entry(
+			EntryManager.Entry.from_vndb_info(vn_info)
+		)
 
 
 ## Called on DetailUI.closed

@@ -48,9 +48,9 @@ static func from_vndb(json: Dictionary) -> VndbAuthInfo:
 func _init(
 	id_: String = "",
 	username_: String = "",
-	permissions_: Array[StringName] = [],
+	permissions_: Array = [],
 ) -> void:
 
 	self.id = id_
 	self.username = username_
-	self.permissions = permissions_
+	self.permissions.assign(permissions_)

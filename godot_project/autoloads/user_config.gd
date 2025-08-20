@@ -4,6 +4,7 @@ extends Node
 
 # --- Atrributes ---
 
+## Preferred title language
 var title_lang: String = "en"
 
 ## VNDB Token. Will be used to sync play status to VNDB in turue
@@ -31,6 +32,9 @@ const _ATTR_WHITELIST: Array[StringName] = [
 	"vndb_tag_type",
 	"poll_interval",
 ]
+
+## Non-saved param
+var _user_id: String = ""
 
 ## Path to configuration file
 const _CONFIG_PATH := "user://config.json"
@@ -61,8 +65,22 @@ func load_config() -> bool:
 			_LOGGER.warn("Unknown key %s found while loading; Skipping" % key)
 			continue
 
-		if typeof(self.get(key)) != typeof((data as Dictionary)[key]):
-			_LOGGER.warn("Found key %s with mismatching type while loading; Skipping" % key)
+		var self_t := typeof(self.get(key))
+		var saved_t := typeof((data as Dictionary)[key])
+
+		# if not same type but neither both are numbers throw tantrum
+		if (
+			self_t != saved_t
+			and not (
+				(self_t == Variant.Type.TYPE_INT or self_t == Variant.Type.TYPE_FLOAT)
+				and (saved_t == Variant.Type.TYPE_INT or saved_t == Variant.Type.TYPE_FLOAT)
+			)
+		):
+			_LOGGER.warn(
+				"Found key %s with mismatching type (%s!=%s) while loading; Skipping" % [
+					key, self_t, saved_t,
+				]
+			)
 			continue
 
 		self.set(key, (data as Dictionary)[key])
@@ -88,6 +106,27 @@ func save_config() -> bool:
 
 	_LOGGER.info("Save success")
 	return true
+
+
+## Fetch user id from token. Returns empty string on failure.
+func async_get_user_id(force_refresh := false) -> String:
+
+	# if cached use it
+	if not force_refresh and self._user_id:
+		return self._user_id
+
+	# if no token fail fast
+	if not self.vndb_token:
+		return ""
+
+	var resp := await VNDBClient.async_get_auth_info(self.vndb_token)
+
+	if not resp:
+		return ""
+
+	# cache & return
+	self._user_id = resp.id
+	return resp.id
 
 
 # --- Handlers ---

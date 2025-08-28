@@ -16,7 +16,7 @@ var _mutex := Mutex.new()
 var _thread_stop := false
 
 ## Play session DB
-var _db := DBWrapper.new("sessions.sqlite")
+var _db := DBWrapper.new("user://data.sqlite")
 
 ## Namespace for SQL Queries
 class _Query:

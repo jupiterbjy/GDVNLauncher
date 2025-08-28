@@ -3,6 +3,10 @@ extends Node
 ## Manages Visual Novel entries
 
 
+# TODO: separate id column to type(vndb/custom) + id? (e.g. "v10028" -> "v" + 10028)
+# since one can't just do `SELECT MAX(id) FROM ...` when assigning new Custom ID without padding
+
+
 # --- Signals ---
 # Changing to autoload just becase of signals
 
@@ -52,7 +56,7 @@ class Entry:
 
 # --- Attributes ---
 
-var _db := DBWrapper.new("user://entry.sqlite")
+var _db := DBWrapper.new("user://data.sqlite")
 
 
 ## Namespace for SQL Query templates
@@ -147,17 +151,16 @@ func create_table() -> bool:
 ## Fetch entry from db id, else return null
 func get_entry(id: String) -> Entry:
 	var result := self._db.execute(_Query.get_entry, [id])
+
 	return Entry.from_db(result.fetchone()) if result.success and result._rows else null
 
 
 ## Fetch entry from db id
 func get_entries() -> Array[Entry]:
 
-	var result := self._db.execute(_Query.get_entries)
-
 	var entries: Array[Entry]
 
-	for dict in result.fetchall():
+	for dict in self._db.execute(_Query.get_entries).fetchall():
 		entries.append(Entry.from_db(dict))
 
 	return entries
@@ -171,6 +174,7 @@ func get_entries() -> Array[Entry]:
 
 ## Returns false on failure
 func add_entry(entry: Entry) -> bool:
+
 	#return self._db.execute(
 	if self._db.execute(
 		_Query.add_entry,
@@ -218,6 +222,7 @@ func upsert_entry(entry: Entry) -> bool:
 	return self._db.execute(
 		_Query.upsert_entry,
 		[
+			# insert param
 			entry.id,
 			entry.vn_info.title,
 			entry.vn_info.developers,
@@ -228,6 +233,7 @@ func upsert_entry(entry: Entry) -> bool:
 			entry.vn_info.label,
 			entry.exec_path,
 
+			# update param
 			entry.vn_info.title,
 			entry.vn_info.developers,
 			entry.vn_info.description,
@@ -236,8 +242,6 @@ func upsert_entry(entry: Entry) -> bool:
 			entry.vn_info.cover_url,
 			entry.vn_info.label,
 			entry.exec_path,
-
-			entry.id,
 		]
 	).success
 

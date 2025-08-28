@@ -112,3 +112,9 @@ func _on_cover_pressed(id: String) -> void:
 
 func _on_config_button_pressed() -> void:
 	self.add_sibling(_CONFIG_SCENE.instantiate())
+
+
+func _on_playtime_update_timer_timeout() -> void:
+	for vn_id: String in PlaytimeTracker.get_running_vn_id_list():
+		if vn_id in self._entries:
+			self._entries[vn_id].reload_playtime()

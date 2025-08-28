@@ -1,163 +1,324 @@
 extends Node
-## A very stupid way (I think) to poll process lists periodically and track playtime.
-##
-## But at least one doesn't have to rely on pressing 'start' at launcher,
-## they could just use Steam and this will still track it.
+## Trackes processes launched from this launcher.
+## Unlike old ps polling method this requires explicit launch from this launcher.
+## May require admin privilage in windows if VN language patch requires such (i.e. Shinku_KR.exe)
+
+# TODO: Workaround VNs that create new PID (e.g. YUZU's VNs), maybe full exe path check to get PID?
+# maybe this is only from Jast originated ones? or Kirikiri?
+# haven't bought enough DRM-free VN for figuring it out
+#
+# ... figured out, so NekoNyan's Angelic Chaos release has two exes, and one is mere launcher
+# TODO: Add tooltip on exec selection to encourage users to add valid game
+
+
+# --- Signals ---
+
+
+# --- Classes ---
+
+## Represent process
+class _Process:
+
+	var path: String = ""
+	var params: PackedStringArray = []
+
+	var pid: int = -1
+
+	var start_utc: int = 0
+	var end_utc: int = 0
+
+	var elapsed_sec: float = 0
+
+	# --- Handlers ---
+
+	func _init(path_: String, params_: Array[String]) -> void:
+		self.path = path_
+		self.params.append_array(params_)
+
+		self.start_utc = floori(Time.get_unix_time_from_system())
+		self.end_utc = floori(Time.get_unix_time_from_system())
+
+	func _to_string() -> String:
+		return "_Process(pid=%d, path=%s)" % [self.pid, self.path]
+
+	# --- Methods ---
+
+	## Checks whether process is alive or not.
+	## Also updates pid to -1 when process is dead.
+	func is_alive() -> bool:
+		if self.pid == -1:
+			return false
+
+		if not OS.is_process_running(self.pid):
+			self.pid = -1
+			return false
+
+		return true
+
+	## Tick elapsed time & update end_utc. Workaround for system freeze or sleep.
+	func tick(sec: float) -> void:
+		# hope error doesn't stack up too high...
+		# but really it doesn't have to be too accurate does it
+		self.elapsed_sec += sec
+		self.end_utc = floori(Time.get_unix_time_from_system())
+
+	## Start process. Returns false on failure.
+	func start() -> bool:
+		self.pid = OS.create_process(self.path, self.params)
+		return self.pid != -1
+
+	## Kill process. Silently fails.
+	func kill() -> void:
+		if self.pid != -1:
+			OS.kill(self.pid)
 
 
 # --- Attributes ---
 
-## Dict[Currently Running process path, Session Start time]
-var _started: Dictionary[String, int]
-
-## Thread where to poll from, because OS.Execute causes 200~500ms spike..
-var _thread := Thread.new()
-var _mutex := Mutex.new()
-var _thread_stop := false
+## Dict[VN ID, _Process]
+var _processes: Dictionary[String, _Process]
 
 ## Play session DB
 var _db := DBWrapper.new("user://data.sqlite")
 
 ## Namespace for SQL Queries
 class _Query:
-	# Should I cascade? idk
 
+	# should I cascade or not, that's the question.
+	# user might delete entry by accident,
 	const create_table := """
-	CREATE TABLE IF NOT EXISTS "%s"
-	(start_utc INTEGER, end_utc INTEGER, time REAL, PRIMARY KEY(start_utc))
+	CREATE TABLE IF NOT EXISTS "sessions" (
+		id TEXT NOT NULL,
+		start_utc INTEGER NOT NULL,
+		end_utc INTEGER NOT NULL,
+		time REAL NOT NULL,
+		PRIMARY KEY(id, start_utc),
+		FOREIGN KEY(id) REFERENCES entries(id)
+	)
 	"""
 
-	const drop_table := 'DROP TABLE IF EXISTS "%s"'
-
-	const add_or_update_time := """
-	INSERT INTO "%s" VALUES (?, ?, ?)
-	ON CONFLICT(start_utc) DO UPDATE SET end_utc=?, time=time+?
+	const upsert_session := """
+	INSERT INTO "sessions" VALUES (?, ?, ?, ?)
+	ON CONFLICT(id, start_utc) DO UPDATE SET end_utc = ?, time = ?
 	"""
 
-	const get_total_time := 'SELECT SUM(time) FROM "%s"'
+	const get_total_time := 'SELECT IFNULL(SUM(time), 0) FROM "sessions" WHERE id = ?'
 
-	const get_single_time := 'SELECT time FROM "%s" WHERE start_utc=?'
+	## Used to fetch total playtime excluding specific session, usually running one
+	const get_total_time_excl := """
+	SELECT IFNULL(SUM(time), 0) FROM sessions WHERE id = ? AND start_utc != ?
+	"""
 
-	const get_all_sessions := 'SELECT * FROM "%s"'
+	const get_session_time := 'SELECT time FROM "sessions" WHERE id = ? AND start_utc = ?'
 
-	# TODO: get last playtime
+	const get_all_sessions := 'SELECT * FROM "sessions" WHERE id = ?'
+
+	const get_count := 'SELECT COUNT(*) FROM "sessions" WHERE vn_id = ?'
+
+	## Used to fetch total playtime & session count, for UI usage
+	const get_time_n_count := 'SELECT IFNULL(SUM(time), 0), COUNT(*) FROM "sessions" WHERE id = ?'
+
+	## Used to fetch total playtime & session count excluding specific session, for UI usage
+	const get_time_n_count_excl := """
+	SELECT IFNULL(SUM(time), 0), COUNT(*) FROM "sessions" WHERE id = ? AND start_utc != ?
+	"""
 
 
-## Used to get more accurate runtime since OS.execute is freakin' unreliable, and also
-## to compensate for system sleep.
-var _time_since_update: float = 0
+## Accumulated time, used as timer
+var _accumulated_sec: float = 0
 
-## Path to id mapping for faster lookup
-## Dict[Process path, [id,]] in case for identical path for multiple VN for whatever reason.
-var _path_to_id: Dictionary[String, PackedStringArray]
+## Process alive check interval
+const _PROC_CHECK_INTERVAL: float = 1
+
+## Remaining cycle until DB write
+var _accumulated_cycles: int = 0
+
+## DB write interval in cycles of process alive check interval
+const _DB_WRITE_CYCLES: int = 300
+
+static var _LOGGER := Logging.get_logger("PlaytimeTracker")
 
 
 # --- Methods ---
 
-## Returns playtime from DB. Returns 0 on failure.
-func get_playtime(db_id: int) -> float:
-	var result := self._db.execute(
-		_Query.get_total_time % db_id
+## Start tracking runtime time for given process. Returns false on process start failure.
+func start_process(vn_id: String, path: String, params: PackedStringArray = []) -> bool:
+
+	var proc := _Process.new(path, params)
+
+	if proc.start():
+		_LOGGER.debug("Started: %s" % proc)
+		self._processes[vn_id] = proc
+		return true
+
+	_LOGGER.warn("Start failed: %s" % proc)
+	return false
+
+
+## Stop process. Fails sliently if process is not running
+func stop_process(vn_id: String) -> void:
+
+	if vn_id in self._processes:
+		var proc := self._processes[vn_id]
+		proc.kill()
+		_LOGGER.debug("Stopped: %s" % proc)
+		return
+
+	_LOGGER.warn("No process to stop for %s")
+
+
+## Is process started & running?
+func is_running(vn_id: String) -> bool:
+	return vn_id in self._processes
+
+
+## Get running process list
+func get_running_vn_id_list() -> Array[String]:
+	return self._processes.keys()
+
+
+## Returns current session's playtime, not from DB. Returns 0 if not running.
+func get_current_session_time(vn_id: String) -> float:
+	return self._processes[vn_id].elapsed_sec if vn_id in self._processes else 0.0
+
+
+## Returns total playtime of current session + DB. Returns 0 on failure.
+func get_total_playtime(vn_id: String) -> float:
+	var result: DBWrapper.QueryResult
+
+	# if running get time from DB excl. running session + current session time
+	# since running session in DB is updated in relatively long interval
+	if vn_id in self._processes:
+		result = self._db.execute(
+			_Query.get_total_time, [vn_id],
+		)
+		return (
+			result.fetchone().values()[0] if result.rowcount else 0
+		) + self._processes[vn_id].elapsed_sec
+
+	# otherwise return DB time
+	result = self._db.execute(
+		_Query.get_total_time_excl, [vn_id, self._processes[vn_id].start_utc],
 	)
-	if result:
-		return result.fetchone()[0]
-
-	return 0
+	return result.fetchone().values()[0] if result.rowcount else 0
 
 
-# --- Utilities ---
+## Returns total session count. Returns 0 on failure.
+func get_session_count(vn_id: String) -> int:
+	var result := self._db.execute(
+		_Query.get_count, [vn_id],
+	)
+	return result.fetchone().values()[0] if result.rowcount else 0
 
-func _update_runtime(processes: Dictionary[String, int]) -> void:
-	#print("Processes %s, time since last: %s" % [len(processes), self._time_since_update])
 
-	var proc_in_whitelist: Array[String]
-	var now := int(Time.get_unix_time_from_system())
+## Returns [total playtime, total session count]
+## Feels like it might be faster & simpler to just run two queries...
+func get_time_n_count(vn_id: String) -> PackedInt32Array:
+	var result: DBWrapper.QueryResult
 
-	# filter whitelisted (I miss set() & set())
-	for proc: String in processes:
+	# if not running just fetch from db
+	if vn_id not in self._processes:
+		result = self._db.execute(_Query.get_time_n_count, [vn_id])
 
-		# if nonexistent append new
-		if proc not in self._path_to_id:
+		if result.rowcount:
+			var record := result.fetchone().values()
+			return record
+			#return [floori(record[0]), record[1]]
+
+		return [0, 0]
+
+	# if running fetch from db excluding active session then return added result
+	result = self._db.execute(
+		_Query.get_time_n_count_excl, [vn_id, self._processes[vn_id].start_utc],
+	)
+
+	if result.rowcount:
+		var record := result.fetchone().values()
+		return [
+			record[0] + self._processes[vn_id].elapsed_sec, record[1] + 1,
+		]
+
+	return [0, 0]
+
+
+## Add/Set session to DB
+func _upsert_session(vn_id: String, proc: _Process) -> void:
+
+	# upsert session info
+	self._db.execute(
+		_Query.upsert_session,
+		[
+			vn_id,
+			proc.start_utc,
+			proc.end_utc,
+			proc.elapsed_sec,
+
+			proc.end_utc,
+			proc.elapsed_sec,
+		]
+	)
+
+
+## Update all currently active processes' runtime, and removes dead processes.
+## DB will be updated once processes are dead.
+func _track_processes(delta: float) -> void:
+
+	var keys_to_erase: Array[String]
+
+	# find dead processes & tick runtime
+	for key: String in self._processes:
+		var proc: _Process = self._processes[key]
+
+		# might loose time of < delta but acceptable
+		if not proc.is_alive():
+			keys_to_erase.append(key)
 			continue
 
-		proc_in_whitelist.append(proc)
+		# otherwise update runtime
+		proc.tick(delta)
+		#print(proc)
+		#self.upsert_session(key, proc)
 
-		# if this process is just found, set start time
-		if proc not in self._started:
-			self._started[proc] = now
-
-		# update time; this is looped in case of same path for different vn...
-		for id: String in self._path_to_id[proc]:
-			self._db.execute(
-				_Query.add_or_update_time % id,
-				[self._started[proc], now, self._time_since_update, now, self._time_since_update]
-			)
-
-	# remove nonexistent processes' start time
-	for proc in self._started.keys():
-		if proc not in proc_in_whitelist:
-			self._started.erase(proc)
-
-	self._time_since_update = 0
-
-
-## Function running in thread, constantly polling
-func _thread_action() -> void:
-
-	while true:
-		# OS.execute is astonishingly slow
-		# can take 200ms to even 2.5 second in some potato pc
-		# ... so just keep it running in loop until I find better solution
-		OS.delay_msec(1000)
-		self._update_runtime.call_deferred(ActiveProcesses.poll_unique())
-
-		self._mutex.lock()
-
-		if self._thread_stop:
-			self._mutex.unlock()
-			return
-
-		self._mutex.unlock()
+	# cleanup & write session for dead processes
+	for key: String in keys_to_erase:
+		_LOGGER.debug("Removing %s" % self._processes[key])
+		self._upsert_session(key, self._processes[key])
+		self._processes.erase(key)
 
 
 # --- Handlers ---
 
-func _ready() -> void:
-	self._thread.start(self._thread_action)
-
-	#EntryManager.entry_added.connect(self._on_entry_added)
-	EntryManager.entry_removed.connect(self._on_entry_removed)
-
-	# populate cache; this is cursed
-	for entry in EntryManager.get_entries():
-		self._on_entry_added(entry)
+func _init() -> void:
+	self._db.execute(_Query.create_table)
 
 
-func _notification(what: int) -> void:
-	if what == NOTIFICATION_PREDELETE:
-
-		# cleanup thread
-		self._mutex.lock()
-		self._thread_stop = true
-		self._mutex.unlock()
-
-		self._thread.wait_to_finish()
+#func _ready() -> void:
+	#EntryManager.entry_removed.connect(self._on_entry_removed)
 
 
-func _process(delta: float) -> void:
-	self._time_since_update += delta
+func _physics_process(delta: float) -> void:
 
+	self._accumulated_sec += delta
 
-## If entry is added, add or append db_id to cache
-func _on_entry_added(entry: EntryManager.Entry) -> void:
-	(
-		self._path_to_id.get_or_add(entry.exec_path, PackedStringArray()) as PackedStringArray
-	).append(
-		entry.id
-	)
+	if self._accumulated_sec < _PROC_CHECK_INTERVAL:
+		return
 
+	# subtract for slightly better interval & update runtimes
+	self._accumulated_sec -= _PROC_CHECK_INTERVAL
 
-## If entry is removed, remove corresponding db_id cache and drop table
-func _on_entry_removed(entry: EntryManager.Entry) -> void:
-	self._path_to_id[entry.exec_path].erase(entry.id)
-	self._db.execute(_Query.drop_table % entry.id)
+	self._track_processes(_PROC_CHECK_INTERVAL)
+
+	# write to DB if cycle arrives
+	self._accumulated_cycles += 1
+
+	if self._accumulated_cycles >= _DB_WRITE_CYCLES:
+		self._accumulated_cycles = 0
+
+		for vn_id: String in self._processes:
+			_LOGGER.debug("Written %s session time to DB" % vn_id)
+			self._upsert_session(vn_id, self._processes[vn_id])
+
+# TODO: do I need to remove deleted entry's histories or not
+## If entry is removed, remove corresponding records from vn_id table
+#func _on_entry_removed(entry: EntryManager.Entry) -> void:
+	#self._db.execute(_Query.drop_table % entry.id)

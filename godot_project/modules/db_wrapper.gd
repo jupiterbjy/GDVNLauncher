@@ -9,6 +9,12 @@ class QueryResult:
 	var success: bool
 	var _rows: Array[Dictionary]
 
+	var rowcount: int:
+		get():
+			return len(self._rows)
+
+	# --- Handlers ---
+
 	func _init(success_: bool, rows: Array[Dictionary]) -> void:
 		self.success = success_
 		self._rows = rows
@@ -16,12 +22,14 @@ class QueryResult:
 	func _to_string() -> String:
 		return "QueryResult(success=%s, %d rows: %s)" % [self.success, len(self._rows), self._rows]
 
+	# --- Methods ---
+
 	## Fetch last record. Returns empty dict when not available.
 	func fetchone() -> Dictionary:
 		return self._rows[-1] if self._rows else {}
 
 	## Fetch all records.
-	func fetchall() -> Array[Dictionary	]:
+	func fetchall() -> Array[Dictionary]:
 		return self._rows
 
 
@@ -87,11 +95,19 @@ static func _test() -> void:
 
 # --- Handlers ---
 
+static func _static_init() -> void:
+	_test()
+	pass
+
+
 func _init(path_: String) -> void:
+
 	self.path = path_
 
 	self._db.path = path_
 	self._db.verbosity_level = _LEVEL
+	self._db.foreign_keys = true
+
 	self._db.open_db()
 
 	_LOGGER.debug("Created DB Conn to '%s'" % path)

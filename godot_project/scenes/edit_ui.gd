@@ -101,6 +101,12 @@ func _ready() -> void:
 
 
 func _on_exec_select_button_pressed() -> void:
+
+	# set dir to already set path if configured
+	var path := self.exec_path_line_edit.text.strip_edges()
+	if path:
+		self.exec_file_dialog.current_dir = path.get_base_dir()
+
 	self.exec_file_dialog.show()
 
 

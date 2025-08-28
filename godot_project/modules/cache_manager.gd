@@ -102,3 +102,10 @@ static func _test() -> void:
 	_LOGGER.debug("Image Dim: %dx%d" % [img.get_width(), img.get_height()])
 
 	_LOGGER.debug("--- Test Done ---")
+
+
+# --- Handlers ---
+
+static func _static_init() -> void:
+	_test()
+	pass

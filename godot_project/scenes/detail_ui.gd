@@ -18,9 +18,10 @@ var entry: EntryManager.Entry = null
 @onready var title_label: Label = %TitleLabel
 
 @onready var cover_image_texture_rect: TextureRect = %CoverImageTextureRect
-@onready var status_option_button: OptionButton = %StatusOptionButton
 @onready var developer_label: Label = %DeveloperLabel
 @onready var release_date_label: Label = %ReleaseDateLabel
+
+@onready var label_option_large: OptionButton = %LabelOptionLarge
 
 @onready var vndb_link: LinkButton = %VNDBLink
 @onready var launch_button: Button = %LaunchButton
@@ -78,8 +79,6 @@ func _reflect_to_ui() -> void:
 # --- Handlers ---
 
 func _ready() -> void:
-	ControlUtils.option_button_hide_radio(self.status_option_button)
-
 	assert(self.entry, "No entry was provided for DetailUI")
 	self._reflect_to_ui()
 
@@ -108,7 +107,7 @@ func _on_close_button_pressed() -> void:
 	self.queue_free()
 
 
-func _on_status_option_button_item_selected(index: int) -> void:
+func _on_label_option_large_item_selected(index: int) -> void:
 	EntryManager.update_entry_play_status(self.entry.id, index)
 
 

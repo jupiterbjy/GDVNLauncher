@@ -1,11 +1,11 @@
-[gd_scene load_steps=14 format=3 uid="uid://coektos3qbfg1"]
+[gd_scene load_steps=18 format=3 uid="uid://coektos3qbfg1"]
 
 [ext_resource type="Script" uid="uid://btjmpfe2rokdo" path="res://scenes/detail_ui.gd" id="1_1jo7s"]
 [ext_resource type="Texture2D" uid="uid://bmy4oyiv75n4l" path="res://resources/ui/edit_48dp_E3E3E3_FILL0_wght400_GRAD0_opsz48.svg" id="2_hanst"]
+[ext_resource type="PackedScene" uid="uid://dx73ub2a4vjug" path="res://scenes/label_option_large.tscn" id="2_xo2tl"]
 [ext_resource type="Texture2D" uid="uid://cts20v1kro7pe" path="res://resources/ui/tablet/delete_forever_48dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg" id="3_hanst"]
 [ext_resource type="Texture2D" uid="uid://brmetwoow3aqv" path="res://resources/ui/cancel_48dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg" id="3_xeqye"]
 [ext_resource type="Texture2D" uid="uid://u58266lwx4ws" path="res://resources/placeholders/placeholder_800 - dark.png" id="4_w7jsj"]
-[ext_resource type="PackedScene" uid="uid://b011riwiv1gw6" path="res://scenes/status_option_button.tscn" id="6_xo2tl"]
 [ext_resource type="PackedScene" uid="uid://bu7ymo1b0i052" path="res://scenes/tag_ui.tscn" id="9_hanst"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w37m7"]
@@ -51,12 +51,50 @@ content_margin_left = 4.0
 content_margin_top = 4.0
 content_margin_right = 4.0
 content_margin_bottom = 4.0
-bg_color = Color(0.26432, 0.59, 0.16519998, 1)
+bg_color = Color(0.2368, 0.64, 0.2368, 1)
 corner_radius_top_left = 3
 corner_radius_top_right = 3
 corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1f4hi"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.1443, 0.39, 0.1443, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s5r2j"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.2664, 0.72, 0.2664, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xo2tl"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.3, 0.3, 0.3, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xo2tl"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_65k5l"]
 content_margin_left = 16.0
@@ -94,6 +132,10 @@ layout_mode = 2
 theme_override_constants/separation = 8
 alignment = 2
 
+[node name="LabelOptionLarge" parent="VBoxContainer/PanelContainer/HBoxContainer" instance=ExtResource("2_xo2tl")]
+unique_name_in_owner = true
+layout_mode = 2
+
 [node name="TitleLabel" type="Label" parent="VBoxContainer/PanelContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -126,7 +168,6 @@ theme_override_constants/separation = 16
 
 [node name="LeftPanel" type="PanelContainer" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
-size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_3bwsl")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/LeftPanel"]
@@ -142,11 +183,6 @@ size_flags_vertical = 4
 texture = ExtResource("4_w7jsj")
 expand_mode = 1
 stretch_mode = 6
-
-[node name="StatusOptionButton" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer/CoverImageTextureRect" instance=ExtResource("6_xo2tl")]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = -1
 
 [node name="VNInfoBox" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer"]
 layout_mode = 2
@@ -222,6 +258,7 @@ theme_override_colors/font_color = Color(0.5823756, 0.5823756, 0.5823756, 1)
 text = "Sessions"
 
 [node name="SessionLabel" type="Label" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer/PlaytimeInfoBox/HBoxContainer3"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "4"
 horizontal_alignment = 2
@@ -236,9 +273,14 @@ theme_override_colors/font_color = Color(0.5823756, 0.5823756, 0.5823756, 1)
 text = "Playtime"
 
 [node name="PlaytimeLabel" type="Label" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer/PlaytimeInfoBox/HBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "12.3h"
 horizontal_alignment = 2
+
+[node name="Control" type="Control" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
 
 [node name="VBoxContainer3" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer"]
 layout_mode = 2
@@ -248,6 +290,11 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxFlat_hanst")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_1f4hi")
+theme_override_styles/hover = SubResource("StyleBoxFlat_s5r2j")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_xo2tl")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_xo2tl")
+disabled = true
 text = "▶ Launch  "
 
 [node name="RightPanel" type="PanelContainer" parent="VBoxContainer/HBoxContainer"]
@@ -338,8 +385,14 @@ fit_content = true
 scroll_active = false
 shortcut_keys_enabled = false
 
+[node name="PlaytimeUpdateTimer" type="Timer" parent="."]
+wait_time = 17.0
+autostart = true
+
+[connection signal="item_selected" from="VBoxContainer/PanelContainer/HBoxContainer/LabelOptionLarge" to="." method="_on_label_option_large_item_selected"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/EditButton" to="." method="_on_edit_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/DeleteButton" to="." method="_on_delete_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/CloseButton" to="." method="_on_close_button_pressed"]
-[connection signal="item_selected" from="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer/CoverImageTextureRect/StatusOptionButton" to="." method="_on_status_option_button_item_selected"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer/VBoxContainer3/LaunchButton" to="." method="_on_launch_button_pressed"]
 [connection signal="meta_clicked" from="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer/DescriptionRichLabel" to="." method="_on_description_rich_label_meta_clicked"]
+[connection signal="timeout" from="PlaytimeUpdateTimer" to="." method="_on_playtime_update_timer_timeout"]

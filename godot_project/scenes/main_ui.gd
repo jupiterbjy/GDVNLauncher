@@ -15,15 +15,6 @@ static var _LOGGER := Logging.get_logger("MainUI")
 
 # --- Methods ---
 
-## Just bunch of random library testing bits
-func _test() -> void:
-	CacheManager._test()
-	DBWrapper._test()
-
-	_LOGGER.info("Received user id %s" % await UserConfig.async_get_user_id())
-	#print(ActiveProcesses.poll())
-
-
 ## Reload existing entry. Does not checks for missing id
 func _reload(id: String) -> void:
 
@@ -74,7 +65,6 @@ func _reload_all() -> void:
 # --- Handlers ---
 
 func _ready() -> void:
-	_test.call_deferred()
 	self._reload_all()
 
 

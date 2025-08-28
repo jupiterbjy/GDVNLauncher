@@ -4,8 +4,8 @@
 [ext_resource type="StyleBox" uid="uid://mq7s6hu5bgds" path="res://ui_root_panel.tres" id="1_bcjs3"]
 [ext_resource type="Texture2D" uid="uid://cvo0fl4gnkges" path="res://resources/ui/check_circle_48dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg" id="1_j83j5"]
 [ext_resource type="Texture2D" uid="uid://brmetwoow3aqv" path="res://resources/ui/cancel_48dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg" id="2_3bwsl"]
+[ext_resource type="PackedScene" uid="uid://dx73ub2a4vjug" path="res://scenes/label_option_large.tscn" id="3_6rqyq"]
 [ext_resource type="Texture2D" uid="uid://u58266lwx4ws" path="res://resources/placeholders/placeholder_800 - dark.png" id="3_j83j5"]
-[ext_resource type="PackedScene" uid="uid://b011riwiv1gw6" path="res://scenes/status_option_button.tscn" id="6_6rqyq"]
 [ext_resource type="PackedScene" uid="uid://dk8m0a02cogei" path="res://scenes/popups/url_popup.tscn" id="6_jwfuv"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2ppmm"]
@@ -142,6 +142,10 @@ layout_mode = 2
 theme_override_constants/separation = 8
 alignment = 2
 
+[node name="LabelOptionLarge" parent="VBoxContainer/PanelContainer/HBoxContainer" instance=ExtResource("3_6rqyq")]
+unique_name_in_owner = true
+layout_mode = 2
+
 [node name="TitleLineEdit" type="LineEdit" parent="VBoxContainer/PanelContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -212,10 +216,6 @@ theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxFlat_51wph")
 theme_override_styles/hover = SubResource("StyleBoxFlat_7070g")
 text = "From Local"
-
-[node name="StatusOptionButton" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer/CoverImageTextureRect" instance=ExtResource("6_6rqyq")]
-unique_name_in_owner = true
-layout_mode = 0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer"]
 layout_mode = 2

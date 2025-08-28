@@ -18,6 +18,7 @@ var entry: EntryManager.Entry = null
 @onready var exec_path_line_edit: LineEdit = %ExecPathLineEdit
 @onready var exec_file_dialog: FileDialog = $ExecutableFileDialog
 
+
 @onready var cover_image_rect: TextureRect = %CoverImageTextureRect
 @onready var vndb_id_line_edit: LineEdit = %VndbIdLineEdit
 @onready var title_line_edit: LineEdit = %TitleLineEdit
@@ -28,7 +29,7 @@ var entry: EntryManager.Entry = null
 @onready var tag_line_edit: LineEdit = %TagLineEdit
 @onready var description_text_edit: TextEdit = %DescriptionTextEdit
 
-@onready var status_option_button: OptionButton = %StatusOptionButton
+@onready var label_option_large: OptionButton = %LabelOptionLarge
 
 @onready var image_file_dialog: FileDialog = $ImageFileDialog
 @onready var url_popup: CenterContainer = $URLPopup
@@ -71,7 +72,7 @@ func _reflect_to_ui() -> void:
 	self.developer_line_edit.text = self.entry.vn_info.developers
 	self.release_date_line_edit.text = self.entry.vn_info.released
 	self.tag_line_edit.text = self.entry.vn_info.tags
-	self.status_option_button.selected = self.entry.vn_info.label
+	self.label_option_large.selected = self.entry.vn_info.label
 
 	self._update_cover_image()
 
@@ -87,13 +88,13 @@ func _reflect_from_ui() -> void:
 	self.entry.vn_info.developers = self.developer_line_edit.text.strip_edges()
 	self.entry.vn_info.released = self.release_date_line_edit.text.strip_edges()
 	self.entry.vn_info.tags = self.tag_line_edit.text.strip_edges()
-	self.entry.vn_info.label = self.status_option_button.selected
+	self.entry.vn_info.label = self.label_option_large.selected
 
 
 # --- Handlers ---
 
 func _ready() -> void:
-	ControlUtils.option_button_hide_radio(self.status_option_button)
+	ControlUtils.option_button_hide_radio(self.label_option_large)
 
 	if self.entry.id:
 		self._reflect_to_ui()

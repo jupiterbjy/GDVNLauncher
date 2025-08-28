@@ -15,7 +15,7 @@ var id: String = ""
 
 @onready var _cover_button: TextureButton = %CoverButton
 
-@onready var status_option_button: OptionButton = %StatusOptionButton
+@onready var _label_option: OptionButton = %LabelOption
 
 @onready var playtime_label: Label = %PlaytimeLabel
 
@@ -41,7 +41,7 @@ func reload() -> bool:
 
 	# TODO: add playtime reload
 
-	self.status_option_button.selected = entry.vn_info.label
+	self._label_option.selected = entry.vn_info.label
 
 	if self._current_img_url != entry.vn_info.cover_url:
 		self._current_img_url = entry.vn_info.cover_url
@@ -60,8 +60,6 @@ static func create_instance(id_: String) -> VNEntryUI:
 # --- Handlers ---
 
 func _ready() -> void:
-	ControlUtils.option_button_hide_radio(self.status_option_button)
-
 	# must be placeholder for UI design, free self
 	if not self.id:
 		self.queue_free()
@@ -78,3 +76,11 @@ func _on_status_option_button_item_selected(index: int) -> void:
 
 func _on_cover_button_pressed() -> void:
 	self.cover_clicked.emit(self.id)
+
+
+func _on_mouse_entered() -> void:
+	self.modulate = Color(1.2, 1.2, 1.2)
+
+
+func _on_mouse_exited() -> void:
+	self.modulate = Color.WHITE

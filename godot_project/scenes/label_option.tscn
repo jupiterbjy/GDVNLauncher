@@ -1,0 +1,52 @@
+[gd_scene load_steps=12 format=3 uid="uid://dej5l7khseid"]
+
+[ext_resource type="Texture2D" uid="uid://don4yqhod6yrc" path="res://resources/ui/tablet/circle_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg" id="1_ra3b0"]
+[ext_resource type="Texture2D" uid="uid://fh57vkl51qtw" path="res://resources/ui/tablet/play_circle_24dp_75FBFD_FILL0_wght400_GRAD0_opsz24.svg" id="2_1snva"]
+[ext_resource type="Texture2D" uid="uid://c8wafgcmvlewi" path="res://resources/ui/tablet/check_circle_24dp_75FB4C_FILL0_wght400_GRAD0_opsz24.svg" id="3_wtn3p"]
+[ext_resource type="Texture2D" uid="uid://b3s466w3qcva0" path="res://resources/ui/tablet/pause_circle_24dp_F19E39_FILL0_wght400_GRAD0_opsz24.svg" id="4_rl702"]
+[ext_resource type="Texture2D" uid="uid://bacr1irxlj0r8" path="res://resources/ui/tablet/stop_circle_24dp_EA3323_FILL0_wght400_GRAD0_opsz24.svg" id="5_v8wga"]
+[ext_resource type="Texture2D" uid="uid://dxamjmp3aviwq" path="res://resources/ui/tablet/star_24dp_FFFF55_FILL0_wght400_GRAD0_opsz24.svg" id="6_2v8xu"]
+[ext_resource type="Texture2D" uid="uid://bild2ybp8oewv" path="res://resources/ui/tablet/heart_broken_24dp_8B1A10_FILL0_wght400_GRAD0_opsz24.svg" id="7_x2f85"]
+[ext_resource type="Script" uid="uid://dtrlob5fem1n1" path="res://scenes/label_option.gd" id="8_1snva"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_n1q3t"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dm1on"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_n1q3t"]
+size = Vector2(0, 0)
+
+[node name="LabelOption" type="OptionButton"]
+mouse_filter = 1
+theme_override_constants/h_separation = 0
+theme_override_font_sizes/font_size = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_n1q3t")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_dm1on")
+theme_override_icons/arrow = SubResource("PlaceholderTexture2D_n1q3t")
+flat = true
+icon_alignment = 1
+selected = 0
+fit_to_longest_item = false
+item_count = 7
+popup/item_0/text = "Not set"
+popup/item_0/icon = ExtResource("1_ra3b0")
+popup/item_0/id = 0
+popup/item_1/text = "Playing"
+popup/item_1/icon = ExtResource("2_1snva")
+popup/item_1/id = 1
+popup/item_2/text = "Finished"
+popup/item_2/icon = ExtResource("3_wtn3p")
+popup/item_2/id = 2
+popup/item_3/text = "Stalled"
+popup/item_3/icon = ExtResource("4_rl702")
+popup/item_3/id = 3
+popup/item_4/text = "Dropped"
+popup/item_4/icon = ExtResource("5_v8wga")
+popup/item_4/id = 4
+popup/item_5/text = "Wishlisted"
+popup/item_5/icon = ExtResource("6_2v8xu")
+popup/item_5/id = 5
+popup/item_6/text = "Blacklisted"
+popup/item_6/icon = ExtResource("7_x2f85")
+popup/item_6/id = 6
+script = ExtResource("8_1snva")

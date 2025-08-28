@@ -1,0 +1,19 @@
+[gd_scene load_steps=9 format=3 uid="uid://dx73ub2a4vjug"]
+
+[ext_resource type="PackedScene" uid="uid://dej5l7khseid" path="res://scenes/label_option.tscn" id="1_okdr7"]
+[ext_resource type="Texture2D" uid="uid://nwe61b5rei03" path="res://resources/ui/tablet/circle_48dp_E3E3E3_FILL0_wght400_GRAD0_opsz48.svg" id="2_kgdo8"]
+[ext_resource type="Texture2D" uid="uid://cti4oaduv44gv" path="res://resources/ui/tablet/play_circle_48dp_75FBFD_FILL0_wght400_GRAD0_opsz48.svg" id="3_cdd8q"]
+[ext_resource type="Texture2D" uid="uid://nuwpx5ngrvms" path="res://resources/ui/tablet/check_circle_48dp_75FB4C_FILL0_wght400_GRAD0_opsz48.svg" id="4_h8jmj"]
+[ext_resource type="Texture2D" uid="uid://bbp7dxdx0u48o" path="res://resources/ui/tablet/pause_circle_48dp_F19E39_FILL0_wght400_GRAD0_opsz48.svg" id="5_ip6aj"]
+[ext_resource type="Texture2D" uid="uid://vwo82mv8wjso" path="res://resources/ui/tablet/stop_circle_48dp_EA3323_FILL0_wght400_GRAD0_opsz48.svg" id="6_a3ppu"]
+[ext_resource type="Texture2D" uid="uid://cf53ppxqp8dx0" path="res://resources/ui/tablet/star_48dp_FFFF55_FILL0_wght400_GRAD0_opsz48.svg" id="7_chouc"]
+[ext_resource type="Texture2D" uid="uid://dbmf6afixhhn1" path="res://resources/ui/tablet/heart_broken_48dp_8B1A10_FILL0_wght400_GRAD0_opsz48.svg" id="8_1t7dg"]
+
+[node name="LabelOptionLarge" instance=ExtResource("1_okdr7")]
+popup/item_0/icon = ExtResource("2_kgdo8")
+popup/item_1/icon = ExtResource("3_cdd8q")
+popup/item_2/icon = ExtResource("4_h8jmj")
+popup/item_3/icon = ExtResource("5_ip6aj")
+popup/item_4/icon = ExtResource("6_a3ppu")
+popup/item_5/icon = ExtResource("7_chouc")
+popup/item_6/icon = ExtResource("8_1t7dg")

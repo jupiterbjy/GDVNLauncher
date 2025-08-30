@@ -1,4 +1,4 @@
-class_name VndbVNInfo
+class_name VndbVN
 ## VNDB visual novel info dataclass
 
 
@@ -66,8 +66,8 @@ var label: int
 # --- Methods ---
 
 ## Named Constructor to create new VNData instance from DB Record
-static func from_db(record: Dictionary) -> VndbVNInfo:
-	return VndbVNInfo.new(
+static func from_db(record: Dictionary) -> VndbVN:
+	return VndbVN.new(
 		record["id"],
 		record["title"],
 		record["description"],
@@ -87,7 +87,7 @@ static func from_vndb(
 	tag_min_rating: float,
 	tag_max_spoiler: int,
 	tag_types: String,
-) -> VndbVNInfo:
+) -> VndbVN:
 
 	var type_filter := tag_types.split(",")
 
@@ -124,7 +124,7 @@ static func from_vndb(
 			break
 
 	# TODO: add vndb label
-	var instance := VndbVNInfo.new(
+	var instance := VndbVN.new(
 		json["id"],
 		titles[title_lang] if title_lang in titles else json["title"],
 

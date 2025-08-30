@@ -116,7 +116,7 @@ static func async_post_vn(
 	tag_min_rating: float = 2.1,
 	tag_max_spoiler: int = 0,
 	tag_types: String = "cont",
-) -> VndbVNInfo:
+) -> VndbVN:
 	# TODO: test nonexistent case and workaround it
 
 	var resp := await AsyncHTTPClient.async_request(
@@ -132,7 +132,7 @@ static func async_post_vn(
 	var data: String = resp.body.get_string_from_utf8()
 	var parsed: Dictionary = JSON.parse_string(data)
 
-	return VndbVNInfo.from_vndb(
+	return VndbVN.from_vndb(
 		parsed["results"][0],
 		[],
 		title_lang,
@@ -184,9 +184,9 @@ static func async_get_ulist(
 	tag_min_rating: float = 2.1,
 	tag_max_spoiler: int = 0,
 	tag_types: String = "cont",
-) -> Array[VndbVNInfo]:
+) -> Array[VndbVN]:
 
-	var results: Array[VndbVNInfo]
+	var results: Array[VndbVN]
 	var page: int = 0
 
 	while true:
@@ -215,7 +215,7 @@ static func async_get_ulist(
 			_vn_info_data["id"] = vn_data["id"]
 
 			results.append(
-				VndbVNInfo.from_vndb(
+				VndbVN.from_vndb(
 					_vn_info_data,
 					vn_data["labels"],
 					title_lang,

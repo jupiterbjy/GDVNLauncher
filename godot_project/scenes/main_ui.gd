@@ -82,7 +82,7 @@ func _on_add_button_pressed() -> void:
 
 
 func _on_batch_add_button_pressed() -> void:
-	for vn_info: VndbVNInfo in await VNDBClient.async_get_ulist(
+	for vn_info: VndbVN in await VNDBClient.async_get_ulist(
 		await UserConfig.async_get_user_id(),
 		UserConfig.title_lang,
 		UserConfig.vndb_tag_min_rating,

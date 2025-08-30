@@ -8,7 +8,7 @@ extends Node
 
 
 # --- Signals ---
-# Changing to autoload just becase of signals
+# Changing to autoload just because of signals
 
 signal entry_added(entry: Entry)
 
@@ -21,10 +21,10 @@ signal entry_removed(entry: Entry)
 class Entry:
 	# TODO: convert this to store dict directly and access via properties instead
 
-	## Entry's ID in local DB(actually just rowid alias), not to be confused with `VndbVNInfo.id`
+	## Entry's ID in local DB(actually just rowid alias), not to be confused with `VndbVN.id`
 	#var db_id: int = -1
 
-	## VNDB(vxxxx) or user-defined(cvxxxx) id
+	## VNDB(vxxxx) or user-defined(cvxxxx) id, basically syntax sugar
 	var id: String:
 		get():
 			return self.vn_info.id
@@ -32,22 +32,22 @@ class Entry:
 	## Executable path
 	var exec_path: String = ""
 
-	var vn_info: VndbVNInfo = null
+	var vn_info: VndbVN = null
 
 	# This feels like wasting a lot of computations but well..
-	func _init(path: String = "", vn_info_: VndbVNInfo = null) -> void:
+	func _init(path: String = "", vn_info_: VndbVN = null) -> void:
 		self.exec_path = path
-		self.vn_info = vn_info_ if vn_info_ else VndbVNInfo.new()
+		self.vn_info = vn_info_ if vn_info_ else VndbVN.new()
 
 	## DB Record based named constructor
 	static func from_db(data: Dictionary) -> Entry:
 		return Entry.new(
 			data["exec_path"],
-			VndbVNInfo.from_db(data),
+			VndbVN.from_db(data),
 		)
 
 	## VNInfo based named constructor
-	static func from_vndb_info(vn_info_: VndbVNInfo) -> Entry:
+	static func from_vndb_info(vn_info_: VndbVN) -> Entry:
 		return Entry.new("", vn_info_)
 
 	func _to_string() -> String:

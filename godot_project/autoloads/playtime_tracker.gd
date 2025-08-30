@@ -8,7 +8,7 @@ extends Node
 # haven't bought enough DRM-free VN for figuring it out
 #
 # ... figured out, so NekoNyan's Angelic Chaos release has two exes, and one is mere launcher
-# TODO: Add tooltip on exec selection to encourage users to add valid game
+# TODO: Add tooltip on exec selection to encourage users to add game itself, not launcher
 
 
 # --- Signals ---
@@ -20,7 +20,7 @@ extends Node
 class _Process:
 
 	var path: String = ""
-	var params: PackedStringArray = []
+	var params: String = ""
 
 	var pid: int = -1
 
@@ -29,11 +29,18 @@ class _Process:
 
 	var elapsed_sec: float = 0
 
+	## Only used in windows, indicates whether process is admin priv. or not.
+	## Exists because godot can't get PID of non-child process for some reason
+	var admin: bool = false
+
 	# --- Handlers ---
 
-	func _init(path_: String, params_: Array[String]) -> void:
+	func _init(path_: String, params_: String, admin_ := false) -> void:
 		self.path = path_
-		self.params.append_array(params_)
+		self.params = params_
+
+		# only enable admin in windows
+		self.admin = admin_ and OS.get_name() == "Windows"
 
 		self.start_utc = floori(Time.get_unix_time_from_system())
 		self.end_utc = floori(Time.get_unix_time_from_system())
@@ -43,17 +50,36 @@ class _Process:
 
 	# --- Methods ---
 
+	# hope I can one day create PR for proper non-child process spawning & pid tracking..
+	# or GDExtension maybe, but separate addon feels like overkill just for this,
+	# ore there could be cross platform issues too.
+	# just adding this admin right mess cause I'm not willing to run godot editor itself as admin.
+
 	## Checks whether process is alive or not.
 	## Also updates pid to -1 when process is dead.
 	func is_alive() -> bool:
+
+		# fail fast
 		if self.pid == -1:
 			return false
 
-		if not OS.is_process_running(self.pid):
-			self.pid = -1
-			return false
+		if not self.admin:
+			# if not running invalidate PID and return
+			if not OS.is_process_running(self.pid):
+				self.pid = -1
+				return false
 
-		return true
+			return true
+
+		# if admin check in dumb slow laggy way, `Id` is there to supress bad return code
+		var output: Array
+		OS.execute(
+			"powershell",
+			["-NoProfile", "-Command", "(Get-Process -Id %d -eA SilentlyContinue).Id" % self.pid],
+			output,
+		)
+
+		return len(output[0])
 
 	## Tick elapsed time & update end_utc. Workaround for system freeze or sleep.
 	func tick(sec: float) -> void:
@@ -63,8 +89,45 @@ class _Process:
 		self.end_utc = floori(Time.get_unix_time_from_system())
 
 	## Start process. Returns false on failure.
+	## On windows if `admin=true` then will launch non-child admin process which will
+	## Slow down launcher a lot.
+	## I'd rather suggest just running launcher as admin instead.
 	func start() -> bool:
-		self.pid = OS.create_process(self.path, self.params)
+
+		# if not admin required just spawn casually
+		if not self.admin:
+			# from docs it just is `" ".join(param_arr)` so f it, pretend single argument
+			self.pid = OS.create_process(self.path, [self.params])
+			return self.pid != -1
+
+		# now hell begins...
+		var output: Array
+
+		var full_cmd := "(Start-Process '%s' -PassThru -Verb RunAs%s).Id" % [
+			self.path, ' -ArgumentList "%s"' % self.params if self.params else ""
+		]
+		var code := OS.execute(
+			"powershell",
+			[
+				"-NoProfile",
+				"-Command",
+				full_cmd
+			],
+			output
+		)
+
+		# if execution of command failed eject
+		if code == -1:
+			return false
+
+		# fetch output & strip, somehow Id field returns with space/newline
+		var out := (output[0] as String).strip_edges(false)
+
+		# prob should log non-int output for detail? i.e. param fail etc
+		if not out.is_valid_int():
+			return false
+
+		self.pid = (output[0] as String).to_int()
 		return self.pid != -1
 
 	## Kill process. Silently fails.
@@ -142,9 +205,9 @@ static var _LOGGER := Logging.get_logger("PlaytimeTracker")
 # --- Methods ---
 
 ## Start tracking runtime time for given process. Returns false on process start failure.
-func start_process(vn_id: String, path: String, params: PackedStringArray = []) -> bool:
+func start_process(vn_id: String, path: String, params := "", as_admin := false) -> bool:
 
-	var proc := _Process.new(path, params)
+	var proc := _Process.new(path, params, as_admin)
 
 	if proc.start():
 		_LOGGER.debug("Started: %s" % proc)
@@ -185,6 +248,8 @@ func get_current_session_time(vn_id: String) -> float:
 ## Returns total playtime of current session + DB. Returns 0 on failure.
 func get_total_playtime(vn_id: String) -> float:
 	var result: DBWrapper.QueryResult
+
+	# Would this need db read caching, that's the problem
 
 	# if running get time from DB excl. running session + current session time
 	# since running session in DB is updated in relatively long interval

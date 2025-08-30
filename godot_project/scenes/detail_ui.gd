@@ -25,8 +25,11 @@ var entry: EntryManager.Entry = null
 
 @onready var vndb_link: LinkButton = %VNDBLink
 @onready var launch_button: Button = %LaunchButton
+
 @onready var exec_path_label: Label = %ExecPathLabel
+
 @onready var tag_container: FlowContainer = %TagContainer
+
 @onready var description_rich_label: RichTextLabel = %DescriptionRichLabel
 
 @onready var session_label: Label = %SessionLabel
@@ -160,7 +163,7 @@ func _on_launch_button_pressed() -> void:
 	_LOGGER.info("Launching '%s'" % self.entry.exec_path)
 
 	# TODO: add button change feature (to stop)
-	if PlaytimeTracker.start_process(self.entry.id, self.entry.exec_path):
+	if PlaytimeTracker.start_process(self.entry.id, self.entry.exec_path, "", self.entry.admin):
 		pass
 
 	# TODO: add noti on failure (e.g. IroHika_KR & AkaHito_KR requires admin priv. to godot)

@@ -336,6 +336,15 @@ mouse_default_cursor_shape = 2
 theme_override_font_sizes/font_size = 20
 text = "Select"
 
+[node name="AdminPrivCheckBox" type="CheckBox" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Whether to run with Administrator Privilege or not.
+This is NOT recommended as it cause periodic lag to launcher.
+Instead, run the launcher itself as admin if possible."
+focus_mode = 0
+text = "Require admin privilege (Windows only)"
+
 [node name="VBoxContainer4" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2"]
 layout_mode = 2
 

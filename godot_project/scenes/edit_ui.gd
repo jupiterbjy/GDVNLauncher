@@ -15,18 +15,21 @@ signal entry_saved(id: String)
 
 var entry: EntryManager.Entry = null
 
-@onready var exec_path_line_edit: LineEdit = %ExecPathLineEdit
-@onready var exec_file_dialog: FileDialog = $ExecutableFileDialog
-
 
 @onready var cover_image_rect: TextureRect = %CoverImageTextureRect
-@onready var vndb_id_line_edit: LineEdit = %VndbIdLineEdit
 @onready var title_line_edit: LineEdit = %TitleLineEdit
 @onready var developer_line_edit: LineEdit = %DeveloperLineEdit
+@onready var release_date_line_edit: LineEdit = %ReleaseDateLineEdit
+
+@onready var vndb_id_line_edit: LineEdit = %VndbIdLineEdit
 @onready var spoiler_option_button: OptionButton = %SpoilerOptionButton
 
-@onready var release_date_line_edit: LineEdit = %ReleaseDateLineEdit
+@onready var exec_path_line_edit: LineEdit = %ExecPathLineEdit
+@onready var admin_priv_check_box: CheckBox = %AdminPrivCheckBox
+@onready var exec_file_dialog: FileDialog = $ExecutableFileDialog
+
 @onready var tag_line_edit: LineEdit = %TagLineEdit
+
 @onready var description_text_edit: TextEdit = %DescriptionTextEdit
 
 @onready var label_option_large: OptionButton = %LabelOptionLarge
@@ -74,6 +77,8 @@ func _reflect_to_ui() -> void:
 	self.tag_line_edit.text = self.entry.vn_info.tags
 	self.label_option_large.selected = self.entry.vn_info.label
 
+	self.admin_priv_check_box.button_pressed = self.entry.admin
+
 	self._update_cover_image()
 
 
@@ -89,6 +94,8 @@ func _reflect_from_ui() -> void:
 	self.entry.vn_info.released = self.release_date_line_edit.text.strip_edges()
 	self.entry.vn_info.tags = self.tag_line_edit.text.strip_edges()
 	self.entry.vn_info.label = self.label_option_large.selected
+
+	self.entry.admin = self.admin_priv_check_box.button_pressed
 
 
 # --- Handlers ---

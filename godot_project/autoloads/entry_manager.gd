@@ -32,23 +32,28 @@ class Entry:
 	## Executable path
 	var exec_path: String = ""
 
+	## Requires Windows Admin privilege?
+	var admin: bool = false
+
 	var vn_info: VndbVN = null
 
 	# This feels like wasting a lot of computations but well..
-	func _init(path: String = "", vn_info_: VndbVN = null) -> void:
+	func _init(path := "", admin_ := false, vn_info_: VndbVN = null) -> void:
 		self.exec_path = path
+		self.admin = admin_
 		self.vn_info = vn_info_ if vn_info_ else VndbVN.new()
 
 	## DB Record based named constructor
 	static func from_db(data: Dictionary) -> Entry:
 		return Entry.new(
 			data["exec_path"],
+			data["admin"],
 			VndbVN.from_db(data),
 		)
 
 	## VNInfo based named constructor
 	static func from_vndb_info(vn_info_: VndbVN) -> Entry:
-		return Entry.new("", vn_info_)
+		return Entry.new("", false, vn_info_)
 
 	func _to_string() -> String:
 		return "Entry(id=%d)" % self.id
@@ -58,6 +63,7 @@ class Entry:
 
 var _db := DBWrapper.new("user://data.sqlite")
 
+# TODO: add progressive db alter if there's breaking change in future when 'released'
 
 ## Namespace for SQL Query templates
 class _Query:
@@ -72,7 +78,8 @@ class _Query:
 		tags TEXT,
 		cover_url TEXT,
 		label INT,
-		exec_path TEXT
+		exec_path TEXT,
+		admin INT NOT NULL DEFAULT FALSE
 	)
 	"""
 	# db_id INTEGER PRIMARY KEY,
@@ -91,7 +98,7 @@ class _Query:
 
 	const add_entry := """
 	INSERT INTO "entries" VALUES(
-		?, ?, ?, ?, ?, ?, ?, ?, ?,
+		?, ?, ?, ?, ?, ?, ?, ?, ?, ?
 	)
 	"""
 
@@ -104,14 +111,15 @@ class _Query:
 		tags = ?,
 		cover_url = ?,
 		label = ?,
-		exec_path = ?
+		exec_path = ?,
+		admin = ?
 	WHERE id = ?
 	"""
 	# WHERE rowid = ?
 
 	const upsert_entry := """
 	INSERT INTO "entries" VALUES(
-		?, ?, ?, ?, ?, ?, ?, ?, ?
+		?, ?, ?, ?, ?, ?, ?, ?, ?, ?
 	)
 	ON CONFLICT(id) DO UPDATE SET
 		title = ?,
@@ -121,7 +129,8 @@ class _Query:
 		tags = ?,
 		cover_url = ?,
 		label = ?,
-		exec_path = ?
+		exec_path = ?,
+		admin = ?
 	"""
 
 	const update_entry_play_status := """
@@ -187,6 +196,7 @@ func add_entry(entry: Entry) -> bool:
 			entry.vn_info.tags,
 			entry.vn_info.cover_url,
 			entry.exec_path,
+			entry.admin,
 			entry.vn_info.label,
 		]
 	).success:
@@ -212,6 +222,7 @@ func update_entry(entry: Entry) -> bool:
 			entry.vn_info.cover_url,
 			entry.vn_info.label,
 			entry.exec_path,
+			entry.admin,
 			entry.id,
 		]
 	).success
@@ -232,6 +243,7 @@ func upsert_entry(entry: Entry) -> bool:
 			entry.vn_info.cover_url,
 			entry.vn_info.label,
 			entry.exec_path,
+			entry.admin,
 
 			# update param
 			entry.vn_info.title,
@@ -242,6 +254,7 @@ func upsert_entry(entry: Entry) -> bool:
 			entry.vn_info.cover_url,
 			entry.vn_info.label,
 			entry.exec_path,
+			entry.admin,
 		]
 	).success
 

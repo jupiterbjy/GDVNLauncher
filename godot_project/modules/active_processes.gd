@@ -8,7 +8,8 @@ class_name ActiveProcesses
 static var _PROC_LIST_CMD: Array = {
 	"Windows": [
 		"powershell", [
-			'-Command',
+			"-NoProfile",
+			"-Command",
 			'"Get-Process | Select-Object -ExpandProperty Path"',
 		],
 		#"tasklist", [

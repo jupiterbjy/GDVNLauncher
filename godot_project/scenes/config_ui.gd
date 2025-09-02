@@ -42,6 +42,9 @@ func _reflect_from_config() -> void:
 	for idx: int in range(len(self._check_boxes)):
 		self._check_boxes[idx].button_pressed = self._check_box_type_map[idx] in tag_types
 
+	# fetch token
+	self.vndb_token_line_edit.text = UserConfig.vndb_token
+
 
 func _reflect_to_config() -> void:
 

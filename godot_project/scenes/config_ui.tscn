@@ -211,7 +211,7 @@ unique_name_in_owner = true
 layout_mode = 2
 max_value = 3.0
 step = 0.10000000000582077
-value = 2.10000000012222
+value = 2.100000000122241
 
 [node name="HBoxContainer4" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2"]
 layout_mode = 2
@@ -221,13 +221,15 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.5823756, 0.5823756, 0.5823756, 1)
 theme_override_font_sizes/font_size = 18
-text = "Optional Token (Unused for now)"
+text = "Optional Token (Used to sync)"
 
 [node name="VNDBTokenLineEdit" type="LineEdit" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer4"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "VNDB Token..."
+emoji_menu_enabled = false
+secret = true
 
 [node name="HSeparator" type="HSeparator" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2"]
 layout_mode = 2

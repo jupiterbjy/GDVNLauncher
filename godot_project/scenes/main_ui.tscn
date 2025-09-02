@@ -110,11 +110,6 @@ alignment = 1
 [node name="VNEntry" parent="PanelContainer/VBoxContainer/ScrollContainer/VNEntryFlowContainer" instance=ExtResource("5_llbac")]
 layout_mode = 2
 
-[node name="PlaytimeUpdateTimer" type="Timer" parent="."]
-wait_time = 17.0
-autostart = true
-
 [connection signal="pressed" from="PanelContainer/VBoxContainer/PanelContainer/HBoxContainer/AddButton" to="." method="_on_add_button_pressed"]
 [connection signal="pressed" from="PanelContainer/VBoxContainer/PanelContainer/HBoxContainer/BatchAddButton" to="." method="_on_batch_add_button_pressed"]
 [connection signal="pressed" from="PanelContainer/VBoxContainer/PanelContainer/HBoxContainer/ConfigButton" to="." method="_on_config_button_pressed"]
-[connection signal="timeout" from="PlaytimeUpdateTimer" to="." method="_on_playtime_update_timer_timeout"]

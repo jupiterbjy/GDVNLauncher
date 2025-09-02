@@ -24,7 +24,9 @@ var entry: EntryManager.Entry = null
 @onready var label_option_large: OptionButton = %LabelOptionLarge
 
 @onready var vndb_link: LinkButton = %VNDBLink
+
 @onready var launch_button: Button = %LaunchButton
+@onready var stop_button: Button = %StopButton
 
 @onready var exec_path_label: Label = %ExecPathLabel
 
@@ -59,28 +61,40 @@ func _update_cover_image() -> void:
 
 ## Refresh playtime & session count
 func _update_playtime_n_session_count() -> void:
-	var record := PlaytimeTracker.get_time_n_count(self.entry.id)
+	var record := PlaytimeTracker.get_proc_time_n_count(self.entry.id)
 
 	self.playtime_label.text = (
-		"%.1fh" % (record[0] / 3600.0) if record[0] > 1800 else "%.1fm" % (record[0] / 60.0)
+		"%.1fh" % (record[0] / 3600.0)
+		if record[0] > 1800
+		else "%.1fm" % (record[0] / 60.0)
 	)
 	self.session_label.text = str(record[1])
+
+
+## Update launch/stop button
+func _update_launch_stop_buttons() -> void:
+
+	# user might remove linked executable while still running
+	# update visibility first
+	if PlaytimeTracker.is_running(self.entry.id):
+		self.launch_button.hide()
+		self.stop_button.show()
+	else:
+		self.launch_button.show()
+		self.stop_button.hide()
+
+	# disable/enable launch button, stop button doesn't need one
+	self.launch_button.disabled = (
+		self.entry.exec_path.is_empty() or not FileAccess.file_exists(self.entry.exec_path)
+	)
 
 
 ## Refresh UI to match self.entry
 func _reflect_to_ui() -> void:
 
-	# update executable path & start button if configured
-	if self.entry.exec_path:
-
-		self.exec_path_label.text = self.entry.exec_path
-		self.launch_button.disabled = (
-			not FileAccess.file_exists(self.entry.exec_path)
-		)
-
-	else:
-		self.exec_path_label.text = "NOT SET"
-		self.launch_button.disabled = true
+	# set executable dependent stuffs
+	self.exec_path_label.text = self.entry.exec_path if self.entry.exec_path else "NOT SET"
+	self._update_launch_stop_buttons()
 
 	# set metadata
 	self.description_rich_label.text = self.entry.vn_info.description
@@ -96,15 +110,14 @@ func _reflect_to_ui() -> void:
 		self.vndb_link.text = self.entry.vn_info.id
 		self.vndb_link.uri = "https://vndb.org/" + self.entry.vn_info.id
 	else:
-		# TODO: hide if unset
+		# TODO: hide if not VNDB entry
 		pass
 
-	# free existing tags
+	# free & repopuplate tags
 	for child: Node in self.tag_container.get_children():
 		child.queue_free()
 		self.tag_container.remove_child(child)
 
-	# populate tags
 	for tag: String in self.entry.vn_info.tags.split(","):
 		self.tag_container.add_child(TagUI.create_instance(tag))
 
@@ -116,6 +129,9 @@ func _reflect_to_ui() -> void:
 
 func _ready() -> void:
 	assert(self.entry, "No entry was provided for DetailUI")
+
+	PlaytimeTracker.db_updated.connect(self._on_playtime_db_update)
+
 	self._reflect_to_ui()
 
 
@@ -164,12 +180,33 @@ func _on_launch_button_pressed() -> void:
 
 	# TODO: add button change feature (to stop)
 	if PlaytimeTracker.start_process(self.entry.id, self.entry.exec_path, "", self.entry.admin):
-		pass
+		self._update_launch_stop_buttons()
+		return
 
-	# TODO: add noti on failure (e.g. IroHika_KR & AkaHito_KR requires admin priv. to godot)
+	if OS.get_name() == "Windows":
+		_LOGGER.warn(
+			"Failed to launch '%s', does it require admin privilege?" % self.entry.exec_path
+		)
+		return
+
+	_LOGGER.warn("Failed to launch '%s'" % self.entry.exec_path)
 
 
-func _on_playtime_update_timer_timeout() -> void:
-	# if running request update
-	if PlaytimeTracker.is_running(self.entry.id):
+func _on_stop_button_pressed() -> void:
+	self.stop_button.disabled = true
+
+	_LOGGER.info("Stopping '%s'" % self.entry.exec_path)
+
+	await PlaytimeTracker.async_stop_process(self.entry.id)
+
+	self.stop_button.disabled = false
+	#self._update_launch_stop_buttons()
+
+
+## Connected in runtime, called when playtime is updated
+func _on_playtime_db_update(vn_ids: Array[String]) -> void:
+
+	# linear search.. at least there's barely chance for hundreds of VNs running
+	if self.entry.id in vn_ids:
 		self._update_playtime_n_session_count()
+		self._update_launch_stop_buttons()

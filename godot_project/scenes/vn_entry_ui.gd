@@ -47,19 +47,19 @@ func reload() -> bool:
 		self._current_img_url = entry.vn_info.cover_url
 		self._cover_button.texture_normal = await entry.vn_info.get_cover_tex()
 
-	self.reload_playtime()
+	self.update_playtime_from_db()
 
 	return true
 
 
-## Update playtime only
-func reload_playtime() -> void:
-	var record := PlaytimeTracker.get_time_n_count(self.id)
+## Update playtime from DB
+func update_playtime_from_db() -> void:
+	var record := PlaytimeTracker.get_proc_time_n_count(self.id)
 
 	self._playtime_label.text = (
-		"%.1fh(%d)" % [(record[0] / 3600.0), record[1]]
+		"%.1fh (%d)" % [(record[0] / 3600.0), record[1]]
 		if record[0] > 1800
-		else "%.1fm(%d)" % [(record[0] / 60.0), record[1]]
+		else "%.1fm (%d)" % [(record[0] / 60.0), record[1]]
 	)
 
 

@@ -6,7 +6,8 @@ extends MarginContainer
 ## Dict[DB_ID, VNEntry]
 var _entries: Dictionary[String, VNEntryUI]
 
-@onready var vn_entry_flow_container: HFlowContainer = %VNEntryFlowContainer
+@onready var _vn_entry_flow_container: HFlowContainer = %VNEntryFlowContainer
+@onready var _playtime_label: Label = %PlaytimeLabel
 
 const _CONFIG_SCENE = preload("uid://bo3ykybjvk4wo")
 
@@ -25,7 +26,7 @@ func _reload(id: String) -> void:
 
 	# reload failed, then it's deleted - remove entry
 	self._entries[id].queue_free()
-	self.vn_entry_flow_container.remove_child(_entries[id])
+	self._vn_entry_flow_container.remove_child(_entries[id])
 	self._entries.erase(id)
 	_LOGGER.debug("Deleted %s" % id)
 
@@ -44,7 +45,7 @@ func _add_or_reload(id: String) -> void:
 	self._entries[id] = instance
 
 	# TODO: Think about sorting options
-	self.vn_entry_flow_container.add_child(instance)
+	self._vn_entry_flow_container.add_child(instance)
 
 
 ## Reload all UI Entry from DB. Does not factor in for deletion.
@@ -57,15 +58,41 @@ func _reload_all() -> void:
 	# repopulate & reorder existing nodes
 	for id in EntryManager.get_entry_ids():
 		if id in self._entries:
-			self.vn_entry_flow_container.move_child(self._entries[id], -1)
+			self._vn_entry_flow_container.move_child(self._entries[id], -1)
 
 		self._add_or_reload(id)
+
+	# update aggregated time
+	self._update_aggregated_playtime()
+
+
+## Update each VNs' playtime & session count if it's running
+func _update_vn_playtime() -> void:
+	for vn_id: String in PlaytimeTracker.get_ids():
+		if vn_id in self._entries:
+			self._entries[vn_id].update_playtime_from_db()
+
+
+## Update all VNs' aggregated playtime & session count
+func _update_aggregated_playtime() -> void:
+	# only update if anything is running
+
+	var record := PlaytimeTracker.get_all_proc_time_n_count()
+
+	self._playtime_label.text = (
+		"%.1fh\n%d sessions" % [record[0] / 3600.0, record[1]]
+		if record[0] > 1800
+		else "%.1fm\n%d sessions" % [record[0] / 60.0, record[1]]
+	)
 
 
 # --- Handlers ---
 
 func _ready() -> void:
 	self._reload_all()
+
+	# connect to playtime tracker to get playtime updates
+	PlaytimeTracker.db_updated.connect(self._on_playtime_db_update)
 
 
 ## Called on EditUI.entry_saved
@@ -98,7 +125,6 @@ func _on_batch_add_button_pressed() -> void:
 
 ## Called on DetailUI.closed
 func _on_detail_ui_closed(id: String) -> void:
-	# TODO: remove deleted param if it stays unused
 	self._add_or_reload(id)
 
 
@@ -114,7 +140,10 @@ func _on_config_button_pressed() -> void:
 	self.add_sibling(_CONFIG_SCENE.instantiate())
 
 
-func _on_playtime_update_timer_timeout() -> void:
-	for vn_id: String in PlaytimeTracker.get_running_vn_id_list():
-		if vn_id in self._entries:
-			self._entries[vn_id].reload_playtime()
+## Connected in runtime, called when playtime is updated
+func _on_playtime_db_update(vn_ids: Array[String]) -> void:
+
+	for id in vn_ids:
+		self._entries[id].update_playtime_from_db()
+
+	self._update_aggregated_playtime()

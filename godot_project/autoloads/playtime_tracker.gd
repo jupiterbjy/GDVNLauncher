@@ -13,11 +13,17 @@ extends Node
 
 # --- Signals ---
 
+## Triggered on db write, use this instead of timer to poll
+signal db_updated(updated_ids: Array[String])
+
 
 # --- Classes ---
 
 ## Represent process
-class _Process:
+class Process:
+
+	## emitted externally on process exit
+	signal exited
 
 	var path: String = ""
 	var params: String = ""
@@ -46,13 +52,13 @@ class _Process:
 		self.end_utc = floori(Time.get_unix_time_from_system())
 
 	func _to_string() -> String:
-		return "_Process(pid=%d, path=%s)" % [self.pid, self.path]
+		return "Process(pid=%d, path=%s)" % [self.pid, self.path]
 
 	# --- Methods ---
 
 	# hope I can one day create PR for proper non-child process spawning & pid tracking..
 	# or GDExtension maybe, but separate addon feels like overkill just for this,
-	# ore there could be cross platform issues too.
+	# or there could be cross platform issues too.
 	# just adding this admin right mess cause I'm not willing to run godot editor itself as admin.
 
 	## Checks whether process is alive or not.
@@ -63,10 +69,12 @@ class _Process:
 		if self.pid == -1:
 			return false
 
+		# if non-admin child process and not running invalidate PID and return
 		if not self.admin:
-			# if not running invalidate PID and return
 			if not OS.is_process_running(self.pid):
 				self.pid = -1
+				#self.exited.emit()
+
 				return false
 
 			return true
@@ -79,7 +87,8 @@ class _Process:
 			output,
 		)
 
-		return len(output[0])
+		# if it has PID then alive else it's dead
+		return not (output[0] as String).is_empty()
 
 	## Tick elapsed time & update end_utc. Workaround for system freeze or sleep.
 	func tick(sec: float) -> void:
@@ -130,7 +139,7 @@ class _Process:
 		self.pid = (output[0] as String).to_int()
 		return self.pid != -1
 
-	## Kill process. Silently fails.
+	## Kill process. Silently fails if already ded.
 	func kill() -> void:
 		if self.pid != -1:
 			OS.kill(self.pid)
@@ -138,8 +147,20 @@ class _Process:
 
 # --- Attributes ---
 
-## Dict[VN ID, _Process]
-var _processes: Dictionary[String, _Process]
+## Dict[VN ID, Process]
+var id_process_map: Dictionary[String, Process]
+
+## Accumulated time, used as timer
+var _accumulated_sec: float = 0
+
+## Process alive check interval
+const _PROC_CHECK_INTERVAL: float = 1
+
+## Remaining cycle until DB write
+var _accumulated_cycles: int = 0
+
+## DB write interval in cycles of process alive check interval
+const _DB_WRITE_CYCLES: int = 300
 
 ## Play session DB
 var _db := DBWrapper.new("user://data.sqlite")
@@ -165,39 +186,31 @@ class _Query:
 	ON CONFLICT(id, start_utc) DO UPDATE SET end_utc = ?, time = ?
 	"""
 
-	const get_total_time := 'SELECT IFNULL(SUM(time), 0) FROM "sessions" WHERE id = ?'
+	const get_proc_total_time := 'SELECT IFNULL(SUM(time), 0) FROM "sessions" WHERE id = ?'
 
 	## Used to fetch total playtime excluding specific session, usually running one
-	const get_total_time_excl := """
+	const get_proc_total_time_excl := """
 	SELECT IFNULL(SUM(time), 0) FROM sessions WHERE id = ? AND start_utc != ?
 	"""
 
-	const get_session_time := 'SELECT time FROM "sessions" WHERE id = ? AND start_utc = ?'
+	const get_proc_session_time := 'SELECT time FROM "sessions" WHERE id = ? AND start_utc = ?'
 
-	const get_all_sessions := 'SELECT * FROM "sessions" WHERE id = ?'
+	const get_proc_all_sessions := 'SELECT * FROM "sessions" WHERE id = ?'
 
-	const get_count := 'SELECT COUNT(*) FROM "sessions" WHERE vn_id = ?'
+	const get_proc_session_count := 'SELECT COUNT(*) FROM "sessions" WHERE vn_id = ?'
 
-	## Used to fetch total playtime & session count, for UI usage
-	const get_time_n_count := 'SELECT IFNULL(SUM(time), 0), COUNT(*) FROM "sessions" WHERE id = ?'
+	## Used to fetch total playtime & session count, for UI usage.
+	## Exists to discard temporarily saved record
+	const get_proc_time_n_count := 'SELECT IFNULL(SUM(time), 0), COUNT(*) FROM "sessions" WHERE id = ?'
 
-	## Used to fetch total playtime & session count excluding specific session, for UI usage
-	const get_time_n_count_excl := """
+	## Used to fetch total playtime & session count excluding specific session, for UI usage.
+	## Exists to discard temporarily saved record
+	const get_proc_time_n_count_excl := """
 	SELECT IFNULL(SUM(time), 0), COUNT(*) FROM "sessions" WHERE id = ? AND start_utc != ?
 	"""
 
-
-## Accumulated time, used as timer
-var _accumulated_sec: float = 0
-
-## Process alive check interval
-const _PROC_CHECK_INTERVAL: float = 1
-
-## Remaining cycle until DB write
-var _accumulated_cycles: int = 0
-
-## DB write interval in cycles of process alive check interval
-const _DB_WRITE_CYCLES: int = 300
+	## Used to get total time & session in main ui
+	const get_all_proc_time_n_count :=  'SELECT IFNULL(SUM(time), 0), COUNT(*) FROM "sessions"'
 
 static var _LOGGER := Logging.get_logger("PlaytimeTracker")
 
@@ -205,115 +218,122 @@ static var _LOGGER := Logging.get_logger("PlaytimeTracker")
 # --- Methods ---
 
 ## Start tracking runtime time for given process. Returns false on process start failure.
-func start_process(vn_id: String, path: String, params := "", as_admin := false) -> bool:
+func start_process(id: String, path: String, params := "", as_admin := false) -> bool:
 
-	var proc := _Process.new(path, params, as_admin)
+	var proc := Process.new(path, params, as_admin)
 
 	if proc.start():
 		_LOGGER.debug("Started: %s" % proc)
-		self._processes[vn_id] = proc
+		self.id_process_map[id] = proc
 		return true
 
 	_LOGGER.warn("Start failed: %s" % proc)
 	return false
 
 
-## Stop process. Fails sliently if process is not running
-func stop_process(vn_id: String) -> void:
+## Stop process & async wait for it. Fails sliently if process is not running
+func async_stop_process(id: String) -> void:
 
-	if vn_id in self._processes:
-		var proc := self._processes[vn_id]
+	if id in self.id_process_map:
+		var proc := self.id_process_map[id]
 		proc.kill()
-		_LOGGER.debug("Stopped: %s" % proc)
+		_LOGGER.debug("Stopping: %s" % proc)
+
+		await self.id_process_map[id].exited
 		return
 
 	_LOGGER.warn("No process to stop for %s")
 
 
 ## Is process started & running?
-func is_running(vn_id: String) -> bool:
-	return vn_id in self._processes
+func is_running(id: String) -> bool:
+	return id in self.id_process_map
 
 
-## Get running process list
-func get_running_vn_id_list() -> Array[String]:
-	return self._processes.keys()
+## Get running processes' identifiers
+func get_ids() -> Array[String]:
+	return self.id_process_map.keys()
+
+
+## Get running processes
+func get_processes() -> Array[Process]:
+	return self.id_process_map.values()
 
 
 ## Returns current session's playtime, not from DB. Returns 0 if not running.
-func get_current_session_time(vn_id: String) -> float:
-	return self._processes[vn_id].elapsed_sec if vn_id in self._processes else 0.0
+func get_proc_current_session_time(id: String) -> float:
+	return self.id_process_map[id].elapsed_sec if id in self.id_process_map else 0.0
 
 
 ## Returns total playtime of current session + DB. Returns 0 on failure.
-func get_total_playtime(vn_id: String) -> float:
+func get_proc_total_playtime(id: String) -> float:
 	var result: DBWrapper.QueryResult
 
 	# Would this need db read caching, that's the problem
 
 	# if running get time from DB excl. running session + current session time
 	# since running session in DB is updated in relatively long interval
-	if vn_id in self._processes:
+	if id in self.id_process_map:
 		result = self._db.execute(
-			_Query.get_total_time, [vn_id],
+			_Query.get_proc_total_time, [id],
 		)
 		return (
 			result.fetchone().values()[0] if result.rowcount else 0
-		) + self._processes[vn_id].elapsed_sec
+		) + self.id_process_map[id].elapsed_sec
 
 	# otherwise return DB time
 	result = self._db.execute(
-		_Query.get_total_time_excl, [vn_id, self._processes[vn_id].start_utc],
+		_Query.get_proc_total_time_excl, [id, self.id_process_map[id].start_utc],
 	)
 	return result.fetchone().values()[0] if result.rowcount else 0
 
 
 ## Returns total session count. Returns 0 on failure.
-func get_session_count(vn_id: String) -> int:
+func get_proc_session_count(id: String) -> int:
 	var result := self._db.execute(
-		_Query.get_count, [vn_id],
+		_Query.get_proc_session_count, [id],
 	)
 	return result.fetchone().values()[0] if result.rowcount else 0
 
 
 ## Returns [total playtime, total session count]
 ## Feels like it might be faster & simpler to just run two queries...
-func get_time_n_count(vn_id: String) -> PackedInt32Array:
+func get_proc_time_n_count(id: String) -> PackedInt32Array:
 	var result: DBWrapper.QueryResult
 
 	# if not running just fetch from db
-	if vn_id not in self._processes:
-		result = self._db.execute(_Query.get_time_n_count, [vn_id])
-
-		if result.rowcount:
-			var record := result.fetchone().values()
-			return record
-			#return [floori(record[0]), record[1]]
-
-		return [0, 0]
+	if id not in self.id_process_map:
+		result = self._db.execute(_Query.get_proc_time_n_count, [id])
+		return result.fetchone().values() if result.rowcount else [0, 0]
 
 	# if running fetch from db excluding active session then return added result
 	result = self._db.execute(
-		_Query.get_time_n_count_excl, [vn_id, self._processes[vn_id].start_utc],
+		_Query.get_proc_time_n_count_excl, [id, self.id_process_map[id].start_utc],
 	)
 
 	if result.rowcount:
 		var record := result.fetchone().values()
 		return [
-			record[0] + self._processes[vn_id].elapsed_sec, record[1] + 1,
+			record[0] + self.id_process_map[id].elapsed_sec, record[1] + 1,
 		]
 
 	return [0, 0]
 
 
+## Returns [all VNs' total playtime, total session count]
+func get_all_proc_time_n_count() -> PackedInt32Array:
+	var result := self._db.execute(_Query.get_all_proc_time_n_count)
+	return result.fetchone().values() if result.rowcount else [0, 0]
+
+
 ## Add/Set session to DB
-func _upsert_session(vn_id: String, proc: _Process) -> void:
+func _upsert_session(id: String, proc: Process) -> void:
 
 	# upsert session info
 	self._db.execute(
 		_Query.upsert_session,
 		[
-			vn_id,
+			id,
 			proc.start_utc,
 			proc.end_utc,
 			proc.elapsed_sec,
@@ -331,8 +351,8 @@ func _track_processes(delta: float) -> void:
 	var keys_to_erase: Array[String]
 
 	# find dead processes & tick runtime
-	for key: String in self._processes:
-		var proc: _Process = self._processes[key]
+	for key: String in self.id_process_map:
+		var proc: Process = self.id_process_map[key]
 
 		# might loose time of < delta but acceptable
 		if not proc.is_alive():
@@ -341,14 +361,21 @@ func _track_processes(delta: float) -> void:
 
 		# otherwise update runtime
 		proc.tick(delta)
-		#print(proc)
-		#self.upsert_session(key, proc)
 
 	# cleanup & write session for dead processes
 	for key: String in keys_to_erase:
-		_LOGGER.debug("Removing %s" % self._processes[key])
-		self._upsert_session(key, self._processes[key])
-		self._processes.erase(key)
+		var proc: Process = self.id_process_map[key]
+
+		_LOGGER.debug("Removing %s" % proc)
+
+		self._upsert_session(key, proc)
+		self.id_process_map.erase(key)
+
+		proc.exited.emit()
+
+	# if there was dead processes involving write, emit signal
+	if keys_to_erase:
+		self.db_updated.emit(keys_to_erase)
 
 
 # --- Handlers ---
@@ -357,14 +384,14 @@ func _init() -> void:
 	self._db.execute(_Query.create_table)
 
 
-#func _ready() -> void:
-	#EntryManager.entry_removed.connect(self._on_entry_removed)
-
-
 func _physics_process(delta: float) -> void:
 
-	self._accumulated_sec += delta
+	# if nothing's running don't tick
+	if not self.id_process_map:
+		return
 
+	# timer
+	self._accumulated_sec += delta
 	if self._accumulated_sec < _PROC_CHECK_INTERVAL:
 		return
 
@@ -379,9 +406,10 @@ func _physics_process(delta: float) -> void:
 	if self._accumulated_cycles >= _DB_WRITE_CYCLES:
 		self._accumulated_cycles = 0
 
-		for vn_id: String in self._processes:
-			_LOGGER.debug("Written %s session time to DB" % vn_id)
-			self._upsert_session(vn_id, self._processes[vn_id])
+		for id: String in self.id_process_map:
+			_LOGGER.debug("Written %s session time to DB" % id)
+			self._upsert_session(id, self.id_process_map[id])
+			self.db_updated.emit(self.id_process_map.keys())
 
 # TODO: do I need to remove deleted entry's histories or not
 ## If entry is removed, remove corresponding records from vn_id table

@@ -10,9 +10,9 @@ extends Node
 # --- Signals ---
 # Changing to autoload just because of signals
 
-signal entry_added(entry: Entry)
+#signal entry_added(id: String)
 
-signal entry_removed(entry: Entry)
+signal entries_removed(ids: Array[String])
 
 
 # --- Classes ---
@@ -27,7 +27,7 @@ class Entry:
 	## VNDB(vxxxx) or user-defined(cvxxxx) id, basically syntax sugar
 	var id: String:
 		get():
-			return self.vn_info.id
+			return self.vn.id
 
 	## Executable path
 	var exec_path: String = ""
@@ -35,13 +35,13 @@ class Entry:
 	## Requires Windows Admin privilege?
 	var admin: bool = false
 
-	var vn_info: VndbVN = null
+	var vn: VndbVN = null
 
 	# This feels like wasting a lot of computations but well..
-	func _init(path := "", admin_ := false, vn_info_: VndbVN = null) -> void:
+	func _init(path := "", admin_ := false, vn_: VndbVN = null) -> void:
 		self.exec_path = path
 		self.admin = admin_
-		self.vn_info = vn_info_ if vn_info_ else VndbVN.new()
+		self.vn = vn_ if vn_ else VndbVN.new()
 
 	## DB Record based named constructor
 	static func from_db(data: Dictionary) -> Entry:
@@ -52,11 +52,11 @@ class Entry:
 		)
 
 	## VNInfo based named constructor
-	static func from_vndb_info(vn_info_: VndbVN) -> Entry:
-		return Entry.new("", false, vn_info_)
+	static func from_vndb_info(vn_: VndbVN) -> Entry:
+		return Entry.new("", false, vn_)
 
 	func _to_string() -> String:
-		return "Entry(id=%d)" % self.id
+		return "Entry(id=%s)" % self.id
 
 
 # --- Attributes ---
@@ -133,6 +133,20 @@ class _Query:
 		admin = ?
 	"""
 
+	const upsert_entry_from_vndb := """
+	INSERT INTO "entries" VALUES(
+		?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+	)
+	ON CONFLICT(id) DO UPDATE SET
+		title = ?,
+		developers = ?,
+		description = ?,
+		released = ?,
+		tags = ?,
+		cover_url = ?,
+		label = ?
+	"""
+
 	const update_entry_play_status := """
 	UPDATE "entries" SET label = ? WHERE id = ?
 	"""
@@ -147,6 +161,10 @@ class _Query:
 
 	const remove_entry := """
 	DELETE FROM "entries" WHERE id = ?
+	"""
+
+	const get_cover_urls := """
+	SELECT cover_url FROM "entries" WHERE cover_url != ''
 	"""
 
 
@@ -182,28 +200,28 @@ func get_entries() -> Array[Entry]:
 
 
 ## Returns false on failure
-func add_entry(entry: Entry) -> bool:
-
-	#return self._db.execute(
-	if self._db.execute(
-		_Query.add_entry,
-		[
-			entry.vn_info.id,
-			entry.vn_info.title,
-			entry.vn_info.developers,
-			entry.vn_info.description,
-			entry.vn_info.released,
-			entry.vn_info.tags,
-			entry.vn_info.cover_url,
-			entry.exec_path,
-			entry.admin,
-			entry.vn_info.label,
-		]
-	).success:
-		self.entry_added.emit(entry)
-		return true
-
-	return false
+#func add_entry(entry: Entry) -> bool:
+#
+	##return self._db.execute(
+	#if self._db.execute(
+		#_Query.add_entry,
+		#[
+			#entry.vn.id,
+			#entry.vn.title,
+			#entry.vn.developers,
+			#entry.vn.description,
+			#entry.vn.released,
+			#entry.vn.tags,
+			#entry.vn.cover_url,
+			#entry.exec_path,
+			#entry.admin,
+			#entry.vn.label,
+		#]
+	#).success:
+		#self.entry_added.emit(entry.id)
+		#return true
+#
+	#return false
 
 
 ## Returns false on failure
@@ -214,13 +232,13 @@ func update_entry(entry: Entry) -> bool:
 	return self._db.execute(
 		_Query.update_entry,
 		[
-			entry.vn_info.title,
-			entry.vn_info.developers,
-			entry.vn_info.description,
-			entry.vn_info.released,
-			entry.vn_info.tags,
-			entry.vn_info.cover_url,
-			entry.vn_info.label,
+			entry.vn.title,
+			entry.vn.developers,
+			entry.vn.description,
+			entry.vn.released,
+			entry.vn.tags,
+			entry.vn.cover_url,
+			entry.vn.label,
 			entry.exec_path,
 			entry.admin,
 			entry.id,
@@ -235,26 +253,55 @@ func upsert_entry(entry: Entry) -> bool:
 		[
 			# insert param
 			entry.id,
-			entry.vn_info.title,
-			entry.vn_info.developers,
-			entry.vn_info.description,
-			entry.vn_info.released,
-			entry.vn_info.tags,
-			entry.vn_info.cover_url,
-			entry.vn_info.label,
+			entry.vn.title,
+			entry.vn.developers,
+			entry.vn.description,
+			entry.vn.released,
+			entry.vn.tags,
+			entry.vn.cover_url,
+			entry.vn.label,
 			entry.exec_path,
 			entry.admin,
 
 			# update param
-			entry.vn_info.title,
-			entry.vn_info.developers,
-			entry.vn_info.description,
-			entry.vn_info.released,
-			entry.vn_info.tags,
-			entry.vn_info.cover_url,
-			entry.vn_info.label,
+			entry.vn.title,
+			entry.vn.developers,
+			entry.vn.description,
+			entry.vn.released,
+			entry.vn.tags,
+			entry.vn.cover_url,
+			entry.vn.label,
 			entry.exec_path,
 			entry.admin,
+		]
+	).success
+
+
+## Returns false on failure. Does not overwrite executable path & admin priv.
+func upsert_entry_from_vndb(vn: VndbVN) -> bool:
+	return self._db.execute(
+		_Query.upsert_entry_from_vndb,
+		[
+			# insert param
+			vn.id,
+			vn.title,
+			vn.developers,
+			vn.description,
+			vn.released,
+			vn.tags,
+			vn.cover_url,
+			vn.label,
+			"",
+			false,
+
+			# update param
+			vn.title,
+			vn.developers,
+			vn.description,
+			vn.released,
+			vn.tags,
+			vn.cover_url,
+			vn.label,
 		]
 	).success
 

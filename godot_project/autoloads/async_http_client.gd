@@ -94,7 +94,17 @@ func async_request(
 	var resp_arr: Array = await http_req.request_completed
 	var resp := Response.new(resp_arr[0], resp_arr[1], resp_arr[2], resp_arr[3])
 
-	_LOGGER.debug("Received [%d] from [%s], body: %d bytes" % [resp.response_code, url, len(resp.body)])
+	if resp.response_code != 200:
+		_LOGGER.warn(
+			"Received [%d] from [%s], body: %s" % [
+				resp.response_code, url, resp.body.get_string_from_utf8()
+				# Hopefully all failed resp's body is utf8...
+			]
+		)
+	else:
+		_LOGGER.debug(
+			"Received [%d] from [%s], body: %d bytes" % [resp.response_code, url, len(resp.body)]
+		)
 
 	return resp
 

@@ -79,6 +79,19 @@ static func from_local(path: String, refresh_cache := false) -> PackedByteArray:
 	return data
 
 
+## Clear cache for given url/path. Preferrably only call this to remove that's not in use.
+static func clear_cache(loc: String) -> void:
+
+	var _cache_path := (
+		(WEB_CACHE_DIR if loc.begins_with("http") else LOCAL_CACHE_DIR)
+		+ loc.sha256_text()
+	)
+
+	if FileAccess.file_exists(_cache_path):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(_cache_path))
+		_LOGGER.debug("Dropped cache for '%s'" % loc)
+
+
 # --- Utilities ---
 
 ## Ensure cache dir exists, someone might just delete it out of whim while running
@@ -107,5 +120,5 @@ static func _test() -> void:
 # --- Handlers ---
 
 static func _static_init() -> void:
-	_test()
+	_test.call_deferred()
 	pass

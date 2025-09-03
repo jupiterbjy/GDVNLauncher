@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://b3xdas536yxk6"]
+[gd_scene load_steps=6 format=3 uid="uid://b3xdas536yxk6"]
 
 [ext_resource type="Script" uid="uid://wkbs2cb8a17w" path="res://scenes/vn_entry_ui.gd" id="1_bm6hf"]
 [ext_resource type="PackedScene" uid="uid://dej5l7khseid" path="res://scenes/label_option.tscn" id="2_cbc2e"]
@@ -15,6 +15,9 @@ corner_radius_top_right = 3
 corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cbc2e"]
+bg_color = Color(0, 0, 0, 0.3137255)
 
 [node name="VNEntryUI" type="PanelContainer"]
 theme_override_styles/panel = SubResource("StyleBoxFlat_o1c4u")
@@ -45,6 +48,35 @@ mouse_filter = 1
 texture_normal = ExtResource("6_xpcvn")
 ignore_texture_size = true
 stretch_mode = 6
+
+[node name="PlayStatusOverlay" type="PanelContainer" parent="VBoxContainer/CoverButton"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_cbc2e")
+
+[node name="CenterContainer" type="CenterContainer" parent="VBoxContainer/CoverButton/PlayStatusOverlay"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/CoverButton/PlayStatusOverlay/CenterContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/CoverButton/PlayStatusOverlay/CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "▶"
+horizontal_alignment = 1
+
+[node name="CurrentPlaytimeLabel" type="Label" parent="VBoxContainer/CoverButton/PlayStatusOverlay/CenterContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "12.3m"
+horizontal_alignment = 1
 
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

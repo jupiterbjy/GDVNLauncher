@@ -11,13 +11,17 @@ signal cover_clicked(id: String)
 # --- Attributes ---
 
 ## VNDB ID or custom ID
-var id: String = ""
+var entry: EntryManager.Entry = null
 
 @onready var _cover_button: TextureButton = %CoverButton
 
 @onready var _label_option: OptionButton = %LabelOption
 
 @onready var _playtime_label: Label = %PlaytimeLabel
+
+@onready var _current_playtime_label: Label = %CurrentPlaytimeLabel
+
+@onready var _play_status_overlay: PanelContainer = %PlayStatusOverlay
 
 ## Used to decide whether to reload image or not
 var _current_img_url: String = ""
@@ -29,32 +33,38 @@ const _SCENE = preload("uid://b3xdas536yxk6")
 
 # --- Methods ---
 
-## Load and apply data from db index. Returns false on failure
-func reload() -> bool:
-	_LOGGER.debug("Reloading id=%s" % self.id)
+static func create_instance(entry_: EntryManager.Entry) -> VNEntryUI:
+	var instance: VNEntryUI = _SCENE.instantiate()
+	instance.entry = entry_
 
-	var entry := EntryManager.get_entry(self.id)
+	return instance
+
+
+## Load and apply data from db index. Returns false on failure
+func async_reload() -> bool:
+	_LOGGER.debug("Reloading %s" % self.entry)
+
+	self.entry = EntryManager.get_entry(self.entry.id)
 
 	# if failed it's deleted
 	if not entry:
 		return false
 
-	# TODO: add playtime reload
+	self._label_option.selected = self.entry.vn.label
 
-	self._label_option.selected = entry.vn_info.label
-
-	if self._current_img_url != entry.vn_info.cover_url:
-		self._current_img_url = entry.vn_info.cover_url
-		self._cover_button.texture_normal = await entry.vn_info.get_cover_tex()
+	if self._current_img_url != self.entry.vn.cover_url:
+		self._current_img_url = self.entry.vn.cover_url
+		self._cover_button.texture_normal = await self.entry.vn.get_cover_tex()
 
 	self.update_playtime_from_db()
+	self.update_playtime_live()
 
 	return true
 
 
 ## Update playtime from DB
 func update_playtime_from_db() -> void:
-	var record := PlaytimeTracker.get_proc_time_n_count(self.id)
+	var record := PlaytimeTracker.get_proc_time_n_count(self.entry.id)
 
 	self._playtime_label.text = (
 		"%.1fh (%d)" % [(record[0] / 3600.0), record[1]]
@@ -63,32 +73,38 @@ func update_playtime_from_db() -> void:
 	)
 
 
-static func create_instance(id_: String) -> VNEntryUI:
-	var instance: VNEntryUI = _SCENE.instantiate()
-	instance.id = id_
+## Update current session's playtime
+func update_playtime_live() -> void:
 
-	return instance
+	if not PlaytimeTracker.is_running(self.entry.id):
+		self._play_status_overlay.hide()
+		return
+
+	self._current_playtime_label.text = Time.get_time_string_from_unix_time(
+		floori(PlaytimeTracker.get_proc_current_session_time(self.entry.id))
+	)
+	self._play_status_overlay.show()
 
 
 # --- Handlers ---
 
 func _ready() -> void:
 	# must be placeholder for UI design, free self
-	if not self.id:
+	if not self.entry:
 		self.queue_free()
-		return
+		#return
 
 	# otherwise load
 	# TODO: see if this need to be deferred
-	await self.reload()
+	#await self.async_reload()
 
 
 func _on_status_option_button_item_selected(index: int) -> void:
-	EntryManager.update_entry_play_status(self.id, index)
+	EntryManager.update_entry_play_status(self.entry.id, index)
 
 
 func _on_cover_button_pressed() -> void:
-	self.cover_clicked.emit(self.id)
+	self.cover_clicked.emit(self.entry.id)
 
 
 func _on_mouse_entered() -> void:

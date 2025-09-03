@@ -54,14 +54,14 @@ static func create_instance(id: String = "") -> EditUI:
 
 
 func _update_cover_image() -> void:
-	if not self.entry.vn_info.cover_url:
+	if not self.entry.vn.cover_url:
 		return
 
-	var tex := await self.entry.vn_info.get_cover_tex()
+	var tex := await self.entry.vn.get_cover_tex()
 	if tex:
 		self.cover_image_rect.texture = tex
 	else:
-		_LOGGER.warn("failed to load image from '%s'" % self.entry.vn_info.cover_url)
+		_LOGGER.warn("failed to load image from '%s'" % self.entry.vn.cover_url)
 
 
 ## Refresh UI to match self.entry
@@ -69,13 +69,13 @@ func _reflect_to_ui() -> void:
 
 	self.exec_path_line_edit.text = self.entry.exec_path
 
-	self.vndb_id_line_edit.text = self.entry.vn_info.id
-	self.title_line_edit.text = self.entry.vn_info.title
-	self.description_text_edit.text = self.entry.vn_info.description
-	self.developer_line_edit.text = self.entry.vn_info.developers
-	self.release_date_line_edit.text = self.entry.vn_info.released
-	self.tag_line_edit.text = self.entry.vn_info.tags
-	self.label_option_large.selected = self.entry.vn_info.label
+	self.vndb_id_line_edit.text = self.entry.vn.id
+	self.title_line_edit.text = self.entry.vn.title
+	self.description_text_edit.text = self.entry.vn.description
+	self.developer_line_edit.text = self.entry.vn.developers
+	self.release_date_line_edit.text = self.entry.vn.released
+	self.tag_line_edit.text = self.entry.vn.tags
+	self.label_option_large.selected = self.entry.vn.label
 
 	self.admin_priv_check_box.button_pressed = self.entry.admin
 
@@ -87,13 +87,13 @@ func _reflect_from_ui() -> void:
 
 	self.entry.exec_path = self.exec_path_line_edit.text.strip_edges()
 
-	self.entry.vn_info.id = self.vndb_id_line_edit.text.strip_edges()
-	self.entry.vn_info.title = self.title_line_edit.text.strip_edges()
-	self.entry.vn_info.description = self.description_text_edit.text.strip_edges()
-	self.entry.vn_info.developers = self.developer_line_edit.text.strip_edges()
-	self.entry.vn_info.released = self.release_date_line_edit.text.strip_edges()
-	self.entry.vn_info.tags = self.tag_line_edit.text.strip_edges()
-	self.entry.vn_info.label = self.label_option_large.selected
+	self.entry.vn.id = self.vndb_id_line_edit.text.strip_edges()
+	self.entry.vn.title = self.title_line_edit.text.strip_edges()
+	self.entry.vn.description = self.description_text_edit.text.strip_edges()
+	self.entry.vn.developers = self.developer_line_edit.text.strip_edges()
+	self.entry.vn.released = self.release_date_line_edit.text.strip_edges()
+	self.entry.vn.tags = self.tag_line_edit.text.strip_edges()
+	self.entry.vn.label = self.label_option_large.selected
 
 	self.entry.admin = self.admin_priv_check_box.button_pressed
 
@@ -136,13 +136,14 @@ func _on_fetch_vndb_button_pressed() -> void:
 	)
 
 	if data:
-		self.entry.vn_info = data
+		data.label = self.entry.vn.label
+		self.entry.vn = data
 
 	self._reflect_to_ui()
 
 
 func _on_image_file_dialog_file_selected(path: String) -> void:
-	self.entry.vn_info.cover_url = path
+	self.entry.vn.cover_url = path
 	self._update_cover_image()
 
 
@@ -151,6 +152,7 @@ func _on_save_button_pressed() -> void:
 	# save results to DB and emit result
 	self._reflect_from_ui()
 	EntryManager.upsert_entry(self.entry)
+	PlaytimeTracker.unstash_sessions(self.entry.id)
 
 	self.entry_saved.emit(self.entry.id)
 	self.queue_free()
@@ -169,5 +171,5 @@ func _on_cover_from_local_button_pressed() -> void:
 
 
 func _on_url_popup_url_selected(url: String) -> void:
-	self.entry.vn_info.cover_url = url
+	self.entry.vn.cover_url = url
 	self._update_cover_image()

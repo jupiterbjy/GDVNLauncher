@@ -9,12 +9,21 @@ extends Node
 #
 # ... figured out, so NekoNyan's Angelic Chaos release has two exes, and one is mere launcher
 # TODO: Add tooltip on exec selection to encourage users to add game itself, not launcher
+#
+# ... But seems like most of steam yuzusoft release can't be ran like that, still recreates PID
+
+
+# TODO: Figure out why IroSeka Steam edition fails to find font unless Launcher is next to EXE,
+# maybe requires cd before execution?
 
 
 # --- Signals ---
 
 ## Triggered on db write, use this instead of timer to poll
 signal db_updated(updated_ids: Array[String])
+
+## Triggered on playtime update tick. Used in UI to trigger update
+signal tick(updated_ids: Array[String])
 
 
 # --- Classes ---
@@ -171,7 +180,7 @@ class _Query:
 	# should I cascade or not, that's the question.
 	# user might delete entry by accident,
 	const create_table := """
-	CREATE TABLE IF NOT EXISTS "sessions" (
+	CREATE TABLE IF NOT EXISTS sessions (
 		id TEXT NOT NULL,
 		start_utc INTEGER NOT NULL,
 		end_utc INTEGER NOT NULL,
@@ -181,36 +190,65 @@ class _Query:
 	)
 	"""
 
+	## instead of cascade used to store deleted entry's sesions
+	const create_backup_table := """
+	CREATE TABLE IF NOT EXISTS sessions_hidden (
+		id TEXT NOT NULL,
+		start_utc INTEGER NOT NULL,
+		end_utc INTEGER NOT NULL,
+		time REAL NOT NULL,
+		PRIMARY KEY(id, start_utc)
+	)
+	"""
+
 	const upsert_session := """
-	INSERT INTO "sessions" VALUES (?, ?, ?, ?)
+	INSERT INTO sessions VALUES (?, ?, ?, ?)
 	ON CONFLICT(id, start_utc) DO UPDATE SET end_utc = ?, time = ?
 	"""
 
-	const get_proc_total_time := 'SELECT IFNULL(SUM(time), 0) FROM "sessions" WHERE id = ?'
+	const get_proc_total_time := 'SELECT IFNULL(SUM(time), 0) FROM sessions WHERE id = ?'
 
 	## Used to fetch total playtime excluding specific session, usually running one
 	const get_proc_total_time_excl := """
 	SELECT IFNULL(SUM(time), 0) FROM sessions WHERE id = ? AND start_utc != ?
 	"""
 
-	const get_proc_session_time := 'SELECT time FROM "sessions" WHERE id = ? AND start_utc = ?'
+	const get_proc_session_time := 'SELECT time FROM sessions WHERE id = ? AND start_utc = ?'
 
-	const get_proc_all_sessions := 'SELECT * FROM "sessions" WHERE id = ?'
+	const get_proc_all_sessions := 'SELECT * FROM sessions WHERE id = ?'
 
-	const get_proc_session_count := 'SELECT COUNT(*) FROM "sessions" WHERE vn_id = ?'
+	const get_proc_session_count := 'SELECT COUNT(*) FROM sessions WHERE id = ?'
+
+	const get_proc_session_count_excl := """
+	SELECT COUNT(*) FROM sessions WHERE id = ? AND start_utc != ?
+	"""
 
 	## Used to fetch total playtime & session count, for UI usage.
 	## Exists to discard temporarily saved record
-	const get_proc_time_n_count := 'SELECT IFNULL(SUM(time), 0), COUNT(*) FROM "sessions" WHERE id = ?'
+	const get_proc_time_n_count := 'SELECT IFNULL(SUM(time), 0), COUNT(*) FROM sessions WHERE id = ?'
 
 	## Used to fetch total playtime & session count excluding specific session, for UI usage.
 	## Exists to discard temporarily saved record
 	const get_proc_time_n_count_excl := """
-	SELECT IFNULL(SUM(time), 0), COUNT(*) FROM "sessions" WHERE id = ? AND start_utc != ?
+	SELECT IFNULL(SUM(time), 0), COUNT(*) FROM sessions WHERE id = ? AND start_utc != ?
 	"""
 
 	## Used to get total time & session in main ui
-	const get_all_proc_time_n_count :=  'SELECT IFNULL(SUM(time), 0), COUNT(*) FROM "sessions"'
+	const get_all_proc_time_n_count :=  'SELECT IFNULL(SUM(time), 0), COUNT(*) FROM sessions'
+
+	## Used to stash sessions for givn id, which actually just moves to different table
+	const stash_sessions := """
+	INSERT INTO sessions_hidden (id, start_utc, end_utc, time)
+	SELECT * FROM sessions WHERE id = ?;
+	DELETE FROM sessions WHERE id = ?
+	"""
+
+	## Used to unstash sessions
+	const unstash_sessions := """
+	INSERT INTO sessions (id, start_utc, end_utc, time)
+	SELECT * FROM sessions_hidden WHERE id = ?;
+	DELETE FROM sessions_hidden WHERE id = ?
+	"""
 
 static var _LOGGER := Logging.get_logger("PlaytimeTracker")
 
@@ -290,10 +328,18 @@ func get_proc_total_playtime(id: String) -> float:
 
 ## Returns total session count. Returns 0 on failure.
 func get_proc_session_count(id: String) -> int:
-	var result := self._db.execute(
-		_Query.get_proc_session_count, [id],
+	var result: DBWrapper.QueryResult
+
+	if id not in self.id_process_map:
+		result = self._db.execute(
+			_Query.get_proc_session_count, [id],
+		)
+		return result.fetchone().values()[0] if result.rowcount else 0
+
+	result = self._db.execute(
+		_Query.get_proc_session_count_excl, [id, self.id_process_map[id].start_utc]
 	)
-	return result.fetchone().values()[0] if result.rowcount else 0
+	return result.fetchone().values()[0] + 1 if result.rowcount else 1
 
 
 ## Returns [total playtime, total session count]
@@ -366,7 +412,7 @@ func _track_processes(delta: float) -> void:
 	for key: String in keys_to_erase:
 		var proc: Process = self.id_process_map[key]
 
-		_LOGGER.debug("Removing %s" % proc)
+		_LOGGER.debug("Removing dead process: %s" % proc)
 
 		self._upsert_session(key, proc)
 		self.id_process_map.erase(key)
@@ -378,10 +424,34 @@ func _track_processes(delta: float) -> void:
 		self.db_updated.emit(keys_to_erase)
 
 
+## Delete session for given id. Returns true on success.
+## Wait until process is stopped if it was running.
+func stash_sessions(id: String) -> bool:
+
+	if id in self.id_process_map:
+		#await self.async_stop_process(id)
+		self.id_process_map[id].kill()
+		self.id_process_map.erase(id)
+
+	_LOGGER.debug("Removed sessions for %s" % id)
+
+	return self._db.execute(
+		_Query.stash_sessions, [id, id],
+	).success
+
+
+## Unstash session for given id. Returns true on success.
+func unstash_sessions(id: String) -> bool:
+	return self._db.execute(
+		_Query.unstash_sessions, [id, id],
+	).success
+
+
 # --- Handlers ---
 
 func _init() -> void:
 	self._db.execute(_Query.create_table)
+	self._db.execute(_Query.create_backup_table)
 
 
 func _physics_process(delta: float) -> void:
@@ -399,6 +469,7 @@ func _physics_process(delta: float) -> void:
 	self._accumulated_sec -= _PROC_CHECK_INTERVAL
 
 	self._track_processes(_PROC_CHECK_INTERVAL)
+	self.tick.emit(self.id_process_map.keys())
 
 	# write to DB if cycle arrives
 	self._accumulated_cycles += 1

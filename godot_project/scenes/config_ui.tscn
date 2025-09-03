@@ -277,15 +277,20 @@ theme_override_constants/separation = 8
 [node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
-text = "ETC"
+text = "Debug"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer"]
+[node name="HBoxContainer" type="HFlowContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer"]
 layout_mode = 2
 
 [node name="ImageCacheDirButton" type="Button" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 theme_override_styles/focus = SubResource("StyleBoxEmpty_ef4ed")
 text = "Open Image Cache Directory"
+
+[node name="ClearUnplayedEntries" type="Button" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxEmpty_ef4ed")
+text = "Clear unplayed entries"
 
 [node name="Label2" type="Label" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer"]
 layout_mode = 2
@@ -294,3 +299,4 @@ text = "TBD"
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/SaveButton" to="." method="_on_save_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/CancelButton" to="." method="_on_cancel_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer/HBoxContainer/ImageCacheDirButton" to="." method="_on_image_cache_dir_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer/HBoxContainer/ClearUnplayedEntries" to="." method="_on_clear_unplayed_entries_pressed"]

@@ -3,6 +3,9 @@ extends PanelContainer
 # TODO: add exporting importing config & cache via ZIPReader/Packer
 
 
+# --- Signals ---
+
+
 # --- Attributes ---
 
 # VNDB CONF --
@@ -85,3 +88,13 @@ func _on_save_button_pressed() -> void:
 
 func _on_cancel_button_pressed() -> void:
 	self.queue_free()
+
+
+func _on_clear_unplayed_entries_pressed() -> void:
+	var pending_ids: Array[String]
+
+	for id: String in EntryManager.get_entry_ids():
+		if not PlaytimeTracker.get_proc_session_count(id):
+			pending_ids.append(id)
+
+	EntryManager.remove_entries(pending_ids)

@@ -173,8 +173,7 @@ func _on_delete_button_pressed() -> void:
 
 ## Delete from db and signal & free self. Connected in runtime at _on_delete_button_pressed
 func _on_delete_confirmed() -> void:
-	PlaytimeTracker.stash_sessions(self.entry.id)
-	EntryManager.remove_entry(self.entry.id)
+	EntryManager.remove_entries([self.entry.id])
 
 	self._on_close_button_pressed()
 

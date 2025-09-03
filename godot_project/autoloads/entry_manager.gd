@@ -336,17 +336,33 @@ func get_entry_ids() -> Array[String]:
 	#return result.fetchone()["db_id"] if result.success else -1
 
 
-## Delete given entry
-func remove_entry(id: String) -> bool:
-	#return self._db.execute(_Query.remove_entry, [db_id]).success
+## Delete given entry. Also stashes sessions & clear url cache if exists
+func _remove_entry(id: String) -> bool:
 
-	#var entry := self.get_entry(db_id)
+	PlaytimeTracker.stash_sessions(id)
+	CacheManager.clear_cache(self.get_entry(id).vn.cover_url)
 
-	if self._db.execute(_Query.remove_entry, [id]).success:
-		self.entry_removed.emit(id)
-		return true
+	return self._db.execute(_Query.remove_entry, [id]).success
 
-	return false
+
+## Delete given entries. Also stashes sessions & clear url cache if exists
+func remove_entries(ids: Array[String]) -> void:
+
+	for id in ids:
+		assert(self._remove_entry(id), "Delete for %s failed" % id)
+
+	self.entries_removed.emit(ids)
+
+
+## Get list of non-empty cover image urls
+func get_cover_urls() -> Array[String]:
+	var result := self._db.execute(_Query.get_cover_urls)
+
+	var data: Array[String]
+	for record in result.fetchall():
+		data.append(record["cover_url"])
+
+	return data
 
 
 # --- Handlers ---

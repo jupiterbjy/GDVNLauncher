@@ -29,6 +29,7 @@ var entry: EntryManager.Entry = null
 @onready var stop_button: Button = %StopButton
 
 @onready var exec_path_label: Label = %ExecPathLabel
+@onready var admin_priv_check_box: CheckBox = %AdminPrivCheckBox
 
 @onready var tag_container: FlowContainer = %TagContainer
 
@@ -52,11 +53,11 @@ static func create_instance(id: String) -> DetailUI:
 
 
 func _update_cover_image() -> void:
-	var tex := await self.entry.vn_info.get_cover_tex()
+	var tex := await self.entry.vn.get_cover_tex()
 	if tex:
 		self.cover_image_texture_rect.texture = tex
 	else:
-		_LOGGER.warn("failed to load image from '%s'" % self.entry.vn_info.cover_url)
+		_LOGGER.warn("failed to load image from '%s'" % self.entry.vn.cover_url)
 
 
 ## Refresh playtime & session count
@@ -94,21 +95,22 @@ func _reflect_to_ui() -> void:
 
 	# set executable dependent stuffs
 	self.exec_path_label.text = self.entry.exec_path if self.entry.exec_path else "NOT SET"
+	self.admin_priv_check_box.button_pressed = self.entry.admin
 	self._update_launch_stop_buttons()
 
 	# set metadata
-	self.description_rich_label.text = self.entry.vn_info.description
-	self.developer_label.text = self.entry.vn_info.developers
-	self.release_date_label.text = self.entry.vn_info.released
-	self.title_label.text = self.entry.vn_info.title
-	self.label_option_large.selected = self.entry.vn_info.label
+	self.description_rich_label.text = self.entry.vn.description
+	self.developer_label.text = self.entry.vn.developers
+	self.release_date_label.text = self.entry.vn.released
+	self.title_label.text = self.entry.vn.title
+	self.label_option_large.selected = self.entry.vn.label
 
 	self._update_cover_image()
 
 	# set VNDB link if id starts with v
 	if self.entry.id.begins_with("v"):
-		self.vndb_link.text = self.entry.vn_info.id
-		self.vndb_link.uri = "https://vndb.org/" + self.entry.vn_info.id
+		self.vndb_link.text = self.entry.vn.id
+		self.vndb_link.uri = "https://vndb.org/" + self.entry.vn.id
 	else:
 		# TODO: hide if not VNDB entry
 		pass
@@ -118,7 +120,7 @@ func _reflect_to_ui() -> void:
 		child.queue_free()
 		self.tag_container.remove_child(child)
 
-	for tag: String in self.entry.vn_info.tags.split(","):
+	for tag: String in self.entry.vn.tags.split(","):
 		self.tag_container.add_child(TagUI.create_instance(tag))
 
 	# update total runtime & sessions
@@ -171,7 +173,9 @@ func _on_delete_button_pressed() -> void:
 
 ## Delete from db and signal & free self. Connected in runtime at _on_delete_button_pressed
 func _on_delete_confirmed() -> void:
+	PlaytimeTracker.stash_sessions(self.entry.id)
 	EntryManager.remove_entry(self.entry.id)
+
 	self._on_close_button_pressed()
 
 

@@ -381,6 +381,17 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.5823756, 0.5823756, 0.5823756, 1)
 theme_override_font_sizes/font_size = 18
 text = "C:/..."
+text_overrun_behavior = 3
+
+[node name="AdminPrivCheckBox" type="CheckBox" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Whether to run with Administrator Privilege or not.
+This is NOT recommended as it cause periodic lag to launcher.
+Instead, run the launcher itself as admin if possible."
+focus_mode = 0
+disabled = true
+text = "Require admin privilege (Windows only)"
 
 [node name="HSeparator" type="HSeparator" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2"]
 layout_mode = 2

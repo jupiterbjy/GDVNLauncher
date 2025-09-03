@@ -44,10 +44,9 @@ labels.id
 static var _POST_VN_TEMPLATE: String = """
 {
 	"filters": [
-		"and", [
-			["id", "=", "%s"],
-			["devstatus", "=", 0]
-		]
+		"and",
+		["id", "=", "%s"],
+		["devstatus", "=", 0]
 	],
 	"fields": VN_FIELD
 }

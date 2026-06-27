@@ -121,8 +121,10 @@ class Process:
 		# now hell begins...
 		var output: Array
 
-		var full_cmd := "(Start-Process '%s' -PassThru -Verb RunAs%s).Id" % [
-			self.path, ' -ArgumentList "%s"' % self.params if self.params else ""
+		var full_cmd := "cd '%s'; (Start-Process '%s' -PassThru -Verb RunAs%s).Id" % [
+			self.path.get_base_dir(),
+			self.path,
+			' -ArgumentList "%s"' % self.params if self.params else "",
 		]
 		var code := OS.execute(
 			"powershell",

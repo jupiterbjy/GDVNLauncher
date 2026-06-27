@@ -23,6 +23,10 @@ var entry: EntryManager.Entry = null
 
 @onready var _play_status_overlay: PanelContainer = %PlayStatusOverlay
 
+var is_playable: bool:
+	get():
+		return false if not entry else len(entry.exec_path) > 0
+
 ## Used to decide whether to reload image or not
 var _current_img_url: String = ""
 

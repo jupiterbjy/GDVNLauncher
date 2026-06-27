@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://b3xdas536yxk6"]
+[gd_scene format=3 uid="uid://b3xdas536yxk6"]
 
 [ext_resource type="Script" uid="uid://wkbs2cb8a17w" path="res://scenes/vn_entry_ui.gd" id="1_bm6hf"]
 [ext_resource type="PackedScene" uid="uid://dej5l7khseid" path="res://scenes/label_option.tscn" id="2_cbc2e"]
@@ -19,28 +19,28 @@ corner_detail = 5
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cbc2e"]
 bg_color = Color(0, 0, 0, 0.3137255)
 
-[node name="VNEntryUI" type="PanelContainer"]
+[node name="VNEntryUI" type="PanelContainer" unique_id=718660803]
 theme_override_styles/panel = SubResource("StyleBoxFlat_o1c4u")
 script = ExtResource("1_bm6hf")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=963014030]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=121475258]
 layout_mode = 2
 
-[node name="LabelOption" parent="VBoxContainer/HBoxContainer" instance=ExtResource("2_cbc2e")]
+[node name="LabelOption" parent="VBoxContainer/HBoxContainer" unique_id=1460323894 instance=ExtResource("2_cbc2e")]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="PlaytimeLabel" type="Label" parent="VBoxContainer/HBoxContainer"]
+[node name="PlaytimeLabel" type="Label" parent="VBoxContainer/HBoxContainer" unique_id=2086645903]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = "12.3h (4)"
 horizontal_alignment = 2
 
-[node name="CoverButton" type="TextureButton" parent="VBoxContainer"]
+[node name="CoverButton" type="TextureButton" parent="VBoxContainer" unique_id=186878732]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(130, 200)
 layout_mode = 2
@@ -49,7 +49,7 @@ texture_normal = ExtResource("6_xpcvn")
 ignore_texture_size = true
 stretch_mode = 6
 
-[node name="PlayStatusOverlay" type="PanelContainer" parent="VBoxContainer/CoverButton"]
+[node name="PlayStatusOverlay" type="PanelContainer" parent="VBoxContainer/CoverButton" unique_id=495628565]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
@@ -60,19 +60,19 @@ grow_vertical = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_cbc2e")
 
-[node name="CenterContainer" type="CenterContainer" parent="VBoxContainer/CoverButton/PlayStatusOverlay"]
+[node name="CenterContainer" type="CenterContainer" parent="VBoxContainer/CoverButton/PlayStatusOverlay" unique_id=238613802]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/CoverButton/PlayStatusOverlay/CenterContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/CoverButton/PlayStatusOverlay/CenterContainer" unique_id=1027536727]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="VBoxContainer/CoverButton/PlayStatusOverlay/CenterContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="VBoxContainer/CoverButton/PlayStatusOverlay/CenterContainer/VBoxContainer" unique_id=50769230]
 layout_mode = 2
 theme_override_font_sizes/font_size = 64
 text = "▶"
 horizontal_alignment = 1
 
-[node name="CurrentPlaytimeLabel" type="Label" parent="VBoxContainer/CoverButton/PlayStatusOverlay/CenterContainer/VBoxContainer"]
+[node name="CurrentPlaytimeLabel" type="Label" parent="VBoxContainer/CoverButton/PlayStatusOverlay/CenterContainer/VBoxContainer" unique_id=207881184]
 unique_name_in_owner = true
 layout_mode = 2
 text = "12.3m"

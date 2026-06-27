@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://5f1ylcxfm58a"]
+[gd_scene format=3 uid="uid://5f1ylcxfm58a"]
 
 [ext_resource type="Script" uid="uid://c3v7a5u0781aj" path="res://scenes/main_ui.gd" id="1_4uoxc"]
 [ext_resource type="Texture2D" uid="uid://ctyd5gwmuh13a" path="res://resources/ui/sort_48dp_E3E3E3_FILL0_wght400_GRAD0_opsz48.svg" id="2_ktt6o"]
@@ -36,7 +36,7 @@ content_margin_top = 16.0
 content_margin_right = 8.0
 content_margin_bottom = 16.0
 
-[node name="MainUI" type="MarginContainer"]
+[node name="MainUI" type="MarginContainer" unique_id=154544531]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -44,59 +44,71 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_4uoxc")
 
-[node name="PanelContainer" type="PanelContainer" parent="."]
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=1801921376]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_w37m7")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer" unique_id=639376466]
 layout_mode = 2
 
-[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer"]
+[node name="Header" type="PanelContainer" parent="PanelContainer/VBoxContainer" unique_id=1434262793]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_2ppmm")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/PanelContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/Header" unique_id=1939547610]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="AddButton" type="TextureButton" parent="PanelContainer/VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="AddButton" type="TextureButton" parent="PanelContainer/VBoxContainer/Header/HBoxContainer" unique_id=1699466004]
 layout_mode = 2
 mouse_default_cursor_shape = 2
 texture_normal = ExtResource("3_llbac")
 
-[node name="BatchAddButton" type="TextureButton" parent="PanelContainer/VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="BatchAddButton" type="TextureButton" parent="PanelContainer/VBoxContainer/Header/HBoxContainer" unique_id=239886632]
 layout_mode = 2
 mouse_default_cursor_shape = 2
 texture_normal = ExtResource("3_i1gbh")
 
-[node name="SortButton" type="TextureButton" parent="PanelContainer/VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="SortButton" type="TextureButton" parent="PanelContainer/VBoxContainer/Header/HBoxContainer" unique_id=2027829958]
 unique_name_in_owner = true
 layout_mode = 2
 mouse_default_cursor_shape = 2
 toggle_mode = true
 texture_normal = ExtResource("2_ktt6o")
 
-[node name="SearchLineEdit" type="LineEdit" parent="PanelContainer/VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="SearchLineEdit" type="LineEdit" parent="PanelContainer/VBoxContainer/Header/HBoxContainer" unique_id=808640476]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Keyword..."
 alignment = 1
 
-[node name="ConfigButton" type="TextureButton" parent="PanelContainer/VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="ConfigButton" type="TextureButton" parent="PanelContainer/VBoxContainer/Header/HBoxContainer" unique_id=802414447]
 layout_mode = 2
 mouse_default_cursor_shape = 2
 texture_normal = ExtResource("2_llbac")
 
-[node name="PlaytimeLabel" type="Label" parent="PanelContainer/VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="PlaytimeLabel" type="Label" parent="PanelContainer/VBoxContainer/Header/HBoxContainer" unique_id=190455083]
 unique_name_in_owner = true
 layout_mode = 2
 text = "12.3h
 4 sessions"
 horizontal_alignment = 2
 
-[node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer/VBoxContainer"]
+[node name="OptionHeader" type="PanelContainer" parent="PanelContainer/VBoxContainer" unique_id=795827549]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_2ppmm")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/OptionHeader" unique_id=922442168]
+layout_mode = 2
+
+[node name="PlayableCheckBox" type="CheckBox" parent="PanelContainer/VBoxContainer/OptionHeader/HBoxContainer" unique_id=1017932280]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Show Playable Only"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer/VBoxContainer" unique_id=108800208]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_ktt6o")
@@ -104,13 +116,18 @@ follow_focus = true
 horizontal_scroll_mode = 0
 vertical_scroll_mode = 2
 
-[node name="GroupListContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/ScrollContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/ScrollContainer" unique_id=488451431]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="GroupListContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1101244547]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 64
 
-[connection signal="pressed" from="PanelContainer/VBoxContainer/PanelContainer/HBoxContainer/AddButton" to="." method="_on_add_button_pressed"]
-[connection signal="pressed" from="PanelContainer/VBoxContainer/PanelContainer/HBoxContainer/BatchAddButton" to="." method="_on_batch_add_button_pressed"]
-[connection signal="pressed" from="PanelContainer/VBoxContainer/PanelContainer/HBoxContainer/SortButton" to="." method="_on_sort_button_pressed"]
-[connection signal="pressed" from="PanelContainer/VBoxContainer/PanelContainer/HBoxContainer/ConfigButton" to="." method="_on_config_button_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/Header/HBoxContainer/AddButton" to="." method="_on_add_button_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/Header/HBoxContainer/BatchAddButton" to="." method="_on_batch_add_button_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/Header/HBoxContainer/SortButton" to="." method="_on_sort_button_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/Header/HBoxContainer/ConfigButton" to="." method="_on_config_button_pressed"]
+[connection signal="toggled" from="PanelContainer/VBoxContainer/OptionHeader/HBoxContainer/PlayableCheckBox" to="." method="_on_playable_check_box_toggled"]

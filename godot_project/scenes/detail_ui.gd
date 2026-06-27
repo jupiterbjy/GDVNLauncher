@@ -3,7 +3,7 @@ extends PanelContainer
 ## Detailed VN information UI
 
 # TODO: add delete option
-
+# TODO: make tags & desc collapsable
 
 # --- Signals ---
 

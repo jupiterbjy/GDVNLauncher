@@ -271,3 +271,7 @@ func _on_playtime_live_update(vn_ids: Array[String]) -> void:
 
 func _on_sort_button_pressed() -> void:
 	self._sort_groups(self._sort_button.button_pressed)
+
+
+func _on_playable_check_box_toggled(toggled_on: bool) -> void:
+	pass

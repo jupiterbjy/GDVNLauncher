@@ -1,3 +1,4 @@
+class_name ConfigUI
 extends PanelContainer
 
 # TODO: add exporting importing config & cache via ZIPReader/Packer
@@ -7,6 +8,8 @@ extends PanelContainer
 
 
 # --- Attributes ---
+
+var ui_manager: UIStackManager = null
 
 # VNDB CONF --
 @onready var title_lang_option_button: OptionButton = %TitleLangOptionButton
@@ -34,6 +37,20 @@ var _check_box_type_map: PackedStringArray = ["cont", "ero", "tech"]
 const _LANG_IDX_MAP: Dictionary[String, int] = {
 	"en": 0, "ja": 1, "ko": 2, "zh-Hans": 3,
 }
+
+const _SCENE := preload("uid://bo3ykybjvk4wo")
+
+
+# --- Interfaces ---
+
+static func create_instance() -> ConfigUI:
+	return _SCENE.instantiate()
+
+
+## Return false to abort stacking (the new UI will be freed and previous resumed).
+func start() -> bool:
+	self._reflect_from_config()
+	return true
 
 
 # --- Methods ---
@@ -73,21 +90,17 @@ func _reflect_to_config() -> void:
 
 # --- Handlers ---
 
-func _ready() -> void:
-	self._reflect_from_config()
-
-
 func _on_image_cache_dir_button_pressed() -> void:
 	OS.shell_open(ProjectSettings.globalize_path(CacheManager.WEB_CACHE_DIR))
 
 
 func _on_save_button_pressed() -> void:
 	self._reflect_to_config()
-	self.queue_free()
+	self.ui_manager.pop_ui()
 
 
 func _on_cancel_button_pressed() -> void:
-	self.queue_free()
+	self.ui_manager.pop_ui()
 
 
 func _on_clear_unplayed_entries_pressed() -> void:

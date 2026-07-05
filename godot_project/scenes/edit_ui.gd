@@ -6,15 +6,14 @@ extends PanelContainer
 
 # --- Signals ---
 
-## Emitted on save.
-signal entry_saved(id: String)
-# emit entry or db_id? changed least 3 times back and forth
-
 
 # --- Attributes ---
 
+var ui_manager: UIStackManager = null
+
 var entry: EntryManager.Entry = null
 
+var is_edited: bool = false
 
 @onready var cover_image_rect: TextureRect = %CoverImageTextureRect
 @onready var title_line_edit: LineEdit = %TitleLineEdit
@@ -42,7 +41,7 @@ static var _LOGGER := Logging.get_logger("EditUI")
 const _SCENE = preload("uid://2henmqt3po33")
 
 
-# --- Methods ---
+# --- Interfaces ---
 
 static func create_instance(id: String = "") -> EditUI:
 	var instance: EditUI = _SCENE.instantiate()
@@ -52,6 +51,42 @@ static func create_instance(id: String = "") -> EditUI:
 
 	return instance
 
+
+## Return false to abort stacking (the new UI will be freed and previous resumed).
+func start() -> bool:
+
+	ControlUtils.option_button_hide_radio(self.label_option_large)
+
+	if self.entry.id:
+		await self._reflect_to_ui()
+
+	return true
+
+
+## Return a dictionary to pass that data to this UI's resume() later.
+func pause() -> Dictionary:
+	return {}
+
+
+## `data` contains the return value of pause() from the UI that was just closed.
+func resume(_data: Dictionary) -> void:
+	pass
+
+
+## Delete action for cleanup. Up to UI on how to handle `force` close.
+## Return dictionary with arbitary data, with StringName key 'closed' boolean
+## indicating whether ui has closed or not.
+func close(_force := false) -> Dictionary:
+	return {
+		&"closed": true,
+		&"EditUI": {
+			&"id": self.entry.id,
+			&"edited": self.is_edited,
+		}
+	}
+
+
+# --- Methods ---
 
 func _update_cover_image() -> void:
 	if not self.entry.vn.cover_url:
@@ -79,7 +114,7 @@ func _reflect_to_ui() -> void:
 
 	self.admin_priv_check_box.button_pressed = self.entry.admin
 
-	self._update_cover_image()
+	await self._update_cover_image()
 
 
 ## Refresh self.entry to match UI
@@ -99,13 +134,6 @@ func _reflect_from_ui() -> void:
 
 
 # --- Handlers ---
-
-func _ready() -> void:
-	ControlUtils.option_button_hide_radio(self.label_option_large)
-
-	if self.entry.id:
-		self._reflect_to_ui()
-
 
 func _on_exec_select_button_pressed() -> void:
 
@@ -139,12 +167,12 @@ func _on_fetch_vndb_button_pressed() -> void:
 		data.label = self.entry.vn.label
 		self.entry.vn = data
 
-	self._reflect_to_ui()
+	await self._reflect_to_ui()
 
 
 func _on_image_file_dialog_file_selected(path: String) -> void:
 	self.entry.vn.cover_url = path
-	self._update_cover_image()
+	await self._update_cover_image()
 
 
 func _on_save_button_pressed() -> void:
@@ -154,12 +182,12 @@ func _on_save_button_pressed() -> void:
 	EntryManager.upsert_entry(self.entry)
 	PlaytimeTracker.unstash_sessions(self.entry.id)
 
-	self.entry_saved.emit(self.entry.id)
-	self.queue_free()
+	self.is_edited = true
+	self.ui_manager.pop_ui()
 
 
 func _on_cancel_button_pressed() -> void:
-	self.queue_free()
+	self.ui_manager.pop_ui()
 
 
 func _on_cover_from_url_button_pressed() -> void:
@@ -172,4 +200,4 @@ func _on_cover_from_local_button_pressed() -> void:
 
 func _on_url_popup_url_selected(url: String) -> void:
 	self.entry.vn.cover_url = url
-	self._update_cover_image()
+	await self._update_cover_image()

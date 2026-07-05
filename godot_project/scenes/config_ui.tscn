@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://bo3ykybjvk4wo"]
+[gd_scene format=3 uid="uid://bo3ykybjvk4wo"]
 
 [ext_resource type="Script" uid="uid://j71xao3y0p3a" path="res://scenes/config_ui.gd" id="1_ef4ed"]
 [ext_resource type="Texture2D" uid="uid://ptfx18rdr664" path="res://resources/ui/save_48dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg" id="2_tvbuo"]
@@ -48,7 +48,7 @@ corner_detail = 5
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ef4ed"]
 
-[node name="ConfigUI" type="PanelContainer"]
+[node name="ConfigUI" type="PanelContainer" unique_id=999169991]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -59,20 +59,20 @@ size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_w37m7")
 script = ExtResource("1_ef4ed")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=191356087]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer" unique_id=1434103907]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_2ppmm")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer" unique_id=204965676]
 layout_mode = 2
 theme_override_constants/separation = 8
 alignment = 2
 
-[node name="TitleLabel" type="Label" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="TitleLabel" type="Label" parent="VBoxContainer/PanelContainer/HBoxContainer" unique_id=875264279]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -81,58 +81,58 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_51wph")
 text = "Configuration"
 horizontal_alignment = 1
 
-[node name="SaveButton" type="TextureButton" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="SaveButton" type="TextureButton" parent="VBoxContainer/PanelContainer/HBoxContainer" unique_id=1739932012]
 layout_mode = 2
 mouse_default_cursor_shape = 2
 texture_normal = ExtResource("2_tvbuo")
 
-[node name="CancelButton" type="TextureButton" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="CancelButton" type="TextureButton" parent="VBoxContainer/PanelContainer/HBoxContainer" unique_id=1108022050]
 layout_mode = 2
 mouse_default_cursor_shape = 2
 texture_normal = ExtResource("4_a8hpa")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=1808818852]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 16
 
-[node name="RightPanel" type="PanelContainer" parent="VBoxContainer/HBoxContainer"]
+[node name="RightPanel" type="PanelContainer" parent="VBoxContainer/HBoxContainer" unique_id=829219123]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_65k5l")
 
-[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/HBoxContainer/RightPanel"]
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/HBoxContainer/RightPanel" unique_id=817766277]
 layout_mode = 2
 size_flags_horizontal = 3
 follow_focus = true
 horizontal_scroll_mode = 0
 vertical_scroll_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer" unique_id=1455040586]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/margin_right = 8
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer" unique_id=1708649793]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 32
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2" unique_id=1629370695]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2"]
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2" unique_id=994103936]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "VNDB Config"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2" unique_id=1272140949]
 layout_mode = 2
 alignment = 2
 
-[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer"]
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer" unique_id=1154033832]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -140,11 +140,11 @@ theme_override_colors/font_color = Color(0.5823756, 0.5823756, 0.5823756, 1)
 theme_override_font_sizes/font_size = 18
 text = "Preferred title language"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer" unique_id=1700548508]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="TitleLangOptionButton" type="OptionButton" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer/HBoxContainer"]
+[node name="TitleLangOptionButton" type="OptionButton" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer/HBoxContainer" unique_id=251401616]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_styles/focus = SubResource("StyleBoxEmpty_6fx7t")
@@ -159,71 +159,71 @@ popup/item_2/id = 2
 popup/item_3/text = "zh-Hans"
 popup/item_3/id = 3
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2" unique_id=1379370252]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer2"]
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer2" unique_id=90316320]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.5823756, 0.5823756, 0.5823756, 1)
 theme_override_font_sizes/font_size = 18
 text = "Tag filter"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer2"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer2" unique_id=245928110]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ContCheckBox" type="CheckBox" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer2/HBoxContainer"]
+[node name="ContCheckBox" type="CheckBox" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer2/HBoxContainer" unique_id=102389188]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_styles/focus = SubResource("StyleBoxEmpty_mc11l")
 button_pressed = true
 text = "Content"
 
-[node name="EroCheckBox" type="CheckBox" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer2/HBoxContainer"]
+[node name="EroCheckBox" type="CheckBox" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer2/HBoxContainer" unique_id=574335331]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_styles/focus = SubResource("StyleBoxEmpty_mc11l")
 text = "Sexual"
 
-[node name="TechCheckBox" type="CheckBox" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer2/HBoxContainer"]
+[node name="TechCheckBox" type="CheckBox" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer2/HBoxContainer" unique_id=970915963]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_styles/focus = SubResource("StyleBoxEmpty_mc11l")
 text = "Technical"
 
-[node name="HBoxContainer3" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2"]
+[node name="HBoxContainer3" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2" unique_id=665453392]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer3"]
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer3" unique_id=357209295]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.5823756, 0.5823756, 0.5823756, 1)
 theme_override_font_sizes/font_size = 18
 text = "Tag minimum rating"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer3"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer3" unique_id=1859218587]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="TagRatingSpinBox" type="SpinBox" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer3/HBoxContainer"]
+[node name="TagRatingSpinBox" type="SpinBox" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer3/HBoxContainer" unique_id=1093150865]
 unique_name_in_owner = true
 layout_mode = 2
 max_value = 3.0
 step = 0.10000000000582077
 value = 2.100000000122241
 
-[node name="HBoxContainer4" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2"]
+[node name="HBoxContainer4" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2" unique_id=1587167598]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer4"]
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer4" unique_id=949169454]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.5823756, 0.5823756, 0.5823756, 1)
 theme_override_font_sizes/font_size = 18
 text = "Optional Token (Used to sync)"
 
-[node name="VNDBTokenLineEdit" type="LineEdit" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer4"]
+[node name="VNDBTokenLineEdit" type="LineEdit" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer4" unique_id=2092815955]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -231,33 +231,33 @@ placeholder_text = "VNDB Token..."
 emoji_menu_enabled = false
 secret = true
 
-[node name="HSeparator" type="HSeparator" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2"]
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2" unique_id=80247409]
 layout_mode = 2
 
-[node name="VBoxContainer4" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2"]
+[node name="VBoxContainer4" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2" unique_id=193627596]
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer4"]
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer4" unique_id=1351430765]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "Launcher config"
 
-[node name="HBoxContainer4" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer4"]
+[node name="HBoxContainer4" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer4" unique_id=923203734]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer4/HBoxContainer4"]
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer4/HBoxContainer4" unique_id=513612505]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.5823756, 0.5823756, 0.5823756, 1)
 theme_override_font_sizes/font_size = 18
 text = "Playtime update interval"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer4/HBoxContainer4"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer4/HBoxContainer4" unique_id=390708362]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="PollRateSpinBox" type="SpinBox" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer4/HBoxContainer4/HBoxContainer"]
+[node name="PollRateSpinBox" type="SpinBox" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer4/HBoxContainer4/HBoxContainer" unique_id=172273780]
 unique_name_in_owner = true
 layout_mode = 2
 min_value = 10.0
@@ -266,33 +266,33 @@ step = 10.0
 value = 20.0
 suffix = "s"
 
-[node name="HSeparator2" type="HSeparator" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2"]
+[node name="HSeparator2" type="HSeparator" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2" unique_id=1415869044]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2"]
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2" unique_id=293582606]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 8
 
-[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer"]
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer" unique_id=243814926]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "Debug"
 
-[node name="HBoxContainer" type="HFlowContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer"]
+[node name="HBoxContainer" type="HFlowContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer" unique_id=581816695]
 layout_mode = 2
 
-[node name="ImageCacheDirButton" type="Button" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer/HBoxContainer"]
+[node name="ImageCacheDirButton" type="Button" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer/HBoxContainer" unique_id=380009903]
 layout_mode = 2
 theme_override_styles/focus = SubResource("StyleBoxEmpty_ef4ed")
 text = "Open Image Cache Directory"
 
-[node name="ClearUnplayedEntries" type="Button" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer/HBoxContainer"]
+[node name="ClearUnplayedEntries" type="Button" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer/HBoxContainer" unique_id=577030033]
 layout_mode = 2
 theme_override_styles/focus = SubResource("StyleBoxEmpty_ef4ed")
 text = "Clear unplayed entries"
 
-[node name="Label2" type="Label" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer"]
+[node name="Label2" type="Label" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer" unique_id=45063016]
 layout_mode = 2
 text = "TBD"
 

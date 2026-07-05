@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://bu7ymo1b0i052"]
+[gd_scene format=3 uid="uid://bu7ymo1b0i052"]
 
 [ext_resource type="Script" uid="uid://cufgtsjooodqt" path="res://scenes/tag_ui.gd" id="1_qb8fy"]
 
@@ -13,7 +13,7 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
-[node name="Tag" type="Label"]
+[node name="Tag" type="Label" unique_id=473151576]
 theme_override_styles/normal = SubResource("StyleBoxFlat_1jo7s")
 text = "ADV"
 horizontal_alignment = 1

@@ -1,7 +1,10 @@
-extends Node
+class_name UIStackManager
+extends Control
 ## Used to manage UI stacks by hiding all previous ones when stacking optionally
 
+
 # --- Signals ---
+
 
 # --- Classes ---
 
@@ -23,33 +26,30 @@ class AbstractUIWrapper:
 		if &"ui_flags" in original_node:
 			self.ui_flags = original_node.get(&"ui_flags")
 
-	## Post-onready Start action. Receives arbitary data from paused UI.
-	## Up to this ui on how to handle it.
-	## Should return false on startup failure.
-	func start(data: Dictionary) -> bool:
-		self._logger.debug("Starting %s w/ %s" % [self.ui_name, data])
+	## Post-onready Start action. Should return false on startup failure.
+	func start() -> bool:
+		# wonder if variant was better but welp
+
+		self._logger.debug("Starting %s" % self.ui_name)
 
 		if self.ui_node.has_method(&"start"):
-			return self.ui_node.call(&"start", data)
+			return await self.ui_node.call(&"start")
 
 		return true
 
-	## Pause action. Sends arbitary data to stacked UI if necessary.
-	## This should NOT stop `_process` & `_physics_process` on it's own.
-	## That is handled by UIStackManager using `ui_flags`.
-	func pause() -> Dictionary:
+	## Pause action.
+	func pause() -> void:
 		self._logger.debug("Pausing %s" % self.ui_name)
 
 		if not self.ui_flags & UI_POPUP:
 			self.ui_node.hide()
 
-		if self.ui_flags & UI_NO_PROCESS_ON_PAUSE:
+		if not self.ui_flags & UI_PROCESS_ON_PAUSE:
 			self.ui_node.process_mode = Node.PROCESS_MODE_DISABLED
 
 		if self.ui_node.has_method(&"pause"):
-			return self.ui_node.call(&"pause")
+			self.ui_node.call(&"pause")
 
-		return {}
 
 	## Resume action. Receives arbitary data from popped UI.
 	## Up to this ui on how to handle it.
@@ -57,27 +57,33 @@ class AbstractUIWrapper:
 		self._logger.debug("Resuming %s w/ %s" % [self.ui_name, data])
 
 		if self.ui_node.has_method(&"resume"):
-			return self.ui_node.call(&"resume", data)
+			self.ui_node.call(&"resume", data)
 
 		if not self.ui_flags & UI_POPUP:
 			self.ui_node.show()
 
 		# for now all UI better be always processing..
-		if self.ui_flags & UI_NO_PROCESS_ON_PAUSE:
+		if not self.ui_flags & UI_PROCESS_ON_PAUSE:
 			self.ui_node.process_mode = Node.PROCESS_MODE_ALWAYS
 
 	## Delete action for cleanup. Up to UI on how to handle `force` close.
-	## Should return true if UI is closed.
-	func close(force := false) -> bool:
+	## Return dictionary with arbitary data, with StringName key 'closed' boolean
+	## indicating whether ui has closed or not.
+	func close(force := false) -> Dictionary:
 		self._logger.debug("Closing %s (force=%s)" % [self.ui_name, force])
 
-		if self.ui_node.has_method(&"close"):
-			return self.ui_node.call(&"close", force)
+		var data: Dictionary = (
+			self.ui_node.call(&"close", force)
+			if self.ui_node.has_method(&"close")
+			else {&"closed": true}
+		)
 
-		self.ui_node.get_parent().remove_child(self.ui_node)
-		self.ui_node.queue_free()
+		# asserted below so should be fine
+		if data[&"closed"]:
+			self.ui_node.get_parent().remove_child(self.ui_node)
+			self.ui_node.queue_free()
 
-		return true
+		return data
 
 	func free() -> void:
 		self._logger.debug("Freeing %s" % self.ui_name)
@@ -85,36 +91,45 @@ class AbstractUIWrapper:
 		if self.ui_node:
 			self.ui_node.queue_free()
 
-		super.free()
-
 
 # --- Attributes ---
 
 ## UI Config flag
 enum {
+	## Is this UI popup, and should previous UI kept visible?
 	UI_POPUP = 1,
-	UI_NO_PROCESS_ON_PAUSE = 2,
+
+	## Is this UI need to process while paused inside stack?
+	UI_PROCESS_ON_PAUSE = 2,
 }
 
 ## UI Stack
 var stack: Array[AbstractUIWrapper]
 
-var _logger := Logging.get_logger(&"UIStackManager")
+static var _LOGGER := Logging.get_logger(&"UIStackManager")
 
 
 # --- Methods ---
 
 ## Stack new UI in stack. Returns false on failure and frees scene.
 func stack_ui(instanced_scene: Control) -> bool:
-	self.add_sibling(instanced_scene)
 
-	var last_ui := stack[-1]
+	instanced_scene.set(&"ui_manager", self)
 
+	self.add_child(instanced_scene)
 	var new_ui := AbstractUIWrapper.new(instanced_scene)
 
-	if not new_ui.start(last_ui.pause()):
+	if self.stack:
+		self.stack[-1].pause()
+
+	if not await new_ui.start():
+		_LOGGER.info("Failed to start %s" % instanced_scene.name)
+
 		new_ui.free()
-		last_ui.resume({})
+
+		if self.stack:
+			self.stack[-1].resume({&"closed": true})
+
 		return false
 
 	self.stack.append(new_ui)
@@ -124,11 +139,29 @@ func stack_ui(instanced_scene: Control) -> bool:
 
 ## Pop UI in stack and destroy it
 func pop_ui(force := false) -> bool:
-	if self.stack[-1].close(force):
-		(self.stack.pop_back() as AbstractUIWrapper).free()
-		return true
+	var data := self.stack[-1].close(force)
+	assert(&"closed" in data, "Close call's returned dictionary is missing 'closed' StringName!")
 
+	if data[&"closed"]:
+		# refcounted so it'll free itself later
+		self.stack.pop_back()
+		self.stack[-1].resume(data)
+
+		return true
 	return false
 
 
+## Destroy all UI in case of close request
+func cascade_ui(force := false) -> bool:
+	while self.stack:
+		if not self.pop_ui(force):
+			return false
+
+	return true
+
+
 # --- Handlers ---
+
+func _ready() -> void:
+	# bootstrap
+	await self.stack_ui(MainUI.create_instance())

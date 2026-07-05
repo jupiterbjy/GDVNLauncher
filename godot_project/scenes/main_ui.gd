@@ -1,7 +1,10 @@
+class_name MainUI
 extends MarginContainer
 
 
 # --- Attributes ---
+
+var ui_manager: UIStackManager = null
 
 ## Dict[vn_id, VNEntry]
 var _entries: Dictionary[String, VNEntryUI]
@@ -15,12 +18,49 @@ var _groups: Dictionary[String, VNEntryGroup]
 
 @onready var _playtime_label: Label = %PlaytimeLabel
 
-const _CONFIG_SCENE = preload("uid://bo3ykybjvk4wo")
+const _SCENE := preload("uid://5f1ylcxfm58a")
 
 static var _LOGGER := Logging.get_logger("MainUI")
 
 ## Number of maxmimum parallel reloads on _reload_all()
 const _MAX_PARALLEL_RELOADS: int = 5
+
+
+# --- Interfaces ---
+
+static func create_instance() -> MainUI:
+	return _SCENE.instantiate()
+
+
+func start() -> bool:
+
+	# connect to playtime tracker to get playtime updates
+	PlaytimeTracker.db_updated.connect(self._on_playtime_db_update)
+	PlaytimeTracker.tick.connect(self._on_playtime_live_update)
+
+	#EntryManager.entry_added.connect(self._add)
+	EntryManager.entries_removed.connect(self._on_db_entries_removed)
+
+	await self._async_reload_all()
+
+	return true
+
+
+func resume(data: Dictionary) -> void:
+	if (
+		&"edited" not in data
+		or &"old_id" not in data
+		or &"new_id" not in data
+	):
+		_LOGGER.error("Missing 'id' and 'changed' in resume data")
+		return
+
+	# TODO: handle changed ID case & changed case
+	if (data[&"old_id"] != data[&"new_id"]):
+		_LOGGER.error("ID change handling is not implemented yet")
+
+	if (data[&"edited"] as bool):
+		await self._async_reload(data[&"new_id"] as String)
 
 
 # --- Methods ---
@@ -83,7 +123,7 @@ func _sort_groups(ascending := true) -> void:
 		)
 
 	for idx: int in len(groups):
-		self._group_list_container.move_child(groups[idx], idx)
+		self._group_list_container.move_child(groups[idx] as Node, idx)
 
 
 ## Reload existing entry. Does not checks for missing id
@@ -169,18 +209,6 @@ func _update_aggregated_playtime() -> void:
 
 # --- Handlers ---
 
-func _ready() -> void:
-
-	# connect to playtime tracker to get playtime updates
-	PlaytimeTracker.db_updated.connect(self._on_playtime_db_update)
-	PlaytimeTracker.tick.connect(self._on_playtime_live_update)
-
-	#EntryManager.entry_added.connect(self._add)
-	EntryManager.entries_removed.connect(self._on_db_entries_removed)
-
-	await self._async_reload_all()
-
-
 ## Called on EditUI.entry_saved
 func _on_edit_ui_saved(id: String) -> void:
 	if id in self._entries:
@@ -191,10 +219,7 @@ func _on_edit_ui_saved(id: String) -> void:
 
 ## Handler for adding new VN
 func _on_add_button_pressed() -> void:
-	var instance: EditUI = EditUI.create_instance()
-	instance.entry_saved.connect(self._on_edit_ui_saved)
-
-	self.add_sibling(instance)
+	await self.ui_manager.stack_ui(EditUI.create_instance())
 
 
 func _on_batch_add_button_pressed() -> void:
@@ -214,21 +239,13 @@ func _on_batch_add_button_pressed() -> void:
 	await self._async_reload_all()
 
 
-## Called on DetailUI.closed
-func _on_detail_ui_closed(id: String) -> void:
-	await self._async_reload(id)
-
-
 ## Handler for VN cover image press on VNEntryUI
 func _on_cover_pressed(id: String) -> void:
-	var instance := DetailUI.create_instance(id)
-	instance.closed.connect(self._on_detail_ui_closed)
-
-	self.add_sibling(instance)
+	await self.ui_manager.stack_ui(DetailUI.create_instance(id))
 
 
 func _on_config_button_pressed() -> void:
-	self.add_sibling(_CONFIG_SCENE.instantiate())
+	await self.ui_manager.stack_ui(ConfigUI.create_instance())
 
 
 ## Connected in runtime, called when entry is removed from DB

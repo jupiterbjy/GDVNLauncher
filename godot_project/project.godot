@@ -15,7 +15,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 [application]
 
 config/name="VNDBLauncher-Godot"
-run/main_scene="uid://5f1ylcxfm58a"
+run/main_scene="uid://djdc1i1oktv4i"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 run/low_processor_mode=true
 config/icon="res://icon.svg"
@@ -27,12 +27,13 @@ AsyncHTTPClient="*res://autoloads/async_http_client.gd"
 PlaytimeTracker="*res://autoloads/playtime_tracker.gd"
 UserConfig="*res://autoloads/user_config.gd"
 EntryManager="*res://autoloads/entry_manager.gd"
-UiStackManager="*uid://qhauip1a207g"
 
 [debug]
 
 gdscript/warnings/unsafe_property_access=1
 gdscript/warnings/unsafe_method_access=1
+gdscript/warnings/unsafe_call_argument=1
+gdscript/warnings/missing_await=1
 
 [display]
 

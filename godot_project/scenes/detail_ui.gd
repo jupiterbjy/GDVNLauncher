@@ -5,15 +5,23 @@ extends PanelContainer
 # TODO: add delete option
 # TODO: make tags & desc collapsable
 
-# --- Signals ---
 
-## Emitted when closing
-signal closed(id: String)
+# --- Signals ---
 
 
 # --- Attributes ---
 
+var ui_manager: UIStackManager = null
+
+var ui_flags: int = UIStackManager.UI_PROCESS_ON_PAUSE
+
 var entry: EntryManager.Entry = null
+
+## Initial entry's ID in case it changed during editing
+var original_id: String = ""
+
+## Was this entry edited by EditUI?
+var is_edited: bool = false
 
 @onready var title_label: Label = %TitleLabel
 
@@ -27,6 +35,7 @@ var entry: EntryManager.Entry = null
 
 @onready var launch_button: Button = %LaunchButton
 @onready var stop_button: Button = %StopButton
+@onready var edit_button: TextureButton = %EditButton
 
 @onready var exec_path_label: Label = %ExecPathLabel
 @onready var admin_priv_check_box: CheckBox = %AdminPrivCheckBox
@@ -43,14 +52,47 @@ static var _LOGGER := Logging.get_logger("DetailUI")
 const _SCENE = preload("uid://coektos3qbfg1")
 
 
-# --- Methods ---
+# --- Interfaces ---
 
 static func create_instance(id: String) -> DetailUI:
 	var instance: DetailUI = _SCENE.instantiate()
-	instance.entry = EntryManager.get_entry(id)
+	instance.original_id = id
 
 	return instance
 
+
+func start() -> bool:
+	self.entry = EntryManager.get_entry(self.original_id)
+
+	await self._refresh_ui()
+	PlaytimeTracker.db_updated.connect(self._on_playtime_db_update)
+
+	return true
+
+
+## Expecting 'entry' key with string ID
+## `data` contains the return value of pause() from the UI that was just closed.
+func resume(data: Dictionary) -> void:
+	# lax check but should be good for most case where I forget
+	if &"EditUI" in data:
+		self.is_edited = data[&"EditUI"][&"edited"] as bool
+
+		if self.is_edited:
+			self.entry = EntryManager.get_entry(data[&"EditUI"][&"id"] as String)
+			await self._refresh_ui()
+
+
+## Returns key `edited: bool / old_id: String / new_id: String`
+func close(_force := false) -> Dictionary:
+	return {
+		&"closed": true,
+		&"edited": self.is_edited,
+		&"old_id": self.original_id,
+		&"new_id": self.entry.id,
+	}
+
+
+# --- Methods ---
 
 func _update_cover_image() -> void:
 	var tex := await self.entry.vn.get_cover_tex()
@@ -75,14 +117,16 @@ func _update_playtime_n_session_count() -> void:
 ## Update launch/stop button
 func _update_launch_stop_buttons() -> void:
 
-	# user might remove linked executable while still running
+	# user might remove linked executable while still running, should prevent editing
 	# update visibility first
 	if PlaytimeTracker.is_running(self.entry.id):
 		self.launch_button.hide()
 		self.stop_button.show()
+		self.edit_button.hide()
 	else:
 		self.launch_button.show()
 		self.stop_button.hide()
+		self.edit_button.show()
 
 	# disable/enable launch button, stop button doesn't need one
 	self.launch_button.disabled = (
@@ -91,7 +135,7 @@ func _update_launch_stop_buttons() -> void:
 
 
 ## Refresh UI to match self.entry
-func _reflect_to_ui() -> void:
+func _refresh_ui() -> void:
 
 	# set executable dependent stuffs
 	self.exec_path_label.text = self.entry.exec_path if self.entry.exec_path else "NOT SET"
@@ -105,7 +149,7 @@ func _reflect_to_ui() -> void:
 	self.title_label.text = self.entry.vn.title
 	self.label_option_large.selected = self.entry.vn.label
 
-	self._update_cover_image()
+	await self._update_cover_image()
 
 	# set VNDB link if id starts with v
 	if self.entry.id.begins_with("v"):
@@ -129,36 +173,21 @@ func _reflect_to_ui() -> void:
 
 # --- Handlers ---
 
-func _ready() -> void:
-	assert(self.entry, "No entry was provided for DetailUI")
-
-	PlaytimeTracker.db_updated.connect(self._on_playtime_db_update)
-
-	self._reflect_to_ui()
-
-
 ## Handler for BBCode hyperlink support
 func _on_description_rich_label_meta_clicked(meta: Variant) -> void:
 	OS.shell_open(str(meta))
 
 
 func _on_edit_button_pressed() -> void:
-	var instance := EditUI.create_instance(self.entry.id)
-	instance.entry_saved.connect(self._on_entry_saved)
+	#var instance := EditUI.create_instance(self.entry.id)
+	#instance.entry_saved.connect(self._on_entry_saved)
 
-	self.add_sibling(instance)
-
-
-## Called on EditUI.entry_saved
-func _on_entry_saved(id: String) -> void:
-	self.entry = EntryManager.get_entry(id)
-	self._reflect_to_ui()
+	await self.ui_manager.stack_ui(EditUI.create_instance(self.entry.id))
 
 
 ## Free self & emit entry id via signal
 func _on_close_button_pressed() -> void:
-	self.closed.emit(self.entry.id)
-	self.queue_free()
+	self.ui_manager.pop_ui()
 
 
 func _on_label_option_large_item_selected(index: int) -> void:

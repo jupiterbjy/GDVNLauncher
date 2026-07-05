@@ -27,6 +27,7 @@ AsyncHTTPClient="*res://autoloads/async_http_client.gd"
 PlaytimeTracker="*res://autoloads/playtime_tracker.gd"
 UserConfig="*res://autoloads/user_config.gd"
 EntryManager="*res://autoloads/entry_manager.gd"
+UiStackManager="*uid://qhauip1a207g"
 
 [debug]
 

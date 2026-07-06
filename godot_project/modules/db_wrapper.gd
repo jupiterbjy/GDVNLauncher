@@ -96,8 +96,8 @@ static func _test() -> void:
 # --- Handlers ---
 
 static func _static_init() -> void:
-	_test()
-	pass
+	if Globals.DEBUG:
+		_test()
 
 
 func _init(path_: String) -> void:

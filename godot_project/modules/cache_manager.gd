@@ -108,7 +108,7 @@ static func _test() -> void:
 	_LOGGER.debug("--- Test start ---")
 
 	# Test CacheManager & AsyncHTTPClient
-	var data = await CacheManager.async_from_url("https://t.vndb.org/cv/77/88277.jpg")
+	var data := await CacheManager.async_from_url("https://t.vndb.org/cv/77/88277.jpg")
 	var img := Image.new()
 	img.load_jpg_from_buffer(data)
 
@@ -120,5 +120,5 @@ static func _test() -> void:
 # --- Handlers ---
 
 static func _static_init() -> void:
-	_test.call_deferred()
-	pass
+	if Globals.DEBUG:
+		_test.call_deferred()

@@ -50,7 +50,6 @@ class AbstractUIWrapper:
 		if self.ui_node.has_method(&"pause"):
 			self.ui_node.call(&"pause")
 
-
 	## Resume action. Receives arbitary data from popped UI.
 	## Up to this ui on how to handle it.
 	func resume(data: Dictionary) -> void:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://2henmqt3po33"]
+[gd_scene format=3 uid="uid://2henmqt3po33"]
 
 [ext_resource type="Script" uid="uid://cvli7fcy5xk63" path="res://scenes/edit_ui.gd" id="1_65k5l"]
 [ext_resource type="StyleBox" uid="uid://mq7s6hu5bgds" path="res://ui_root_panel.tres" id="1_bcjs3"]
@@ -118,7 +118,7 @@ corner_detail = 5
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i4lw2"]
 
-[node name="EditUI" type="PanelContainer"]
+[node name="EditUI" type="PanelContainer" unique_id=1858930818]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -129,24 +129,24 @@ size_flags_vertical = 3
 theme_override_styles/panel = ExtResource("1_bcjs3")
 script = ExtResource("1_65k5l")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1450355783]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer" unique_id=1389756294]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_2ppmm")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer" unique_id=1922728326]
 layout_mode = 2
 theme_override_constants/separation = 8
 alignment = 2
 
-[node name="LabelOptionLarge" parent="VBoxContainer/PanelContainer/HBoxContainer" instance=ExtResource("3_6rqyq")]
+[node name="LabelOptionLarge" parent="VBoxContainer/PanelContainer/HBoxContainer" unique_id=976702788 instance=ExtResource("3_6rqyq")]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="TitleLineEdit" type="LineEdit" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="TitleLineEdit" type="LineEdit" parent="VBoxContainer/PanelContainer/HBoxContainer" unique_id=1730015954]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -155,31 +155,31 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_51wph")
 placeholder_text = "Visual Novel Name..."
 alignment = 1
 
-[node name="SaveButton" type="TextureButton" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="SaveButton" type="TextureButton" parent="VBoxContainer/PanelContainer/HBoxContainer" unique_id=1958664571]
 layout_mode = 2
 mouse_default_cursor_shape = 2
 texture_normal = ExtResource("1_j83j5")
 
-[node name="CancelButton" type="TextureButton" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="CancelButton" type="TextureButton" parent="VBoxContainer/PanelContainer/HBoxContainer" unique_id=725367524]
 layout_mode = 2
 mouse_default_cursor_shape = 2
 texture_normal = ExtResource("2_3bwsl")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=1073245641]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 16
 
-[node name="LeftPanel" type="PanelContainer" parent="VBoxContainer/HBoxContainer"]
+[node name="LeftPanel" type="PanelContainer" parent="VBoxContainer/HBoxContainer" unique_id=412981752]
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_3bwsl")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/LeftPanel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/LeftPanel" unique_id=1834920201]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="CoverImageTextureRect" type="TextureRect" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer"]
+[node name="CoverImageTextureRect" type="TextureRect" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer" unique_id=1296583923]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 300)
 layout_mode = 2
@@ -189,7 +189,7 @@ texture = ExtResource("3_j83j5")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="CenterContainer" type="CenterContainer" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer/CoverImageTextureRect"]
+[node name="CenterContainer" type="CenterContainer" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer/CoverImageTextureRect" unique_id=1918152595]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -197,11 +197,11 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer/CoverImageTextureRect/CenterContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer/CoverImageTextureRect/CenterContainer" unique_id=293172372]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="CoverFromURLButton" type="Button" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer/CoverImageTextureRect/CenterContainer/VBoxContainer"]
+[node name="CoverFromURLButton" type="Button" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer/CoverImageTextureRect/CenterContainer/VBoxContainer" unique_id=219816612]
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_font_sizes/font_size = 20
@@ -209,7 +209,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_jwfuv")
 theme_override_styles/hover = SubResource("StyleBoxFlat_p5tsd")
 text = "From URL"
 
-[node name="CoverFromLocalButton" type="Button" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer/CoverImageTextureRect/CenterContainer/VBoxContainer"]
+[node name="CoverFromLocalButton" type="Button" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer/CoverImageTextureRect/CenterContainer/VBoxContainer" unique_id=2091175969]
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_font_sizes/font_size = 20
@@ -217,14 +217,14 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_51wph")
 theme_override_styles/hover = SubResource("StyleBoxFlat_7070g")
 text = "From Local"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer" unique_id=1269360037]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer/VBoxContainer" unique_id=1123421833]
 layout_mode = 2
 text = "Developer"
 
-[node name="DeveloperLineEdit" type="LineEdit" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer/VBoxContainer"]
+[node name="DeveloperLineEdit" type="LineEdit" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer/VBoxContainer" unique_id=1396510509]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
@@ -233,14 +233,14 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_otl62")
 placeholder_text = "e.g. FAVORITE,"
 alignment = 1
 
-[node name="VBoxContainer3" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer"]
+[node name="VBoxContainer3" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer" unique_id=2075501119]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer/VBoxContainer3"]
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer/VBoxContainer3" unique_id=1180544683]
 layout_mode = 2
 text = "Release Date"
 
-[node name="ReleaseDateLineEdit" type="LineEdit" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer/VBoxContainer3"]
+[node name="ReleaseDateLineEdit" type="LineEdit" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer/VBoxContainer3" unique_id=175019337]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
@@ -249,14 +249,14 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_wqlba")
 placeholder_text = "e.g. 2011-07-29"
 alignment = 1
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer" unique_id=295899595]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer/VBoxContainer2"]
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer/VBoxContainer2" unique_id=147993223]
 layout_mode = 2
 text = "VNDB ID"
 
-[node name="VndbIdLineEdit" type="LineEdit" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer/VBoxContainer2"]
+[node name="VndbIdLineEdit" type="LineEdit" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer/VBoxContainer2" unique_id=585017564]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -266,10 +266,10 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_ndao0")
 placeholder_text = "e.g. v5834"
 alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer/VBoxContainer2"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer/VBoxContainer2" unique_id=1966987142]
 layout_mode = 2
 
-[node name="SpoilerOptionButton" type="OptionButton" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer/VBoxContainer2/HBoxContainer"]
+[node name="SpoilerOptionButton" type="OptionButton" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer/VBoxContainer2/HBoxContainer" unique_id=1813060681]
 unique_name_in_owner = true
 layout_mode = 2
 selected = 0
@@ -281,47 +281,47 @@ popup/item_1/id = 1
 popup/item_2/text = "Spoil All"
 popup/item_2/id = 2
 
-[node name="FetchVNDBButton" type="Button" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer/VBoxContainer2/HBoxContainer"]
+[node name="FetchVNDBButton" type="Button" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer/VBoxContainer2/HBoxContainer" unique_id=1917376873]
 layout_mode = 2
 mouse_default_cursor_shape = 2
 text = "Fetch"
 
-[node name="RightPanel" type="PanelContainer" parent="VBoxContainer/HBoxContainer"]
+[node name="RightPanel" type="PanelContainer" parent="VBoxContainer/HBoxContainer" unique_id=2043980653]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_65k5l")
 
-[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/HBoxContainer/RightPanel"]
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/HBoxContainer/RightPanel" unique_id=2132202257]
 layout_mode = 2
 size_flags_horizontal = 3
 follow_focus = true
 horizontal_scroll_mode = 0
 vertical_scroll_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer" unique_id=657692948]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/margin_right = 8
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer" unique_id=2009096775]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 32
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2" unique_id=1276932728]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2"]
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2" unique_id=1558357720]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "Executable Path"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2" unique_id=1852684002]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="ExecPathLineEdit" type="LineEdit" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer"]
+[node name="ExecPathLineEdit" type="LineEdit" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer" unique_id=584278518]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -330,13 +330,13 @@ theme_override_styles/read_only = SubResource("StyleBoxEmpty_p5tsd")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_7070g")
 placeholder_text = "C:\\..."
 
-[node name="ExecSelectButton" type="Button" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer"]
+[node name="ExecSelectButton" type="Button" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer" unique_id=320880443]
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_font_sizes/font_size = 20
 text = "Select"
 
-[node name="AdminPrivCheckBox" type="CheckBox" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2"]
+[node name="AdminPrivCheckBox" type="CheckBox" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2" unique_id=1450949033]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Whether to run with Administrator Privilege or not.
@@ -345,15 +345,15 @@ Instead, run the launcher itself as admin if possible."
 focus_mode = 0
 text = "Require admin privilege (Windows only)"
 
-[node name="VBoxContainer4" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2"]
+[node name="VBoxContainer4" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2" unique_id=1444770586]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer4"]
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer4" unique_id=734742164]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "Tags"
 
-[node name="TagLineEdit" type="LineEdit" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer4"]
+[node name="TagLineEdit" type="LineEdit" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer4" unique_id=2110605667]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
@@ -361,16 +361,16 @@ theme_override_styles/read_only = SubResource("StyleBoxEmpty_bcjs3")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_65k5l")
 placeholder_text = "Comma separated tags, e.g. Flashback,Romance,Fantasy"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2"]
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2" unique_id=788098291]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer"]
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer" unique_id=1613581243]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "Description"
 
-[node name="DescriptionTextEdit" type="TextEdit" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer"]
+[node name="DescriptionTextEdit" type="TextEdit" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer" unique_id=54948818]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
@@ -385,11 +385,11 @@ wrap_mode = 1
 scroll_smooth = true
 scroll_fit_content_height = true
 
-[node name="URLPopup" parent="." instance=ExtResource("6_jwfuv")]
+[node name="URLPopup" parent="." unique_id=1159815031 instance=ExtResource("6_jwfuv")]
 visible = false
 layout_mode = 2
 
-[node name="ExecutableFileDialog" type="FileDialog" parent="."]
+[node name="ExecutableFileDialog" type="FileDialog" parent="." unique_id=1770845287]
 oversampling_override = 1.0
 title = "Open a File"
 file_mode = 0
@@ -397,7 +397,7 @@ access = 2
 filters = PackedStringArray("*.exe;")
 use_native_dialog = true
 
-[node name="ImageFileDialog" type="FileDialog" parent="."]
+[node name="ImageFileDialog" type="FileDialog" parent="." unique_id=166745771]
 oversampling_override = 1.0
 title = "Open a File"
 file_mode = 0

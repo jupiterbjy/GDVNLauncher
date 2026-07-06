@@ -12,11 +12,21 @@ var _entries: Dictionary[String, VNEntryUI]
 ## Dict[group name, VNEntryGroup
 var _groups: Dictionary[String, VNEntryGroup]
 
+## For game count display
+var _total_game_count: int = 0
+var _filtered_game_count: int = 0
+
 @onready var _group_list_container: VBoxContainer = %GroupListContainer
 
 @onready var _sort_button: TextureButton = %SortButton
 
 @onready var _playtime_label: Label = %PlaytimeLabel
+
+@onready var _search_line_edit: LineEdit = %SearchLineEdit
+
+@onready var _playable_only_check_box: CheckBox = %PlayableOnlyCheckBox
+
+@onready var _game_count_label: Label = %GameCountLabel
 
 const _SCENE := preload("uid://5f1ylcxfm58a")
 
@@ -142,6 +152,10 @@ func _async_reload(id: String) -> void:
 
 	self._entries.erase(id)
 
+	# update count & filter
+	self._total_game_count -= 1
+	self._filter_groups()
+
 	_LOGGER.debug("Deleted %s" % id)
 
 
@@ -185,6 +199,15 @@ func _async_reload_all() -> void:
 	self._remove_empty_groups()
 	self._sort_groups(self._sort_button.button_pressed)
 
+	# update count & filter
+	#self._total_game_count = EntryManager.get_entry_count()
+	self._total_game_count = 0
+	for group: VNEntryGroup in self._groups.values():
+		_LOGGER.info("Group %s count %s" % [group.group_name, group.entry_count])
+		self._total_game_count += group.entry_count
+
+	self._filter_groups()
+
 	# update aggregated time
 	self._update_aggregated_playtime()
 
@@ -205,6 +228,25 @@ func _update_aggregated_playtime() -> void:
 	self._playtime_label.text = (
 		"%s\n%d sessions" % [Time.get_time_string_from_unix_time(record[0]), record[1]]
 	)
+
+
+## Filter all groups via name & playtime
+func _filter_groups() -> void:
+	var normalized_keyword := self._search_line_edit.text.strip_edges().to_lower()
+
+	var filter_count: int = 0
+
+	for group: VNEntryGroup in self._groups.values():
+		filter_count += group.filter_self(
+			normalized_keyword,
+			self._playable_only_check_box.button_pressed,
+		)
+
+	self._filtered_game_count = filter_count
+
+	self._game_count_label.text = "%d / %d" % [
+		self._filtered_game_count, self._total_game_count,
+	]
 
 
 # --- Handlers ---
@@ -290,5 +332,13 @@ func _on_sort_button_pressed() -> void:
 	self._sort_groups(self._sort_button.button_pressed)
 
 
-func _on_playable_check_box_toggled(toggled_on: bool) -> void:
-	pass
+func _on_playable_only_check_box_toggled(_toggled_on: bool) -> void:
+	self._filter_groups()
+
+
+func _on_search_line_edit_text_changed(_new_text: String) -> void:
+	self._filter_groups()
+
+
+func _on_search_line_edit_text_submitted(_new_text: String) -> void:
+	self._search_line_edit.release_focus()

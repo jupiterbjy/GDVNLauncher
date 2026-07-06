@@ -94,13 +94,14 @@ func update_playtime_live() -> void:
 
 func _ready() -> void:
 	# must be placeholder for UI design, free self
-	if not self.entry:
-		self.queue_free()
+	#if not self.entry:
+		#self.queue_free()
 		#return
 
 	# otherwise load
 	# TODO: see if this need to be deferred
 	#await self.async_reload()
+	pass
 
 
 func _on_status_option_button_item_selected(index: int) -> void:

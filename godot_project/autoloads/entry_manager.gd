@@ -167,6 +167,10 @@ class _Query:
 	SELECT cover_url FROM "entries" WHERE cover_url != ''
 	"""
 
+	const count_entries := """
+	SELECT count(*) FROM "entries"
+	"""
+
 
 # --- Methods ---
 
@@ -363,6 +367,12 @@ func get_cover_urls() -> Array[String]:
 		data.append(record["cover_url"])
 
 	return data
+
+
+## Get total entry count. Unlikely but returns -1 on failure
+func get_entry_count() -> int:
+	var result := self._db.execute(_Query.count_entries)
+	return result.fetchone().values()[0] if result.success and result._rows else -1
 
 
 # --- Handlers ---

@@ -22,6 +22,9 @@ var cover_url: String
 ## Active labels for this vn. Wont think about multi label situation with id < 7
 var label: int
 
+## for faster title search
+var normalized_title: String
+
 # example json response from vndb
 """
 {
@@ -180,6 +183,9 @@ func _init(
 	self.tags = tags_
 	self.cover_url = cover_url_
 	self.label = label_
+
+	# TODO: save multiple other language title too on DB for search?
+	self.normalized_title = self.title.strip_edges().to_lower()
 
 
 func _to_string() -> String:

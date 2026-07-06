@@ -103,10 +103,19 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_2ppmm")
 [node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/OptionHeader" unique_id=922442168]
 layout_mode = 2
 
-[node name="PlayableCheckBox" type="CheckBox" parent="PanelContainer/VBoxContainer/OptionHeader/HBoxContainer" unique_id=1017932280]
+[node name="PlayableOnlyCheckBox" type="CheckBox" parent="PanelContainer/VBoxContainer/OptionHeader/HBoxContainer" unique_id=1017932280]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Show Playable Only"
+
+[node name="Gap" type="Control" parent="PanelContainer/VBoxContainer/OptionHeader/HBoxContainer" unique_id=520493599]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="GameCountLabel" type="Label" parent="PanelContainer/VBoxContainer/OptionHeader/HBoxContainer" unique_id=1247962616]
+unique_name_in_owner = true
+layout_mode = 2
+text = "GAME_COUNT"
 
 [node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer/VBoxContainer" unique_id=108800208]
 layout_mode = 2
@@ -129,5 +138,7 @@ theme_override_constants/separation = 64
 [connection signal="pressed" from="PanelContainer/VBoxContainer/Header/HBoxContainer/AddButton" to="." method="_on_add_button_pressed"]
 [connection signal="pressed" from="PanelContainer/VBoxContainer/Header/HBoxContainer/BatchAddButton" to="." method="_on_batch_add_button_pressed"]
 [connection signal="pressed" from="PanelContainer/VBoxContainer/Header/HBoxContainer/SortButton" to="." method="_on_sort_button_pressed"]
+[connection signal="text_changed" from="PanelContainer/VBoxContainer/Header/HBoxContainer/SearchLineEdit" to="." method="_on_search_line_edit_text_changed"]
+[connection signal="text_submitted" from="PanelContainer/VBoxContainer/Header/HBoxContainer/SearchLineEdit" to="." method="_on_search_line_edit_text_submitted"]
 [connection signal="pressed" from="PanelContainer/VBoxContainer/Header/HBoxContainer/ConfigButton" to="." method="_on_config_button_pressed"]
-[connection signal="toggled" from="PanelContainer/VBoxContainer/OptionHeader/HBoxContainer/PlayableCheckBox" to="." method="_on_playable_check_box_toggled"]
+[connection signal="toggled" from="PanelContainer/VBoxContainer/OptionHeader/HBoxContainer/PlayableOnlyCheckBox" to="." method="_on_playable_only_check_box_toggled"]

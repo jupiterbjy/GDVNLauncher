@@ -1,0 +1,367 @@
+[gd_scene format=3 uid="uid://ddb6cr3exth51"]
+
+[ext_resource type="PackedScene" uid="uid://4ygacnd6rp75" path="res://scenes/bases/ui_detail_frame_base.tscn" id="1_nmix8"]
+[ext_resource type="Texture2D" uid="uid://bmy4oyiv75n4l" path="res://resources/ui/edit_48dp_E3E3E3_FILL0_wght400_GRAD0_opsz48.svg" id="2_5s7sa"]
+[ext_resource type="Script" uid="uid://btjmpfe2rokdo" path="res://scenes/ui_detail_view.gd" id="2_hyl11"]
+[ext_resource type="Texture2D" uid="uid://cts20v1kro7pe" path="res://resources/ui/tablet/delete_forever_48dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg" id="3_hyl11"]
+[ext_resource type="PackedScene" uid="uid://bu7ymo1b0i052" path="res://scenes/components/tag_ui.tscn" id="4_vlidq"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xaw7m"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jjcnk"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fj4aj"]
+content_margin_left = 16.0
+content_margin_top = 16.0
+content_margin_right = 16.0
+content_margin_bottom = 16.0
+bg_color = Color(0.1, 0.1, 0.1, 0.6)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nmix8"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.2368, 0.64, 0.2368, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k6u7o"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.1443, 0.39, 0.1443, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0eon3"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.2664, 0.72, 0.2664, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5s7sa"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.3, 0.3, 0.3, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hyl11"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vlidq"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.68, 0.17, 0.17, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xaw7m"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.29, 0.055099998, 0.055099998, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kc4b4"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.72, 0.21600002, 0.21600002, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_emb7f"]
+content_margin_left = 16.0
+content_margin_top = 16.0
+content_margin_right = 8.0
+content_margin_bottom = 16.0
+bg_color = Color(0.1, 0.1, 0.1, 0.6)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[node name="UIDetailView" unique_id=154544531 instance=ExtResource("1_nmix8")]
+script = ExtResource("2_hyl11")
+
+[node name="Gap" parent="PanelContainer/VBoxContainer/Header/HBoxContainer" parent_id_path=PackedInt32Array(751279195) index="1" unique_id=1563176843]
+visible = false
+
+[node name="TitleLabel" type="Label" parent="PanelContainer/VBoxContainer/Header/HBoxContainer" parent_id_path=PackedInt32Array(751279195) index="2" unique_id=503710221]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 32
+theme_override_styles/focus = SubResource("StyleBoxEmpty_xaw7m")
+text = "VN Name"
+horizontal_alignment = 1
+text_overrun_behavior = 3
+
+[node name="EditButton" type="TextureButton" parent="PanelContainer/VBoxContainer/Header/HBoxContainer" parent_id_path=PackedInt32Array(751279195) index="3" unique_id=1570993723]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("2_5s7sa")
+
+[node name="DeleteButton" type="TextureButton" parent="PanelContainer/VBoxContainer/Header/HBoxContainer" parent_id_path=PackedInt32Array(751279195) index="4" unique_id=1783030376]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("3_hyl11")
+
+[node name="Content" parent="PanelContainer/VBoxContainer" parent_id_path=PackedInt32Array(639376466) index="2" unique_id=1838610177]
+theme_override_styles/panel = SubResource("StyleBoxEmpty_jjcnk")
+
+[node name="LeftPanel" parent="PanelContainer/VBoxContainer/Content/HBoxContainer" parent_id_path=PackedInt32Array(1615679203) index="0" unique_id=1381474216]
+theme_override_styles/panel = SubResource("StyleBoxFlat_fj4aj")
+
+[node name="VNInfoBox" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer" parent_id_path=PackedInt32Array(1282859874) index="1" unique_id=1014173437]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer/VNInfoBox" index="0" unique_id=680728092]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer/VNInfoBox/HBoxContainer" index="0" unique_id=789100006]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.5823756, 0.5823756, 0.5823756, 1)
+text = "Developer"
+
+[node name="DeveloperLabel" type="Label" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer/VNInfoBox/HBoxContainer" index="1" unique_id=977241300]
+unique_name_in_owner = true
+layout_mode = 2
+text = "FAVORITE"
+horizontal_alignment = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer/VNInfoBox" index="1" unique_id=61662463]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer/VNInfoBox/HBoxContainer2" index="0" unique_id=633852942]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.5823756, 0.5823756, 0.5823756, 1)
+text = "Released"
+
+[node name="ReleaseDateLabel" type="Label" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer/VNInfoBox/HBoxContainer2" index="1" unique_id=678778864]
+unique_name_in_owner = true
+layout_mode = 2
+text = "2011.07.29"
+horizontal_alignment = 2
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer/VNInfoBox" index="2" unique_id=1527777604]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer/VNInfoBox/HBoxContainer3" index="0" unique_id=1121043117]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.5823756, 0.5823756, 0.5823756, 1)
+text = "VNDB"
+
+[node name="VNDBLink" type="LinkButton" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer/VNInfoBox/HBoxContainer3" index="1" unique_id=1087253320]
+unique_name_in_owner = true
+layout_mode = 2
+text = "v5834"
+
+[node name="PlaytimeInfoBox" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer" parent_id_path=PackedInt32Array(1282859874) index="2" unique_id=1671654845]
+layout_mode = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer/PlaytimeInfoBox" index="0" unique_id=281440118]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer/PlaytimeInfoBox/HBoxContainer2" index="0" unique_id=1519879255]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.5823756, 0.5823756, 0.5823756, 1)
+text = "Last played"
+
+[node name="LastPlayLabel" type="Label" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer/PlaytimeInfoBox/HBoxContainer2" index="1" unique_id=1067606253]
+layout_mode = 2
+text = "2025-08-10"
+horizontal_alignment = 2
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer/PlaytimeInfoBox" index="1" unique_id=718513791]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer/PlaytimeInfoBox/HBoxContainer3" index="0" unique_id=346605268]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.5823756, 0.5823756, 0.5823756, 1)
+text = "Sessions"
+
+[node name="SessionLabel" type="Label" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer/PlaytimeInfoBox/HBoxContainer3" index="1" unique_id=1836683714]
+unique_name_in_owner = true
+layout_mode = 2
+text = "4"
+horizontal_alignment = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer/PlaytimeInfoBox" index="2" unique_id=1701805196]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer/PlaytimeInfoBox/HBoxContainer" index="0" unique_id=1797776659]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.5823756, 0.5823756, 0.5823756, 1)
+text = "Playtime"
+
+[node name="PlaytimeLabel" type="Label" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer/PlaytimeInfoBox/HBoxContainer" index="1" unique_id=1918654011]
+unique_name_in_owner = true
+layout_mode = 2
+text = "12.3h"
+horizontal_alignment = 2
+
+[node name="PlayButtonBox" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer" parent_id_path=PackedInt32Array(1282859874) index="4" unique_id=868557317]
+layout_mode = 2
+
+[node name="LaunchButton" type="Button" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer/PlayButtonBox" index="0" unique_id=795701466]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_nmix8")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_k6u7o")
+theme_override_styles/hover = SubResource("StyleBoxFlat_0eon3")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_5s7sa")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_hyl11")
+text = "▶ Launch  "
+
+[node name="StopButton" type="Button" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer/PlayButtonBox" index="1" unique_id=1479572876]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_vlidq")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_xaw7m")
+theme_override_styles/hover = SubResource("StyleBoxFlat_kc4b4")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_5s7sa")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_hyl11")
+text = "■ Stop  "
+
+[node name="RightPanel" parent="PanelContainer/VBoxContainer/Content/HBoxContainer" parent_id_path=PackedInt32Array(1615679203) index="1" unique_id=1217902782]
+theme_override_styles/panel = SubResource("StyleBoxFlat_emb7f")
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/RightPanel/ScrollContainer" parent_id_path=PackedInt32Array(1142022046) index="0" unique_id=424289025]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 32
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/RightPanel/ScrollContainer/VBoxContainer2" index="0" unique_id=1879437520]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/RightPanel/ScrollContainer/VBoxContainer2/VBoxContainer2" index="0" unique_id=1061446253]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Executable Path"
+
+[node name="ExecPathLabel" type="Label" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/RightPanel/ScrollContainer/VBoxContainer2/VBoxContainer2" index="1" unique_id=765360981]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.5823756, 0.5823756, 0.5823756, 1)
+theme_override_font_sizes/font_size = 18
+text = "C:/..."
+text_overrun_behavior = 3
+
+[node name="AdminPrivCheckBox" type="CheckBox" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/RightPanel/ScrollContainer/VBoxContainer2/VBoxContainer2" index="2" unique_id=1786788248]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Whether to run with Administrator Privilege or not.
+This is NOT recommended as it cause periodic lag to launcher.
+Instead, run the launcher itself as admin if possible."
+focus_mode = 0
+disabled = true
+text = "Require admin privilege (Windows only)"
+
+[node name="HSeparator" type="HSeparator" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/RightPanel/ScrollContainer/VBoxContainer2" index="1" unique_id=296431474]
+layout_mode = 2
+
+[node name="VBoxContainer4" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/RightPanel/ScrollContainer/VBoxContainer2" index="2" unique_id=262242762]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/RightPanel/ScrollContainer/VBoxContainer2/VBoxContainer4" index="0" unique_id=1426865764]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Tags"
+
+[node name="TagContainer" type="FlowContainer" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/RightPanel/ScrollContainer/VBoxContainer2/VBoxContainer4" index="1" unique_id=1383492617]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Tag" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/RightPanel/ScrollContainer/VBoxContainer2/VBoxContainer4/TagContainer" index="0" unique_id=473151576 instance=ExtResource("4_vlidq")]
+layout_mode = 2
+
+[node name="HSeparator2" type="HSeparator" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/RightPanel/ScrollContainer/VBoxContainer2" index="3" unique_id=291201418]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/RightPanel/ScrollContainer/VBoxContainer2" index="4" unique_id=961055913]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/RightPanel/ScrollContainer/VBoxContainer2/VBoxContainer" index="0" unique_id=1020072965]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Description"
+
+[node name="DescriptionRichLabel" type="RichTextLabel" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/RightPanel/ScrollContainer/VBoxContainer2/VBoxContainer" index="1" unique_id=962193947]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/default_color = Color(0.69965345, 0.69965345, 0.69965345, 1)
+theme_override_font_sizes/normal_font_size = 18
+theme_override_font_sizes/bold_font_size = 18
+theme_override_font_sizes/bold_italics_font_size = 18
+theme_override_font_sizes/italics_font_size = 18
+theme_override_font_sizes/mono_font_size = 18
+bbcode_enabled = true
+text = "Our story follows Kanoue Yuuma, an amnesiac boy with a special power, and Nikaidou Shinku, ...
+
+[From [url=https://store.steampowered.com/app/2591380/Irotoridori_No_Sekai_HD__The_Colorful_World/]Steam[/url]]"
+fit_content = true
+scroll_active = false
+shortcut_keys_enabled = false
+
+[connection signal="item_selected" from="PanelContainer/VBoxContainer/Header/HBoxContainer/LabelOptionLarge" to="." method="_on_label_option_large_item_selected"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/Header/HBoxContainer/EditButton" to="." method="_on_edit_button_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/Header/HBoxContainer/DeleteButton" to="." method="_on_delete_button_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/Header/HBoxContainer/CloseButton" to="." method="_on_close_button_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer/PlayButtonBox/LaunchButton" to="." method="_on_launch_button_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer/PlayButtonBox/StopButton" to="." method="_on_stop_button_pressed"]
+[connection signal="meta_clicked" from="PanelContainer/VBoxContainer/Content/HBoxContainer/RightPanel/ScrollContainer/VBoxContainer2/VBoxContainer/DescriptionRichLabel" to="." method="_on_description_rich_label_meta_clicked"]

@@ -289,7 +289,7 @@ func _on_batch_add_button_pressed() -> void:
 
 ## Handler for VN cover image press on VNEntryUI
 func _on_cover_pressed(id: String) -> void:
-	await self.ui_manager.stack_ui(DetailUI.create_instance(id))
+	await self.ui_manager.stack_ui(UIDetailView.create_instance(id))
 
 
 func _on_config_button_pressed() -> void:

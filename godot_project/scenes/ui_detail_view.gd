@@ -1,5 +1,5 @@
-class_name DetailUI
-extends PanelContainer
+class_name UIDetailView
+extends MarginContainer
 ## Detailed VN information UI
 
 # TODO: add delete option
@@ -49,13 +49,13 @@ var is_edited: bool = false
 
 static var _LOGGER := Logging.get_logger("DetailUI")
 
-const _SCENE = preload("uid://coektos3qbfg1")
+const _SCENE = preload("res://scenes/ui_detail_view.tscn")
 
 
 # --- Interfaces ---
 
-static func create_instance(id: String) -> DetailUI:
-	var instance: DetailUI = _SCENE.instantiate()
+static func create_instance(id: String) -> UIDetailView:
+	var instance: UIDetailView = _SCENE.instantiate()
 	instance.original_id = id
 
 	return instance

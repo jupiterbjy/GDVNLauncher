@@ -1,5 +1,5 @@
-class_name ConfigUI
-extends PanelContainer
+class_name UIConfig
+extends MarginContainer
 
 # TODO: add exporting importing config & cache via ZIPReader/Packer
 
@@ -38,13 +38,13 @@ const _LANG_IDX_MAP: Dictionary[String, int] = {
 	"en": 0, "ja": 1, "ko": 2, "zh-Hans": 3,
 }
 
-const _SCENE := preload("uid://bo3ykybjvk4wo")
+const _SCENE := preload("res://scenes/ui_config.tscn")
 
 
 # --- Interfaces ---
 
-static func create_instance() -> ConfigUI:
-	return _SCENE.instantiate()
+static func create_instance() -> UIConfig:
+	return _SCENE.instantiate() as UIConfig
 
 
 ## Return false to abort stacking (the new UI will be freed and previous resumed).
@@ -64,6 +64,8 @@ func _reflect_from_config() -> void:
 
 	# fetch token
 	self.vndb_token_line_edit.text = UserConfig.vndb_token
+
+	self.poll_rate_spin_box.value = UserConfig.poll_interval
 
 
 func _reflect_to_config() -> void:
@@ -85,6 +87,8 @@ func _reflect_to_config() -> void:
 	# Write token
 	UserConfig.vndb_token = self.vndb_token_line_edit.text.strip_edges()
 
+	UserConfig.poll_interval = int(self.poll_rate_spin_box.value)
+
 	UserConfig.save_config()
 
 
@@ -99,7 +103,7 @@ func _on_save_button_pressed() -> void:
 	self.ui_manager.pop_ui()
 
 
-func _on_cancel_button_pressed() -> void:
+func _on_close_button_pressed() -> void:
 	self.ui_manager.pop_ui()
 
 

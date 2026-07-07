@@ -69,8 +69,11 @@ func resume(data: Dictionary) -> void:
 	if (data[&"old_id"] != data[&"new_id"]):
 		_LOGGER.error("ID change handling is not implemented yet")
 
-	if (data[&"edited"] as bool):
-		await self._async_reload(data[&"new_id"] as String)
+		return
+
+	if &"ui_config" in data:
+		# TODO
+		return
 
 
 # --- Methods ---
@@ -293,7 +296,7 @@ func _on_cover_pressed(id: String) -> void:
 
 
 func _on_config_button_pressed() -> void:
-	await self.ui_manager.stack_ui(ConfigUI.create_instance())
+	await self.ui_manager.stack_ui(UIConfig.create_instance())
 
 
 ## Connected in runtime, called when entry is removed from DB

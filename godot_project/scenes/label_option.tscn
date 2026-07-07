@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://dej5l7khseid"]
+[gd_scene format=3 uid="uid://dej5l7khseid"]
 
 [ext_resource type="Texture2D" uid="uid://don4yqhod6yrc" path="res://resources/ui/tablet/circle_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg" id="1_ra3b0"]
 [ext_resource type="Texture2D" uid="uid://fh57vkl51qtw" path="res://resources/ui/tablet/play_circle_24dp_75FBFD_FILL0_wght400_GRAD0_opsz24.svg" id="2_1snva"]
@@ -16,8 +16,14 @@
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_n1q3t"]
 size = Vector2(0, 0)
 
-[node name="LabelOption" type="OptionButton"]
+[node name="LabelOption" type="OptionButton" unique_id=519132972]
 mouse_filter = 1
+theme_override_colors/font_color = Color(0.88, 0.88, 0.88, 0)
+theme_override_colors/font_focus_color = Color(0.95, 0.95, 0.95, 0)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 0)
+theme_override_colors/font_hover_color = Color(0.95, 0.95, 0.95, 0)
+theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 0)
+theme_override_colors/font_disabled_color = Color(0.88, 0.88, 0.88, 0)
 theme_override_constants/h_separation = 0
 theme_override_font_sizes/font_size = 1
 theme_override_styles/normal = SubResource("StyleBoxEmpty_n1q3t")

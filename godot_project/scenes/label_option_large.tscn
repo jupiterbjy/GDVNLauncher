@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://dx73ub2a4vjug"]
+[gd_scene format=3 uid="uid://dx73ub2a4vjug"]
 
 [ext_resource type="PackedScene" uid="uid://dej5l7khseid" path="res://scenes/label_option.tscn" id="1_okdr7"]
 [ext_resource type="Texture2D" uid="uid://nwe61b5rei03" path="res://resources/ui/tablet/circle_48dp_E3E3E3_FILL0_wght400_GRAD0_opsz48.svg" id="2_kgdo8"]
@@ -9,7 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://cf53ppxqp8dx0" path="res://resources/ui/tablet/star_48dp_FFFF55_FILL0_wght400_GRAD0_opsz48.svg" id="7_chouc"]
 [ext_resource type="Texture2D" uid="uid://dbmf6afixhhn1" path="res://resources/ui/tablet/heart_broken_48dp_8B1A10_FILL0_wght400_GRAD0_opsz48.svg" id="8_1t7dg"]
 
-[node name="LabelOptionLarge" instance=ExtResource("1_okdr7")]
+[node name="LabelOptionLarge" unique_id=350050537 instance=ExtResource("1_okdr7")]
 popup/item_0/icon = ExtResource("2_kgdo8")
 popup/item_1/icon = ExtResource("3_cdd8q")
 popup/item_2/icon = ExtResource("4_h8jmj")

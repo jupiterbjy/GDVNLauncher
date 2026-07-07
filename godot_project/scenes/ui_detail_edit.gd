@@ -1,5 +1,5 @@
-class_name EditUI
-extends PanelContainer
+class_name UIDetailEdit
+extends MarginContainer
 
 # TODO: add check for overlapping vndb id
 
@@ -25,7 +25,7 @@ var is_edited: bool = false
 
 @onready var exec_path_line_edit: LineEdit = %ExecPathLineEdit
 @onready var admin_priv_check_box: CheckBox = %AdminPrivCheckBox
-@onready var exec_file_dialog: FileDialog = $ExecutableFileDialog
+@onready var exec_file_dialog: FileDialog = $ExecFileDialog
 
 @onready var tag_line_edit: LineEdit = %TagLineEdit
 
@@ -36,15 +36,15 @@ var is_edited: bool = false
 @onready var image_file_dialog: FileDialog = $ImageFileDialog
 @onready var url_popup: CenterContainer = $URLPopup
 
-static var _LOGGER := Logging.get_logger("EditUI")
+static var _LOGGER := Logging.get_logger("UIDetailEdit")
 
-const _SCENE = preload("uid://2henmqt3po33")
+const _SCENE = preload("res://scenes/ui_detail_edit.tscn")
 
 
 # --- Interfaces ---
 
-static func create_instance(id: String = "") -> EditUI:
-	var instance: EditUI = _SCENE.instantiate()
+static func create_instance(id: String = "") -> UIDetailEdit:
+	var instance: UIDetailEdit = _SCENE.instantiate()
 	instance.entry = (
 		EntryManager.get_entry(id) if id else EntryManager.Entry.new()
 	)
@@ -145,7 +145,7 @@ func _on_exec_select_button_pressed() -> void:
 	self.exec_file_dialog.show()
 
 
-func _on_executable_file_dialog_file_selected(path: String) -> void:
+func _on_exec_file_dialog_file_selected(path: String) -> void:
 	self.exec_path_line_edit.text = path
 
 
@@ -186,7 +186,7 @@ func _on_save_button_pressed() -> void:
 	self.ui_manager.pop_ui()
 
 
-func _on_cancel_button_pressed() -> void:
+func _on_close_button_pressed() -> void:
 	self.ui_manager.pop_ui()
 
 

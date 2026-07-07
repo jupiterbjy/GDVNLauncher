@@ -47,7 +47,7 @@ var is_edited: bool = false
 @onready var session_label: Label = %SessionLabel
 @onready var playtime_label: Label = %PlaytimeLabel
 
-static var _LOGGER := Logging.get_logger("DetailUI")
+static var _LOGGER := Logging.get_logger("UIDetailView")
 
 const _SCENE = preload("res://scenes/ui_detail_view.tscn")
 
@@ -182,7 +182,7 @@ func _on_edit_button_pressed() -> void:
 	#var instance := EditUI.create_instance(self.entry.id)
 	#instance.entry_saved.connect(self._on_entry_saved)
 
-	await self.ui_manager.stack_ui(EditUI.create_instance(self.entry.id))
+	await self.ui_manager.stack_ui(UIDetailEdit.create_instance(self.entry.id))
 
 
 ## Free self & emit entry id via signal

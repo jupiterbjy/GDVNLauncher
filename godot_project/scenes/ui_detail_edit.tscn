@@ -1,0 +1,314 @@
+[gd_scene format=3 uid="uid://bmjrqvx0g7wga"]
+
+[ext_resource type="PackedScene" uid="uid://4ygacnd6rp75" path="res://scenes/bases/ui_detail_frame_base.tscn" id="1_hfmxh"]
+[ext_resource type="Script" uid="uid://cvli7fcy5xk63" path="res://scenes/ui_detail_edit.gd" id="2_vrcwn"]
+[ext_resource type="Texture2D" uid="uid://cvo0fl4gnkges" path="res://resources/ui/check_circle_48dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg" id="3_q7x5v"]
+[ext_resource type="PackedScene" uid="uid://dk8m0a02cogei" path="res://scenes/popups/url_popup.tscn" id="4_vrcwn"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jtrxd"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_re75r"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.101960786, 0.101960786, 0.101960786, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5ktil"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.22352941, 0.22352941, 0.22352941, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oamqn"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.101960786, 0.101960786, 0.101960786, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dicwx"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.22352941, 0.22352941, 0.22352941, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5fq1p"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_w26uo"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_alo2t"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_04dvl"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_sala0"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gofij"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kldgd"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_odwyd"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_t8ywn"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dogk7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lqrnl"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_eecbs"]
+
+[node name="UIDetailEdit" unique_id=154544531 instance=ExtResource("1_hfmxh")]
+script = ExtResource("2_vrcwn")
+
+[node name="Gap" parent="PanelContainer/VBoxContainer/Header/HBoxContainer" parent_id_path=PackedInt32Array(751279195) index="1" unique_id=1563176843]
+visible = false
+
+[node name="TitleLineEdit" type="LineEdit" parent="PanelContainer/VBoxContainer/Header/HBoxContainer" parent_id_path=PackedInt32Array(751279195) index="2" unique_id=1524893719]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 32
+theme_override_styles/focus = SubResource("StyleBoxEmpty_jtrxd")
+placeholder_text = "Visual Novel Name..."
+alignment = 1
+
+[node name="SaveButton" type="TextureButton" parent="PanelContainer/VBoxContainer/Header/HBoxContainer" parent_id_path=PackedInt32Array(751279195) index="3" unique_id=1132869995]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("3_q7x5v")
+
+[node name="LeftPanel" parent="PanelContainer/VBoxContainer/Content/HBoxContainer" parent_id_path=PackedInt32Array(1615679203) index="0" unique_id=1381474216]
+size_flags_vertical = 0
+
+[node name="CenterContainer" type="CenterContainer" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer/CoverImageTextureRect" parent_id_path=PackedInt32Array(1115157045) index="0" unique_id=1556552837]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer/CoverImageTextureRect/CenterContainer" index="0" unique_id=211172438]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="CoverFromURLButton" type="Button" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer/CoverImageTextureRect/CenterContainer/VBoxContainer" index="0" unique_id=13597347]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_re75r")
+theme_override_styles/hover = SubResource("StyleBoxFlat_5ktil")
+text = "From URL"
+
+[node name="CoverFromLocalButton" type="Button" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer/CoverImageTextureRect/CenterContainer/VBoxContainer" index="1" unique_id=1104657097]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_oamqn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_dicwx")
+text = "From Local"
+
+[node name="Gap" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer" parent_id_path=PackedInt32Array(1282859874) index="1" unique_id=606744756]
+visible = false
+
+[node name="DevBox" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer" parent_id_path=PackedInt32Array(1282859874) index="2" unique_id=866015225]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer/DevBox" index="0" unique_id=1551796884]
+layout_mode = 2
+text = "Developer"
+
+[node name="DeveloperLineEdit" type="LineEdit" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer/DevBox" index="1" unique_id=1599454852]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+theme_override_styles/read_only = SubResource("StyleBoxEmpty_5fq1p")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_w26uo")
+placeholder_text = "e.g. FAVORITE,"
+alignment = 1
+
+[node name="ReleaseDateBox" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer" parent_id_path=PackedInt32Array(1282859874) index="3" unique_id=846316471]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer/ReleaseDateBox" index="0" unique_id=558950339]
+layout_mode = 2
+text = "Release Date"
+
+[node name="ReleaseDateLineEdit" type="LineEdit" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer/ReleaseDateBox" index="1" unique_id=1221495182]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+theme_override_styles/read_only = SubResource("StyleBoxEmpty_alo2t")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_04dvl")
+placeholder_text = "e.g. 2011-07-29"
+alignment = 1
+
+[node name="VndbBox" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer" parent_id_path=PackedInt32Array(1282859874) index="4" unique_id=605121968]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer/VndbBox" index="0" unique_id=373259287]
+layout_mode = 2
+text = "VNDB ID"
+
+[node name="VndbIdLineEdit" type="LineEdit" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer/VndbBox" index="1" unique_id=1795902144]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 20
+theme_override_styles/read_only = SubResource("StyleBoxEmpty_sala0")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_gofij")
+placeholder_text = "e.g. v5834"
+alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer/VndbBox" index="2" unique_id=1236025432]
+layout_mode = 2
+
+[node name="SpoilerOptionButton" type="OptionButton" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer/VndbBox/HBoxContainer" index="0" unique_id=2097122732]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_default_cursor_shape = 2
+selected = 0
+item_count = 3
+popup/item_0/text = "No Spoiler"
+popup/item_0/id = 0
+popup/item_1/text = "Minor Spoiler"
+popup/item_1/id = 1
+popup/item_2/text = "Spoil All"
+popup/item_2/id = 2
+
+[node name="FetchVndbButton" type="Button" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer/VndbBox/HBoxContainer" index="1" unique_id=1345464389]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "Fetch"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/RightPanel/ScrollContainer" parent_id_path=PackedInt32Array(1142022046) index="0" unique_id=1134464034]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 32
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/RightPanel/ScrollContainer/VBoxContainer2" index="0" unique_id=1353643052]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/RightPanel/ScrollContainer/VBoxContainer2/VBoxContainer2" index="0" unique_id=419947107]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Executable Path"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/RightPanel/ScrollContainer/VBoxContainer2/VBoxContainer2" index="1" unique_id=1707059435]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ExecPathLineEdit" type="LineEdit" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/RightPanel/ScrollContainer/VBoxContainer2/VBoxContainer2/HBoxContainer" index="0" unique_id=1162369634]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 20
+theme_override_styles/read_only = SubResource("StyleBoxEmpty_kldgd")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_odwyd")
+placeholder_text = "C:\\..."
+
+[node name="ExecSelectButton" type="Button" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/RightPanel/ScrollContainer/VBoxContainer2/VBoxContainer2/HBoxContainer" index="1" unique_id=397612745]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 20
+text = "Select"
+
+[node name="AdminPrivCheckBox" type="CheckBox" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/RightPanel/ScrollContainer/VBoxContainer2/VBoxContainer2" index="2" unique_id=2044021275]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Whether to run with Administrator Privilege or not.
+This is NOT recommended as it cause periodic lag to launcher.
+Instead, run the launcher itself as admin if possible."
+focus_mode = 0
+mouse_default_cursor_shape = 2
+text = "Require admin privilege (Windows only)"
+
+[node name="VBoxContainer4" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/RightPanel/ScrollContainer/VBoxContainer2" index="1" unique_id=576574686]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/RightPanel/ScrollContainer/VBoxContainer2/VBoxContainer4" index="0" unique_id=1669256277]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Tags"
+
+[node name="TagLineEdit" type="LineEdit" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/RightPanel/ScrollContainer/VBoxContainer2/VBoxContainer4" index="1" unique_id=1780811340]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+theme_override_styles/read_only = SubResource("StyleBoxEmpty_t8ywn")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_dogk7")
+placeholder_text = "Comma separated tags, e.g. Flashback,Romance,Fantasy"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/RightPanel/ScrollContainer/VBoxContainer2" index="2" unique_id=1141325812]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/RightPanel/ScrollContainer/VBoxContainer2/VBoxContainer" index="0" unique_id=479995172]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Description"
+
+[node name="DescriptionTextEdit" type="TextEdit" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/RightPanel/ScrollContainer/VBoxContainer2/VBoxContainer" index="1" unique_id=370053410]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+theme_override_styles/focus = SubResource("StyleBoxEmpty_lqrnl")
+theme_override_styles/read_only = SubResource("StyleBoxEmpty_eecbs")
+placeholder_text = "BBCode description, e.g.:
+Our story follows Kanoue Yuuma, an amnesiac boy with a special power, and Nikaidou Shinku, ...
+
+[From [url=https://store.steampowered.com/app/2591380/Irotoridori_No_Sekai_HD__The_Colorful_World/]Steam[/url]]"
+wrap_mode = 1
+scroll_smooth = true
+scroll_fit_content_height = true
+
+[node name="ImageFileDialog" type="FileDialog" parent="." index="1" unique_id=1591265284]
+title = "Open a File"
+file_mode = 0
+access = 2
+filters = PackedStringArray("*.png,*.jpg,*.jpeg,*.webp;Image File;image/png,image/jpeg")
+use_native_dialog = true
+
+[node name="ExecFileDialog" type="FileDialog" parent="." index="2" unique_id=1506539014]
+title = "Open a File"
+file_mode = 0
+access = 2
+filters = PackedStringArray("*.exe;Executable File;application/vnd.microsoft.portable-executable", "*.*;All Types;application/octet-stream")
+use_native_dialog = true
+
+[node name="URLPopup" parent="." index="3" unique_id=1048178859 instance=ExtResource("4_vrcwn")]
+visible = false
+layout_mode = 2
+
+[connection signal="pressed" from="PanelContainer/VBoxContainer/Header/HBoxContainer/SaveButton" to="." method="_on_save_button_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/Header/HBoxContainer/CloseButton" to="." method="_on_close_button_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer/CoverImageTextureRect/CenterContainer/VBoxContainer/CoverFromURLButton" to="." method="_on_cover_from_url_button_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer/CoverImageTextureRect/CenterContainer/VBoxContainer/CoverFromLocalButton" to="." method="_on_cover_from_local_button_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer/VndbBox/HBoxContainer/FetchVndbButton" to="." method="_on_fetch_vndb_button_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/Content/HBoxContainer/RightPanel/ScrollContainer/VBoxContainer2/VBoxContainer2/HBoxContainer/ExecSelectButton" to="." method="_on_exec_select_button_pressed"]
+[connection signal="file_selected" from="ImageFileDialog" to="." method="_on_image_file_dialog_file_selected"]
+[connection signal="file_selected" from="ExecFileDialog" to="." method="_on_exec_file_dialog_file_selected"]
+[connection signal="url_selected" from="URLPopup" to="." method="_on_url_popup_url_selected"]

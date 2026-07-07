@@ -267,7 +267,7 @@ func _on_edit_ui_saved(id: String) -> void:
 
 ## Handler for adding new VN
 func _on_add_button_pressed() -> void:
-	await self.ui_manager.stack_ui(EditUI.create_instance())
+	await self.ui_manager.stack_ui(UIDetailEdit.create_instance())
 
 
 func _on_batch_add_button_pressed() -> void:

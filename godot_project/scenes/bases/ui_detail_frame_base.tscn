@@ -1,0 +1,97 @@
+[gd_scene format=3 uid="uid://4ygacnd6rp75"]
+
+[ext_resource type="PackedScene" uid="uid://dthd6orxrt0g7" path="res://scenes/bases/ui_frame_base.tscn" id="1_j1ntr"]
+[ext_resource type="Texture2D" uid="uid://u58266lwx4ws" path="res://resources/placeholders/placeholder_800 - dark.png" id="2_6rck2"]
+[ext_resource type="PackedScene" uid="uid://dx73ub2a4vjug" path="res://scenes/components/label_option_large.tscn" id="2_fj4aj"]
+[ext_resource type="Texture2D" uid="uid://brmetwoow3aqv" path="res://resources/ui/cancel_48dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg" id="3_r2e2v"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jjcnk"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fj4aj"]
+content_margin_left = 16.0
+content_margin_top = 16.0
+content_margin_right = 16.0
+content_margin_bottom = 16.0
+bg_color = Color(0.1, 0.1, 0.1, 0.6)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_emb7f"]
+content_margin_left = 16.0
+content_margin_top = 16.0
+content_margin_right = 8.0
+content_margin_bottom = 16.0
+bg_color = Color(0.1, 0.1, 0.1, 0.6)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[node name="UIDetailFrameBase" unique_id=154544531 instance=ExtResource("1_j1ntr")]
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/Header" parent_id_path=PackedInt32Array(1434262793) index="0" unique_id=751279195]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 2
+
+[node name="LabelOptionLarge" parent="PanelContainer/VBoxContainer/Header/HBoxContainer" index="0" unique_id=350050537 instance=ExtResource("2_fj4aj")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Gap" type="Control" parent="PanelContainer/VBoxContainer/Header/HBoxContainer" index="1" unique_id=1563176843]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CloseButton" type="TextureButton" parent="PanelContainer/VBoxContainer/Header/HBoxContainer" index="2" unique_id=1661603182]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("3_r2e2v")
+
+[node name="OptionHeader" parent="PanelContainer/VBoxContainer" parent_id_path=PackedInt32Array(639376466) index="1" unique_id=795827549]
+visible = false
+
+[node name="Content" parent="PanelContainer/VBoxContainer" parent_id_path=PackedInt32Array(639376466) index="2" unique_id=1838610177]
+theme_override_styles/panel = SubResource("StyleBoxEmpty_jjcnk")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/Content" index="0" unique_id=1615679203]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 16
+
+[node name="LeftPanel" type="PanelContainer" parent="PanelContainer/VBoxContainer/Content/HBoxContainer" index="0" unique_id=1381474216]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_fj4aj")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel" index="0" unique_id=1282859874]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="CoverImageTextureRect" type="TextureRect" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer" index="0" unique_id=1115157045]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 300)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("2_6rck2")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Gap" type="Control" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer" index="1" unique_id=606744756]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="RightPanel" type="PanelContainer" parent="PanelContainer/VBoxContainer/Content/HBoxContainer" index="1" unique_id=1217902782]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_emb7f")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/RightPanel" index="0" unique_id=1142022046]
+layout_mode = 2
+size_flags_horizontal = 3
+follow_focus = true
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 2

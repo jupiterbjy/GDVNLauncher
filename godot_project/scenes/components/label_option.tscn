@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://bacr1irxlj0r8" path="res://resources/ui/tablet/stop_circle_24dp_EA3323_FILL0_wght400_GRAD0_opsz24.svg" id="5_v8wga"]
 [ext_resource type="Texture2D" uid="uid://dxamjmp3aviwq" path="res://resources/ui/tablet/star_24dp_FFFF55_FILL0_wght400_GRAD0_opsz24.svg" id="6_2v8xu"]
 [ext_resource type="Texture2D" uid="uid://bild2ybp8oewv" path="res://resources/ui/tablet/heart_broken_24dp_8B1A10_FILL0_wght400_GRAD0_opsz24.svg" id="7_x2f85"]
-[ext_resource type="Script" uid="uid://dtrlob5fem1n1" path="res://scenes/label_option.gd" id="8_1snva"]
+[ext_resource type="Script" uid="uid://dtrlob5fem1n1" path="res://scenes/components/label_option.gd" id="8_1snva"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_n1q3t"]
 

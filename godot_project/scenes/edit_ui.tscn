@@ -272,6 +272,7 @@ layout_mode = 2
 [node name="SpoilerOptionButton" type="OptionButton" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer/VBoxContainer2/HBoxContainer" unique_id=1813060681]
 unique_name_in_owner = true
 layout_mode = 2
+mouse_default_cursor_shape = 2
 selected = 0
 item_count = 3
 popup/item_0/text = "No Spoiler"
@@ -343,6 +344,7 @@ tooltip_text = "Whether to run with Administrator Privilege or not.
 This is NOT recommended as it cause periodic lag to launcher.
 Instead, run the launcher itself as admin if possible."
 focus_mode = 0
+mouse_default_cursor_shape = 2
 text = "Require admin privilege (Windows only)"
 
 [node name="VBoxContainer4" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2" unique_id=1444770586]

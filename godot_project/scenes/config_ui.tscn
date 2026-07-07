@@ -147,6 +147,7 @@ size_flags_horizontal = 3
 [node name="TitleLangOptionButton" type="OptionButton" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer/HBoxContainer" unique_id=251401616]
 unique_name_in_owner = true
 layout_mode = 2
+mouse_default_cursor_shape = 2
 theme_override_styles/focus = SubResource("StyleBoxEmpty_6fx7t")
 selected = 0
 item_count = 4
@@ -176,6 +177,7 @@ size_flags_horizontal = 3
 [node name="ContCheckBox" type="CheckBox" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer2/HBoxContainer" unique_id=102389188]
 unique_name_in_owner = true
 layout_mode = 2
+mouse_default_cursor_shape = 2
 theme_override_styles/focus = SubResource("StyleBoxEmpty_mc11l")
 button_pressed = true
 text = "Content"
@@ -183,12 +185,14 @@ text = "Content"
 [node name="EroCheckBox" type="CheckBox" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer2/HBoxContainer" unique_id=574335331]
 unique_name_in_owner = true
 layout_mode = 2
+mouse_default_cursor_shape = 2
 theme_override_styles/focus = SubResource("StyleBoxEmpty_mc11l")
 text = "Sexual"
 
 [node name="TechCheckBox" type="CheckBox" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer2/HBoxContainer" unique_id=970915963]
 unique_name_in_owner = true
 layout_mode = 2
+mouse_default_cursor_shape = 2
 theme_override_styles/focus = SubResource("StyleBoxEmpty_mc11l")
 text = "Technical"
 
@@ -209,6 +213,7 @@ size_flags_horizontal = 3
 [node name="TagRatingSpinBox" type="SpinBox" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer2/HBoxContainer3/HBoxContainer" unique_id=1093150865]
 unique_name_in_owner = true
 layout_mode = 2
+mouse_default_cursor_shape = 2
 max_value = 3.0
 step = 0.10000000000582077
 value = 2.100000000122241
@@ -260,6 +265,7 @@ size_flags_horizontal = 3
 [node name="PollRateSpinBox" type="SpinBox" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer4/HBoxContainer4/HBoxContainer" unique_id=172273780]
 unique_name_in_owner = true
 layout_mode = 2
+mouse_default_cursor_shape = 2
 min_value = 10.0
 max_value = 300.0
 step = 10.0
@@ -281,20 +287,20 @@ text = "Debug"
 
 [node name="HBoxContainer" type="HFlowContainer" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer" unique_id=581816695]
 layout_mode = 2
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
 
 [node name="ImageCacheDirButton" type="Button" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer/HBoxContainer" unique_id=380009903]
 layout_mode = 2
+mouse_default_cursor_shape = 2
 theme_override_styles/focus = SubResource("StyleBoxEmpty_ef4ed")
 text = "Open Image Cache Directory"
 
 [node name="ClearUnplayedEntries" type="Button" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer/HBoxContainer" unique_id=577030033]
 layout_mode = 2
+mouse_default_cursor_shape = 2
 theme_override_styles/focus = SubResource("StyleBoxEmpty_ef4ed")
 text = "Clear unplayed entries"
-
-[node name="Label2" type="Label" parent="VBoxContainer/HBoxContainer/RightPanel/ScrollContainer/MarginContainer/VBoxContainer2/VBoxContainer" unique_id=45063016]
-layout_mode = 2
-text = "TBD"
 
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/SaveButton" to="." method="_on_save_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/CancelButton" to="." method="_on_cancel_button_pressed"]

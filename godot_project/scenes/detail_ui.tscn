@@ -171,6 +171,7 @@ alignment = 2
 [node name="LabelOptionLarge" parent="VBoxContainer/PanelContainer/HBoxContainer" unique_id=12571047 instance=ExtResource("2_xo2tl")]
 unique_name_in_owner = true
 layout_mode = 2
+mouse_default_cursor_shape = 2
 
 [node name="TitleLabel" type="Label" parent="VBoxContainer/PanelContainer/HBoxContainer" unique_id=1748452793]
 unique_name_in_owner = true
@@ -325,6 +326,7 @@ layout_mode = 2
 [node name="LaunchButton" type="Button" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer/VBoxContainer3" unique_id=206354862]
 unique_name_in_owner = true
 layout_mode = 2
+mouse_default_cursor_shape = 2
 theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxFlat_hanst")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_1f4hi")
@@ -336,6 +338,7 @@ text = "▶ Launch  "
 [node name="StopButton" type="Button" parent="VBoxContainer/HBoxContainer/LeftPanel/VBoxContainer/VBoxContainer3" unique_id=882542747]
 unique_name_in_owner = true
 layout_mode = 2
+mouse_default_cursor_shape = 2
 theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxFlat_ou1of")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_803bw")

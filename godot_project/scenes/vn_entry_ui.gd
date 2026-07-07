@@ -13,7 +13,7 @@ signal cover_clicked(id: String)
 ## VNDB ID or custom ID
 var entry: EntryManager.Entry = null
 
-@onready var _cover_button: TextureButton = %CoverButton
+@onready var _cover_texture_rect: TextureRect = %CoverTextureRect
 
 @onready var _label_option: OptionButton = %LabelOption
 
@@ -58,7 +58,7 @@ func async_reload() -> bool:
 
 	if self._current_img_url != self.entry.vn.cover_url:
 		self._current_img_url = self.entry.vn.cover_url
-		self._cover_button.texture_normal = await self.entry.vn.get_cover_tex()
+		self._cover_texture_rect.texture = await self.entry.vn.get_cover_tex()
 
 	self.update_playtime_from_db()
 	self.update_playtime_live()
@@ -108,13 +108,23 @@ func _on_status_option_button_item_selected(index: int) -> void:
 	EntryManager.update_entry_play_status(self.entry.id, index)
 
 
-func _on_cover_button_pressed() -> void:
-	self.cover_clicked.emit(self.entry.id)
-
-
 func _on_mouse_entered() -> void:
 	self.modulate = Color(1.2, 1.2, 1.2)
 
 
 func _on_mouse_exited() -> void:
 	self.modulate = Color.WHITE
+
+
+func _on_gui_input(event: InputEvent) -> void:
+
+	# if option is hovered or expanded ignore
+	if (
+		self._label_option.is_hovered()
+		or self._label_option.get_popup().visible
+	):
+		return
+
+	# detect non-cover clicks
+	if event.is_action_pressed("mouse_l"):
+		self.cover_clicked.emit(self.entry.id)

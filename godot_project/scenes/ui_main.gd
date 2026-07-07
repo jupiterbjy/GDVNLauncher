@@ -1,4 +1,4 @@
-class_name MainUI
+class_name UIMain
 extends MarginContainer
 
 
@@ -28,7 +28,7 @@ var _filtered_game_count: int = 0
 
 @onready var _game_count_label: Label = %GameCountLabel
 
-const _SCENE := preload("uid://5f1ylcxfm58a")
+const _SCENE := preload("res://scenes/ui_main.tscn")
 
 static var _LOGGER := Logging.get_logger("MainUI")
 
@@ -38,8 +38,8 @@ const _MAX_PARALLEL_RELOADS: int = 5
 
 # --- Interfaces ---
 
-static func create_instance() -> MainUI:
-	return _SCENE.instantiate()
+static func create_instance() -> UIMain:
+	return _SCENE.instantiate() as UIMain
 
 
 func start() -> bool:
@@ -287,7 +287,7 @@ func _on_batch_add_button_pressed() -> void:
 	await self._async_reload_all()
 
 
-## Handler for VN cover image press on VNEntryUI
+## Connected in runtime, handler for VN cover image press on VNEntryUI
 func _on_cover_pressed(id: String) -> void:
 	await self.ui_manager.stack_ui(UIDetailView.create_instance(id))
 

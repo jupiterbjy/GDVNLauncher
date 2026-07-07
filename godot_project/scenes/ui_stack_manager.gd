@@ -163,4 +163,4 @@ func cascade_ui(force := false) -> bool:
 
 func _ready() -> void:
 	# bootstrap
-	await self.stack_ui(MainUI.create_instance())
+	await self.stack_ui(UIMain.create_instance())

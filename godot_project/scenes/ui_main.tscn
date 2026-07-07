@@ -1,0 +1,146 @@
+[gd_scene format=3 uid="uid://clwhae8k4l3bm"]
+
+[ext_resource type="PackedScene" uid="uid://dthd6orxrt0g7" path="res://scenes/bases/ui_frame_base.tscn" id="1_ex8sk"]
+[ext_resource type="Script" uid="uid://c3v7a5u0781aj" path="res://scenes/ui_main.gd" id="2_fq0td"]
+[ext_resource type="Texture2D" uid="uid://bq70qy26xakfu" path="res://resources/ui/add_48dp_E3E3E3_FILL0_wght400_GRAD0_opsz48.svg" id="3_1n2n3"]
+[ext_resource type="Texture2D" uid="uid://dkw5647cw2l8l" path="res://resources/ui/tablet/cloud_download_48dp_E3E3E3_FILL0_wght400_GRAD0_opsz48.svg" id="4_dvmt8"]
+[ext_resource type="Texture2D" uid="uid://ctyd5gwmuh13a" path="res://resources/ui/sort_48dp_E3E3E3_FILL0_wght400_GRAD0_opsz48.svg" id="5_srbhr"]
+[ext_resource type="Texture2D" uid="uid://bwo3vfdqxend7" path="res://resources/ui/settings_48dp_E3E3E3_FILL0_wght400_GRAD0_opsz48.svg" id="6_8qu2a"]
+[ext_resource type="Texture2D" uid="uid://d1cde510jm5lf" path="res://resources/ui/expand_content_48dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg" id="7_hajj7"]
+[ext_resource type="Texture2D" uid="uid://ccedp54hfnlx1" path="res://resources/ui/collapse_content_48dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg" id="8_2suug"]
+[ext_resource type="PackedScene" uid="uid://bp8pwatctj4qh" path="res://scenes/components/vn_entry_group.tscn" id="9_n2f4j"]
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_jgeat"]
+color = Color(0.3118496, 0.31184962, 0.31184953, 1)
+grow_begin = -3.0
+grow_end = -3.0
+thickness = 2
+vertical = true
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vrcwn"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rt4eg"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[node name="UIMain" unique_id=154544531 instance=ExtResource("1_ex8sk")]
+script = ExtResource("2_fq0td")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/Header" parent_id_path=PackedInt32Array(1434262793) index="0" unique_id=1544498217]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="AddButton" type="TextureButton" parent="PanelContainer/VBoxContainer/Header/HBoxContainer" index="0" unique_id=1712625004]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("3_1n2n3")
+
+[node name="BatchAddButton" type="TextureButton" parent="PanelContainer/VBoxContainer/Header/HBoxContainer" index="1" unique_id=15381441]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("4_dvmt8")
+
+[node name="SortButton" type="TextureButton" parent="PanelContainer/VBoxContainer/Header/HBoxContainer" index="2" unique_id=666175480]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_default_cursor_shape = 2
+toggle_mode = true
+texture_normal = ExtResource("5_srbhr")
+
+[node name="SearchLineEdit" type="LineEdit" parent="PanelContainer/VBoxContainer/Header/HBoxContainer" index="3" unique_id=905994934]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Keyword..."
+alignment = 1
+
+[node name="ConfigButton" type="TextureButton" parent="PanelContainer/VBoxContainer/Header/HBoxContainer" index="4" unique_id=992816512]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("6_8qu2a")
+
+[node name="PlaytimeLabel" type="Label" parent="PanelContainer/VBoxContainer/Header/HBoxContainer" index="5" unique_id=1973506226]
+unique_name_in_owner = true
+layout_mode = 2
+text = "12.3h
+4 sessions"
+horizontal_alignment = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/OptionHeader" parent_id_path=PackedInt32Array(795827549) index="0" unique_id=853131910]
+layout_mode = 2
+
+[node name="ExpandAllButton" type="TextureButton" parent="PanelContainer/VBoxContainer/OptionHeader/HBoxContainer" index="0" unique_id=1588156956]
+custom_minimum_size = Vector2(28, -1)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("7_hajj7")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="VSeparator" type="VSeparator" parent="PanelContainer/VBoxContainer/OptionHeader/HBoxContainer" index="1" unique_id=1455463358]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_jgeat")
+
+[node name="CollapseAllButton" type="TextureButton" parent="PanelContainer/VBoxContainer/OptionHeader/HBoxContainer" index="2" unique_id=1767545593]
+custom_minimum_size = Vector2(28, -1)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("8_2suug")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="VSeparator2" type="VSeparator" parent="PanelContainer/VBoxContainer/OptionHeader/HBoxContainer" index="3" unique_id=535203002]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_jgeat")
+
+[node name="ShowUnplayableCheckBox" type="CheckBox" parent="PanelContainer/VBoxContainer/OptionHeader/HBoxContainer" index="4" unique_id=7497308]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_default_cursor_shape = 2
+button_pressed = true
+text = "Show Unplayable"
+
+[node name="Gap" type="Control" parent="PanelContainer/VBoxContainer/OptionHeader/HBoxContainer" index="5" unique_id=1161573130]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="GameCountLabel" type="Label" parent="PanelContainer/VBoxContainer/OptionHeader/HBoxContainer" index="6" unique_id=55162571]
+unique_name_in_owner = true
+layout_mode = 2
+text = "GAME_COUNT"
+
+[node name="Content" parent="PanelContainer/VBoxContainer" parent_id_path=PackedInt32Array(639376466) index="2" unique_id=1838610177]
+theme_override_styles/panel = SubResource("StyleBoxEmpty_vrcwn")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer/VBoxContainer/Content" index="0" unique_id=2033592991]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/scrollbar_h_separation = 12
+theme_override_styles/panel = SubResource("StyleBoxEmpty_rt4eg")
+follow_focus = true
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 2
+
+[node name="GroupListContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Content/ScrollContainer" index="0" unique_id=1444151818]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 32
+
+[node name="VNEntryGroup" parent="PanelContainer/VBoxContainer/Content/ScrollContainer/GroupListContainer" index="0" unique_id=1430506852 instance=ExtResource("9_n2f4j")]
+layout_mode = 2
+
+[node name="VNEntryGroup2" parent="PanelContainer/VBoxContainer/Content/ScrollContainer/GroupListContainer" index="1" unique_id=691361394 instance=ExtResource("9_n2f4j")]
+layout_mode = 2
+
+[connection signal="pressed" from="PanelContainer/VBoxContainer/Header/HBoxContainer/AddButton" to="." method="_on_add_button_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/Header/HBoxContainer/BatchAddButton" to="." method="_on_batch_add_button_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/Header/HBoxContainer/SortButton" to="." method="_on_sort_button_pressed"]
+[connection signal="text_changed" from="PanelContainer/VBoxContainer/Header/HBoxContainer/SearchLineEdit" to="." method="_on_search_line_edit_text_changed"]
+[connection signal="text_submitted" from="PanelContainer/VBoxContainer/Header/HBoxContainer/SearchLineEdit" to="." method="_on_search_line_edit_text_submitted"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/Header/HBoxContainer/ConfigButton" to="." method="_on_config_button_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/OptionHeader/HBoxContainer/ExpandAllButton" to="." method="_on_expand_all_button_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/OptionHeader/HBoxContainer/CollapseAllButton" to="." method="_on_collapse_all_button_pressed"]
+[connection signal="toggled" from="PanelContainer/VBoxContainer/OptionHeader/HBoxContainer/ShowUnplayableCheckBox" to="." method="_on_show_unplayable_check_box_toggled"]

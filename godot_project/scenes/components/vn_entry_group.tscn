@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://bp8pwatctj4qh"]
 
-[ext_resource type="Script" uid="uid://ddd525jhxj6t8" path="res://scenes/vn_entry_group.gd" id="1_kv3cd"]
+[ext_resource type="Script" uid="uid://ddd525jhxj6t8" path="res://scenes/components/vn_entry_group.gd" id="1_kv3cd"]
 [ext_resource type="Texture2D" uid="uid://cv53otp6focha" path="res://resources/ui/keyboard_arrow_right_48dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg" id="2_3l74i"]
-[ext_resource type="PackedScene" uid="uid://b3xdas536yxk6" path="res://scenes/vn_entry_ui.tscn" id="2_ol3o8"]
+[ext_resource type="PackedScene" uid="uid://b3xdas536yxk6" path="res://scenes/components/vn_entry_ui.tscn" id="2_ol3o8"]
 [ext_resource type="Texture2D" uid="uid://bpbypaw75k5cr" path="res://resources/ui/keyboard_arrow_down_48dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg" id="3_3l74i"]
 
 [node name="VNEntryGroup" type="FoldableContainer" unique_id=1430506852]

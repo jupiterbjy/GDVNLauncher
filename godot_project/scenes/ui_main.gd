@@ -57,17 +57,16 @@ func start() -> bool:
 
 
 func resume(data: Dictionary) -> void:
-	if (
-		&"edited" not in data
-		or &"old_id" not in data
-		or &"new_id" not in data
-	):
-		_LOGGER.error("Missing 'id' and 'changed' in resume data")
-		return
+	if &"ui_detail_view" in data:
 
-	# TODO: handle changed ID case & changed case
-	if (data[&"old_id"] != data[&"new_id"]):
-		_LOGGER.error("ID change handling is not implemented yet")
+		# TODO: handle changed ID case & changed case
+		if (data[&"ui_detail_view"][&"old_id"] != data[&"ui_detail_view"][&"new_id"]):
+			_LOGGER.error("ID change handling is not implemented yet")
+
+		if (data[&"ui_detail_view"][&"edited"] as bool):
+			await self._async_reload(data[&"ui_detail_view"][&"new_id"] as String)
+		else:
+			_LOGGER.info("Unchanged, skip reloading")
 
 		return
 

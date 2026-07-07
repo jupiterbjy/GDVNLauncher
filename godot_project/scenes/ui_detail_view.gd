@@ -74,21 +74,25 @@ func start() -> bool:
 ## `data` contains the return value of pause() from the UI that was just closed.
 func resume(data: Dictionary) -> void:
 	# lax check but should be good for most case where I forget
-	if &"EditUI" in data:
-		self.is_edited = data[&"EditUI"][&"edited"] as bool
+	if &"ui_detail_edit" in data:
+		self.is_edited = data[&"ui_detail_edit"][&"edited"] as bool
 
 		if self.is_edited:
-			self.entry = EntryManager.get_entry(data[&"EditUI"][&"id"] as String)
+			self.entry = EntryManager.get_entry(data[&"ui_detail_edit"][&"id"] as String)
 			await self._refresh_ui()
+		else:
+			_LOGGER.info("Unchanged, skip reloading")
 
 
 ## Returns key `edited: bool / old_id: String / new_id: String`
 func close(_force := false) -> Dictionary:
 	return {
 		&"closed": true,
-		&"edited": self.is_edited,
-		&"old_id": self.original_id,
-		&"new_id": self.entry.id,
+		&"ui_detail_view": {
+			&"edited": self.is_edited,
+			&"old_id": self.original_id,
+			&"new_id": self.entry.id,
+		}
 	}
 
 

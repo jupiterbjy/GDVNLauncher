@@ -79,7 +79,7 @@ func resume(_data: Dictionary) -> void:
 func close(_force := false) -> Dictionary:
 	return {
 		&"closed": true,
-		&"EditUI": {
+		&"ui_detail_edit": {
 			&"id": self.entry.id,
 			&"edited": self.is_edited,
 		}

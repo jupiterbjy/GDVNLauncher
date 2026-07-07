@@ -53,7 +53,8 @@ func load_config() -> bool:
 		return false
 
 	# if parsing failes or has invalid data abort
-	var data = JSON.parse_string(fp.get_as_text())
+	var data: Variant = JSON.parse_string(fp.get_as_text())
+
 	if not data or data is not Dictionary:
 		_LOGGER.warn("Config file parsing failed")
 		return false
@@ -65,7 +66,7 @@ func load_config() -> bool:
 			_LOGGER.warn("Unknown key %s found while loading; Skipping" % key)
 			continue
 
-		var self_t := typeof(self.get(key))
+		var self_t := typeof(self.get(key as StringName))
 		var saved_t := typeof((data as Dictionary)[key])
 
 		# if not same type but neither both are numbers throw tantrum
@@ -83,7 +84,7 @@ func load_config() -> bool:
 			)
 			continue
 
-		self.set(key, (data as Dictionary)[key])
+		self.set(key as StringName, (data as Dictionary)[key])
 
 	_LOGGER.info("Load success")
 	return true

@@ -17,6 +17,7 @@ class Task:
 		self.complete = true
 
 	func _init(callable: Callable, params: Array) -> void:
+		@warning_ignore("missing_await")
 		self._wrapper(callable, params)
 
 
@@ -27,7 +28,12 @@ static func async_join(
 	var tasks: Array[Task]
 
 	for pair: Array in callable_param_pairs:
-		tasks.append(Task.new(pair[0], pair[1]))
+		tasks.append(
+			Task.new(
+				pair[0] as Callable,
+				pair[1] as Array,
+			)
+		)
 
 	for task in tasks:
 		if not task.complete:

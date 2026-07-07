@@ -46,8 +46,8 @@ class Entry:
 	## DB Record based named constructor
 	static func from_db(data: Dictionary) -> Entry:
 		return Entry.new(
-			data["exec_path"],
-			data["admin"],
+			data["exec_path"] as String,
+			data["admin"] as bool,
 			VndbVN.from_db(data),
 		)
 

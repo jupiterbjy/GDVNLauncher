@@ -71,14 +71,14 @@ var normalized_title: String
 ## Named Constructor to create new VNData instance from DB Record
 static func from_db(record: Dictionary) -> VndbVN:
 	return VndbVN.new(
-		record["id"],
-		record["title"],
-		record["description"],
-		record["released"],
-		record["developers"],
-		record["tags"],
-		record["cover_url"],
-		record["label"],
+		record["id"] as String,
+		record["title"] as String,
+		record["description"] as String,
+		record["released"] as String,
+		record["developers"] as String,
+		record["tags"] as String,
+		record["cover_url"] as String,
+		record["label"] as int,
 	)
 
 
@@ -128,17 +128,17 @@ static func from_vndb(
 
 	# TODO: add vndb label
 	var instance := VndbVN.new(
-		json["id"],
-		titles[title_lang] if title_lang in titles else json["title"],
+		json["id"] as String,
+		(titles[title_lang] if title_lang in titles else json["title"]) as String,
 
-		# could be null if not released
-		json["description"] if json["description"] else "",
-		json["released"] if json["released"] else "",
+		# could be empty string if not released
+		json["description"] as String,
+		json["released"] as String,
 
 		",".join(_devs),
 		",".join(_tags),
 		#json["image"]["url"],
-		json["image"]["thumbnail"],
+		json["image"]["thumbnail"] as String,
 		label_id,
 	)
 

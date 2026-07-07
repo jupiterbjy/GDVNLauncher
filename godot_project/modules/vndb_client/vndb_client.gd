@@ -132,7 +132,7 @@ static func async_post_vn(
 	var parsed: Dictionary = JSON.parse_string(data)
 
 	return VndbVN.from_vndb(
-		parsed["results"][0],
+		parsed["results"][0] as Dictionary,
 		[],
 		title_lang,
 		tag_min_rating,
@@ -216,7 +216,7 @@ static func async_get_ulist(
 			results.append(
 				VndbVN.from_vndb(
 					_vn_info_data,
-					vn_data["labels"],
+					vn_data["labels"] as Array,
 					title_lang,
 					tag_min_rating,
 					tag_max_spoiler,

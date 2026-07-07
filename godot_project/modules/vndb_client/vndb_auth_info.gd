@@ -37,9 +37,9 @@ var write: bool:
 ## Named Constructor to create new VNData instance from vndb's json response
 static func from_vndb(json: Dictionary) -> VndbAuthInfo:
 	return VndbAuthInfo.new(
-		json["id"],
-		json["username"],
-		json["permissions"],
+		json["id"] as String,
+		json["username"] as String,
+		json["permissions"] as Array,
 	)
 
 

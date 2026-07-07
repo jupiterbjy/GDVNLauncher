@@ -12,7 +12,10 @@ class Response:
 	var body: PackedByteArray
 
 	func _init(
-		result_: HTTPRequest.Result, response_code_: int, headers_, body_: PackedByteArray
+		result_: HTTPRequest.Result,
+		response_code_: int,
+		headers_: PackedStringArray,
+		body_: PackedByteArray,
 	) -> void:
 		self.result = result_
 		self.response_code = response_code_
@@ -92,7 +95,13 @@ func async_request(
 
 	# await signal directly and fetch parameters as array
 	var resp_arr: Array = await http_req.request_completed
-	var resp := Response.new(resp_arr[0], resp_arr[1], resp_arr[2], resp_arr[3])
+
+	var resp := Response.new(
+		resp_arr[0] as HTTPRequest.Result,
+		resp_arr[1] as int,
+		resp_arr[2] as PackedStringArray,
+		resp_arr[3] as PackedByteArray,
+	)
 
 	if resp.response_code != 200:
 		_LOGGER.warn(
@@ -126,6 +135,11 @@ func async_request_raw(
 	_LOGGER.debug("Request [%s] %s, body: %d bytes" % [_METHOD_NAMES[method], url, len(body)])
 
 	# await signal directly and fetch parameters as array
-	var resp: Array = await http_req.request_completed
+	var resp_arr: Array = await http_req.request_completed
 
-	return Response.new(resp[0], resp[1], resp[2], resp[3])
+	return Response.new(
+		resp_arr[0] as HTTPRequest.Result,
+		resp_arr[1] as int,
+		resp_arr[2] as PackedStringArray,
+		resp_arr[3] as PackedByteArray,
+	)

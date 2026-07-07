@@ -1,13 +1,11 @@
 class_name VNEntryGroup
-extends VBoxContainer
+extends FoldableContainer
 ## Container that Groups VNEntryUI
 
 
 # --- Attributes ---
 
-@onready var _entry_flow_container: HFlowContainer = $EntryFlowContainer
-
-@onready var _group_name_label: Label = $GroupNameLabel
+@onready var _entry_flow_container: HFlowContainer = %EntryFlowContainer
 
 ## Used for searching
 var _normalized_group_name: String
@@ -15,10 +13,10 @@ var _normalized_group_name: String
 ## Group Name, used for sorting
 var group_name: String:
 	get():
-		return self._group_name_label.text
+		return self.title
 
 	set(val):
-		self._group_name_label.text = val
+		self.title = val
 		self._normalized_group_name = val.strip_edges().to_lower()
 
 var entry_count: int:

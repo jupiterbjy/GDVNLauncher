@@ -1,31 +1,41 @@
 [gd_scene format=3 uid="uid://bp8pwatctj4qh"]
 
 [ext_resource type="Script" uid="uid://ddd525jhxj6t8" path="res://scenes/vn_entry_group.gd" id="1_kv3cd"]
+[ext_resource type="Texture2D" uid="uid://cv53otp6focha" path="res://resources/ui/keyboard_arrow_right_48dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg" id="2_3l74i"]
 [ext_resource type="PackedScene" uid="uid://b3xdas536yxk6" path="res://scenes/vn_entry_ui.tscn" id="2_ol3o8"]
+[ext_resource type="Texture2D" uid="uid://bpbypaw75k5cr" path="res://resources/ui/keyboard_arrow_down_48dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg" id="3_3l74i"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i1gbh"]
-content_margin_left = 4.0
-content_margin_top = 4.0
-content_margin_right = 4.0
-content_margin_bottom = 4.0
-bg_color = Color(0.103743516, 0.103743546, 0.10374347, 1)
-
-[node name="VNEntryGroup" type="VBoxContainer" unique_id=501757738]
-theme_override_constants/separation = 16
+[node name="VNEntryGroup" type="FoldableContainer" unique_id=1430506852]
+offset_right = 512.0
+offset_bottom = 800.0
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 28
+theme_override_icons/expanded_arrow = ExtResource("3_3l74i")
+theme_override_icons/folded_arrow = ExtResource("2_3l74i")
+title = "COMPANY_NAME"
 script = ExtResource("1_kv3cd")
 
-[node name="GroupNameLabel" type="Label" parent="." unique_id=1623593650]
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1169996894]
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = SubResource("StyleBoxFlat_i1gbh")
-text = "COMPANY_NAME"
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_bottom = 16
 
-[node name="EntryFlowContainer" type="HFlowContainer" parent="." unique_id=1892929394]
+[node name="EntryFlowContainer" type="HFlowContainer" parent="MarginContainer" unique_id=1892929394]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/h_separation = 16
 theme_override_constants/v_separation = 16
 alignment = 1
 
-[node name="VNEntryUI" parent="EntryFlowContainer" unique_id=1665618159 instance=ExtResource("2_ol3o8")]
+[node name="VNEntryUI" parent="MarginContainer/EntryFlowContainer" unique_id=1665618159 instance=ExtResource("2_ol3o8")]
+layout_mode = 2
+
+[node name="VNEntryUI2" parent="MarginContainer/EntryFlowContainer" unique_id=718660803 instance=ExtResource("2_ol3o8")]
+layout_mode = 2
+
+[node name="VNEntryUI3" parent="MarginContainer/EntryFlowContainer" unique_id=446859761 instance=ExtResource("2_ol3o8")]
+layout_mode = 2
+
+[node name="VNEntryUI4" parent="MarginContainer/EntryFlowContainer" unique_id=1047226250 instance=ExtResource("2_ol3o8")]
 layout_mode = 2

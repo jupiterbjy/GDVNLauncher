@@ -24,7 +24,7 @@ var _filtered_game_count: int = 0
 
 @onready var _search_line_edit: LineEdit = %SearchLineEdit
 
-@onready var _playable_only_check_box: CheckBox = %PlayableOnlyCheckBox
+@onready var _show_unplayable_check_box: CheckBox = %ShowUnplayableCheckBox
 
 @onready var _game_count_label: Label = %GameCountLabel
 
@@ -239,7 +239,7 @@ func _filter_groups() -> void:
 	for group: VNEntryGroup in self._groups.values():
 		filter_count += group.filter_self(
 			normalized_keyword,
-			self._playable_only_check_box.button_pressed,
+			not self._show_unplayable_check_box.button_pressed,
 		)
 
 	self._filtered_game_count = filter_count
@@ -250,6 +250,12 @@ func _filter_groups() -> void:
 
 
 # --- Handlers ---
+
+func _ready() -> void:
+	# cleanup viewport placeholder
+	for child: Control in self._group_list_container.get_children():
+		child.free()
+
 
 ## Called on EditUI.entry_saved
 func _on_edit_ui_saved(id: String) -> void:
@@ -332,7 +338,7 @@ func _on_sort_button_pressed() -> void:
 	self._sort_groups(self._sort_button.button_pressed)
 
 
-func _on_playable_only_check_box_toggled(_toggled_on: bool) -> void:
+func _on_show_unplayable_check_box_toggled(_toggled_on: bool) -> void:
 	self._filter_groups()
 
 
@@ -342,3 +348,13 @@ func _on_search_line_edit_text_changed(_new_text: String) -> void:
 
 func _on_search_line_edit_text_submitted(_new_text: String) -> void:
 	self._search_line_edit.release_focus()
+
+
+func _on_expand_all_button_pressed() -> void:
+	for group: VNEntryGroup in self._groups.values():
+		group.expand()
+
+
+func _on_collapse_all_button_pressed() -> void:
+	for group: VNEntryGroup in self._groups.values():
+		group.fold()

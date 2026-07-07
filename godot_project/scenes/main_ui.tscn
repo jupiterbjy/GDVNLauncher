@@ -5,18 +5,16 @@
 [ext_resource type="Texture2D" uid="uid://bwo3vfdqxend7" path="res://resources/ui/settings_48dp_E3E3E3_FILL0_wght400_GRAD0_opsz48.svg" id="2_llbac"]
 [ext_resource type="Texture2D" uid="uid://dkw5647cw2l8l" path="res://resources/ui/tablet/cloud_download_48dp_E3E3E3_FILL0_wght400_GRAD0_opsz48.svg" id="3_i1gbh"]
 [ext_resource type="Texture2D" uid="uid://bq70qy26xakfu" path="res://resources/ui/add_48dp_E3E3E3_FILL0_wght400_GRAD0_opsz48.svg" id="3_llbac"]
+[ext_resource type="PackedScene" uid="uid://bp8pwatctj4qh" path="res://scenes/vn_entry_group.tscn" id="6_i1gbh"]
+[ext_resource type="Texture2D" uid="uid://d1cde510jm5lf" path="res://resources/ui/expand_content_48dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg" id="6_okuri"]
+[ext_resource type="Texture2D" uid="uid://ccedp54hfnlx1" path="res://resources/ui/collapse_content_48dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg" id="7_kyx1g"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w37m7"]
-content_margin_left = 16.0
-content_margin_top = 16.0
-content_margin_right = 16.0
-content_margin_bottom = 16.0
+content_margin_left = 8.0
+content_margin_top = 8.0
+content_margin_right = 8.0
+content_margin_bottom = 8.0
 bg_color = Color(0.18039216, 0.18039216, 0.18039216, 1)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-corner_detail = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2ppmm"]
 content_margin_left = 4.0
@@ -30,11 +28,18 @@ corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 corner_detail = 5
 
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_3l74i"]
+color = Color(0.3118496, 0.31184962, 0.31184953, 1)
+grow_begin = -3.0
+grow_end = -3.0
+thickness = 2
+vertical = true
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ktt6o"]
-content_margin_left = 16.0
-content_margin_top = 16.0
-content_margin_right = 8.0
-content_margin_bottom = 16.0
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
 
 [node name="MainUI" type="MarginContainer" unique_id=154544531]
 anchors_preset = 15
@@ -51,6 +56,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_w37m7")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer" unique_id=639376466]
 layout_mode = 2
+theme_override_constants/separation = 8
 
 [node name="Header" type="PanelContainer" parent="PanelContainer/VBoxContainer" unique_id=1434262793]
 layout_mode = 2
@@ -103,10 +109,36 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_2ppmm")
 [node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/OptionHeader" unique_id=922442168]
 layout_mode = 2
 
-[node name="PlayableOnlyCheckBox" type="CheckBox" parent="PanelContainer/VBoxContainer/OptionHeader/HBoxContainer" unique_id=1017932280]
+[node name="ExpandAllButton" type="TextureButton" parent="PanelContainer/VBoxContainer/OptionHeader/HBoxContainer" unique_id=717848075]
+custom_minimum_size = Vector2(28, -1)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("6_okuri")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="VSeparator" type="VSeparator" parent="PanelContainer/VBoxContainer/OptionHeader/HBoxContainer" unique_id=1443002183]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_3l74i")
+
+[node name="CollapseAllButton" type="TextureButton" parent="PanelContainer/VBoxContainer/OptionHeader/HBoxContainer" unique_id=1739889513]
+custom_minimum_size = Vector2(28, -1)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("7_kyx1g")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="VSeparator2" type="VSeparator" parent="PanelContainer/VBoxContainer/OptionHeader/HBoxContainer" unique_id=74508494]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_3l74i")
+
+[node name="ShowUnplayableCheckBox" type="CheckBox" parent="PanelContainer/VBoxContainer/OptionHeader/HBoxContainer" unique_id=1017932280]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Show Playable Only"
+mouse_default_cursor_shape = 2
+button_pressed = true
+text = "Show Unplayable"
 
 [node name="Gap" type="Control" parent="PanelContainer/VBoxContainer/OptionHeader/HBoxContainer" unique_id=520493599]
 layout_mode = 2
@@ -120,20 +152,23 @@ text = "GAME_COUNT"
 [node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer/VBoxContainer" unique_id=108800208]
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_constants/scrollbar_h_separation = 12
 theme_override_styles/panel = SubResource("StyleBoxEmpty_ktt6o")
 follow_focus = true
 horizontal_scroll_mode = 0
 vertical_scroll_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/ScrollContainer" unique_id=488451431]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="GroupListContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1101244547]
+[node name="GroupListContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/ScrollContainer" unique_id=1101244547]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 64
+theme_override_constants/separation = 32
+
+[node name="VNEntryGroup" parent="PanelContainer/VBoxContainer/ScrollContainer/GroupListContainer" unique_id=1430506852 instance=ExtResource("6_i1gbh")]
+layout_mode = 2
+
+[node name="VNEntryGroup2" parent="PanelContainer/VBoxContainer/ScrollContainer/GroupListContainer" unique_id=543719060 instance=ExtResource("6_i1gbh")]
+layout_mode = 2
 
 [connection signal="pressed" from="PanelContainer/VBoxContainer/Header/HBoxContainer/AddButton" to="." method="_on_add_button_pressed"]
 [connection signal="pressed" from="PanelContainer/VBoxContainer/Header/HBoxContainer/BatchAddButton" to="." method="_on_batch_add_button_pressed"]
@@ -141,4 +176,6 @@ theme_override_constants/separation = 64
 [connection signal="text_changed" from="PanelContainer/VBoxContainer/Header/HBoxContainer/SearchLineEdit" to="." method="_on_search_line_edit_text_changed"]
 [connection signal="text_submitted" from="PanelContainer/VBoxContainer/Header/HBoxContainer/SearchLineEdit" to="." method="_on_search_line_edit_text_submitted"]
 [connection signal="pressed" from="PanelContainer/VBoxContainer/Header/HBoxContainer/ConfigButton" to="." method="_on_config_button_pressed"]
-[connection signal="toggled" from="PanelContainer/VBoxContainer/OptionHeader/HBoxContainer/PlayableOnlyCheckBox" to="." method="_on_playable_only_check_box_toggled"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/OptionHeader/HBoxContainer/ExpandAllButton" to="." method="_on_expand_all_button_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/OptionHeader/HBoxContainer/CollapseAllButton" to="." method="_on_collapse_all_button_pressed"]
+[connection signal="toggled" from="PanelContainer/VBoxContainer/OptionHeader/HBoxContainer/ShowUnplayableCheckBox" to="." method="_on_show_unplayable_check_box_toggled"]

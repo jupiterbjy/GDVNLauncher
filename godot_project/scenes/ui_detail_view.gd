@@ -36,6 +36,7 @@ var is_edited: bool = false
 @onready var launch_button: Button = %LaunchButton
 @onready var stop_button: Button = %StopButton
 @onready var edit_button: TextureButton = %EditButton
+@onready var delete_button: TextureButton = %DeleteButton
 
 @onready var exec_path_label: Label = %ExecPathLabel
 @onready var admin_priv_check_box: CheckBox = %AdminPrivCheckBox
@@ -127,10 +128,12 @@ func _update_launch_stop_buttons() -> void:
 		self.launch_button.hide()
 		self.stop_button.show()
 		self.edit_button.hide()
+		self.delete_button.hide()
 	else:
 		self.launch_button.show()
 		self.stop_button.hide()
 		self.edit_button.show()
+		self.delete_button.show()
 
 	# disable/enable launch button, stop button doesn't need one
 	self.launch_button.disabled = (
@@ -151,7 +154,10 @@ func _refresh_ui() -> void:
 	self.description_rich_label.text = self.entry.vn.description
 	self.developer_label.text = "\n".join(self.entry.vn.developers)
 	self.release_date_label.text = self.entry.vn.released
-	self.title_label.text = self.entry.vn.title
+	self.title_label.text = self.entry.vn.lang_title_map.get(UserConfig.title_lang, "")
+	if not self.title_label.text:
+		self.title_label.text = self.entry.vn.title
+
 	self.label_option_large.selected = self.entry.vn.label
 
 	await self._update_cover_image()

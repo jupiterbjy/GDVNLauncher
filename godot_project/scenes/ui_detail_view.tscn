@@ -143,6 +143,7 @@ mouse_default_cursor_shape = 2
 texture_normal = ExtResource("2_5s7sa")
 
 [node name="DeleteButton" type="TextureButton" parent="PanelContainer/VBoxContainer/Header/HBoxContainer" parent_id_path=PackedInt32Array(751279195) index="4" unique_id=1783030376]
+unique_name_in_owner = true
 layout_mode = 2
 mouse_default_cursor_shape = 2
 texture_normal = ExtResource("3_hyl11")
@@ -162,6 +163,7 @@ layout_mode = 2
 [node name="Label" type="Label" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer/VNInfoBox/HBoxContainer" index="0" unique_id=789100006]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 0
 theme_override_colors/font_color = Color(0.5823756, 0.5823756, 0.5823756, 1)
 text = "Developer"
 

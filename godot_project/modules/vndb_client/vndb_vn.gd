@@ -4,25 +4,104 @@ class_name VndbVN
 
 # --- Attributes ---
 
-# TODO: convert this to store dict directly and access via properties instead
+## Custom CSV separator
+## This is due to some companies are using name with ';', ','... wtf...
+const DEVELOPER_CSV_SEP := ";;"
+
+## Actual data dict. This overhead is bloated af compared to previous versions.
+## But is easier to expand & pass around, between other interfaces...
+var raw_dict: Dictionary[String, Variant]
 
 ## VNDB ID
-var id: String
+var id: String:
+	get():
+		return self.raw_dict.get_or_add("id", "")
 
-var title: String
+	set(val):
+		self.raw_dict["id"] = val
 
-var description: String
-var released: String
-var developers: String
+## Primary title
+var title: String:
+	get():
+		return self.raw_dict.get_or_add("title", "")
 
-var tags: String
+	set(val):
+		self.raw_dict["title"] = val
+		self.update_search_str()
 
-var cover_url: String
+## Alternative title per language.
+## Do note this returns COPY of actual data, so make sure to overwrite this.
+var lang_title_map: Dictionary[String, String]:
+	get():
+		var temp: Dictionary[String, String]
+		return self.raw_dict.get_or_add("lang_title_map", temp)
 
-## Active labels for this vn. Wont think about multi label situation with id < 7
-var label: int
+	set(val):
+		self.raw_dict["lang_title_map"] = val
+		self.update_search_str()
 
-## for faster title search
+var description: String:
+	get():
+		return self.raw_dict.get_or_add("description", "")
+
+	set(val):
+		self.raw_dict["description"] = val
+
+var released: String:
+	get():
+		return self.raw_dict.get_or_add("released", "")
+
+	set(val):
+		self.raw_dict["released"] = val
+
+## Comma sep devs
+var developers: PackedStringArray:
+	get():
+		var temp: PackedStringArray
+		var data: Variant = self.raw_dict.get_or_add("developers", temp)
+
+		# validate if it's < 0.0.1 data format with raw csv string
+		if data is not String:
+			return data
+
+		# thanks to some company naming has ',', can't use normal CSV here
+		return StringUtils.csv_sep(data as String, false, DEVELOPER_CSV_SEP)
+
+	set(val):
+		self.raw_dict["developers"] = val
+
+## Comma sep tags
+var tags: PackedStringArray:
+	get():
+		var temp: PackedStringArray
+		var data: Variant = self.raw_dict.get_or_add("tags", temp)
+
+		# validate if it's < 0.0.1 data format with raw csv string
+		if data is not String:
+			return data
+
+		return StringUtils.csv_sep(data as String, false)
+
+	set(val):
+		self.raw_dict["tags"] = val
+
+var cover_url: String:
+	get():
+		return self.raw_dict.get_or_add("cover_url", "")
+
+	set(val):
+		self.raw_dict["cover_url"] = val
+
+## Active label for this vn. Wont think about multi label situation with id < 7
+var label: int:
+	get():
+		return self.raw_dict.get_or_add("label", "")
+
+	set(val):
+		self.raw_dict["label"] = val
+
+## for faster title search.
+## This basically append all available titles in lowercase
 var normalized_title: String
 
 # example json response from vndb
@@ -70,23 +149,15 @@ var normalized_title: String
 
 ## Named Constructor to create new VNData instance from DB Record
 static func from_db(record: Dictionary) -> VndbVN:
-	return VndbVN.new(
-		record["id"] as String,
-		record["title"] as String,
-		record["description"] as String,
-		record["released"] as String,
-		record["developers"] as String,
-		record["tags"] as String,
-		record["cover_url"] as String,
-		record["label"] as int,
-	)
+	# in case record is using old version (< 0.0.1) then
+	# lang_title_map is missing
+	return VndbVN.new(record)
 
 
 ## Named Constructor to create new VNData instance from vndb's json response
 static func from_vndb(
 	json: Dictionary,
 	labels: Array,
-	title_lang: String,
 	tag_min_rating: float,
 	tag_max_spoiler: int,
 	tag_types: String,
@@ -115,6 +186,7 @@ static func from_vndb(
 
 	# extract translated titles
 	var titles: Dictionary[String, String]
+
 	for dict: Dictionary in json["titles"]:
 		titles[dict["lang"]] = dict["title"]
 
@@ -128,18 +200,22 @@ static func from_vndb(
 
 	# TODO: add vndb label
 	var instance := VndbVN.new(
-		json["id"] as String,
-		(titles[title_lang] if title_lang in titles else json["title"]) as String,
+		{
+			"id": json["id"],
+			"title": json["title"],
+			"lang_title_map": titles,
 
-		# could be empty string if not released
-		json["description"] as String,
-		json["released"] as String,
+			# could be empty string if not released
+			"description": json["description"],
+			"released": json["released"],
 
-		",".join(_devs),
-		",".join(_tags),
-		#json["image"]["url"],
-		json["image"]["thumbnail"] as String,
-		label_id,
+			"developers": _devs,
+			"tags": _tags,
+
+			#json["image"]["url"],
+			"cover_url": json["image"]["thumbnail"] as String,
+			"label": label_id,
+		}
 	)
 
 	return instance
@@ -161,31 +237,26 @@ func get_cover_tex(refresh_cache := false) -> ImageTexture:
 	return ImageLoader.bytes_to_tex(bytes)
 
 
+## Update normalized title search string.
+## This must run after update
+func update_search_str() -> void:
+	#var str_arr: PackedStringArray = [
+
+	# this code is trash but works for now
+	self.normalized_title = "\n".join(
+		([self.title.strip_edges().to_lower()] + self.lang_title_map.values()).map(
+			func (string: String):
+				return string.strip_edges().to_lower(),
+		)
+	)
+
+
 # --- Handlers ---
 
-func _init(
-	id_: String = "",
-	title_: String = "",
-	description_: String = "",
-	released_: String = "",
-	developers_: String = "",
-	tags_: String = "",
-	cover_url_: String = "",
-	label_: int = 0,
-) -> void:
+func _init(json_data: Dictionary) -> void:
 	# I miss TypedDicts
-
-	self.id = id_
-	self.title = title_
-	self.description = description_
-	self.released = released_
-	self.developers = developers_
-	self.tags = tags_
-	self.cover_url = cover_url_
-	self.label = label_
-
-	# TODO: save multiple other language title too on DB for search?
-	self.normalized_title = self.title.strip_edges().to_lower()
+	self.raw_dict.assign(json_data)
+	self.update_search_str()
 
 
 func _to_string() -> String:

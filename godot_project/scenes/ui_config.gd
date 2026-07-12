@@ -54,7 +54,7 @@ func start() -> bool:
 	self._reflect_from_config()
 
 	# setup ver string
-	self._version_label.text = "{} - {}" % [Globals.VERSION, Globals.COMMIT_HASH]
+	self._version_label.text = "%s - %s" % [Globals.VERSION, Globals.COMMIT_HASH]
 	return true
 
 

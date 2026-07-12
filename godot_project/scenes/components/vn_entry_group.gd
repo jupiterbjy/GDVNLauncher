@@ -25,6 +25,8 @@ var entry_count: int:
 
 const _SCENE = preload("uid://bp8pwatctj4qh")
 
+static var _LOGGER := Logging.get_logger("VNEntryGroup")
+
 
 # --- Methods ---
 
@@ -44,7 +46,11 @@ static func create_instance() -> VNEntryGroup:
 
 ## Add entry. Do removing from entry.get_parent() instead
 func add_entry(entry: VNEntryUI) -> void:
-	self._entry_flow_container.add_child(entry)
+	#assert(not entry.get_parent(), "Entry %s has already a parent" % entry.entry.id)
+	if not entry.get_parent():
+		self._entry_flow_container.add_child(entry)
+	else:
+		_LOGGER.warn("ID %s Already has parent! Devs: %s" % [entry.entry.id, entry.entry.vn.developers])
 
 
 ## Filter entries / match group name and report if self should be included.

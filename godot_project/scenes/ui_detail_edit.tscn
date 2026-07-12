@@ -89,7 +89,7 @@ visible = false
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 28
 theme_override_styles/focus = SubResource("StyleBoxEmpty_jtrxd")
 placeholder_text = "Visual Novel Name..."
 alignment = 1
@@ -98,9 +98,6 @@ alignment = 1
 layout_mode = 2
 mouse_default_cursor_shape = 2
 texture_normal = ExtResource("3_q7x5v")
-
-[node name="LeftPanel" parent="PanelContainer/VBoxContainer/Content/HBoxContainer" parent_id_path=PackedInt32Array(1615679203) index="0" unique_id=1381474216]
-size_flags_vertical = 0
 
 [node name="CenterContainer" type="CenterContainer" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer/CoverImageTextureRect" parent_id_path=PackedInt32Array(1115157045) index="0" unique_id=1556552837]
 layout_mode = 1
@@ -143,10 +140,12 @@ text = "Developer"
 [node name="DeveloperLineEdit" type="LineEdit" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer/DevBox" index="1" unique_id=1599454852]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "' ;; ' separated values.
+This is due to some companies having ',' or ';' in their names."
 theme_override_font_sizes/font_size = 20
 theme_override_styles/read_only = SubResource("StyleBoxEmpty_5fq1p")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_w26uo")
-placeholder_text = "e.g. FAVORITE,"
+placeholder_text = "e.g. FAVORITE ;; YUZUSOFT"
 alignment = 1
 
 [node name="ReleaseDateBox" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/LeftPanel/VBoxContainer" parent_id_path=PackedInt32Array(1282859874) index="3" unique_id=846316471]
@@ -259,7 +258,7 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 20
 theme_override_styles/read_only = SubResource("StyleBoxEmpty_t8ywn")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_dogk7")
-placeholder_text = "Comma separated tags, e.g. Flashback,Romance,Fantasy"
+placeholder_text = "e.g. Flashback,Romance,Fantasy"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Content/HBoxContainer/RightPanel/ScrollContainer/VBoxContainer2" index="2" unique_id=1141325812]
 layout_mode = 2

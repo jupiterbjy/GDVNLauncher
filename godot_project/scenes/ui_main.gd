@@ -171,7 +171,8 @@ func _add(id: String) -> void:
 	instance.cover_clicked.connect(self._on_cover_pressed)
 
 	self._entries[id] = instance
-	self._get_group(self._entries[id].entry.vn.developers).add_entry(instance)
+	for dev: String in self._entries[id].entry.vn.developers:
+		self._get_group(dev).add_entry(instance)
 
 
 ## Reload all UI Entry from DB. Does not factor in for deletion.
@@ -202,11 +203,16 @@ func _async_reload_all() -> void:
 	self._sort_groups(self._sort_button.button_pressed)
 
 	# update count & filter
-	#self._total_game_count = EntryManager.get_entry_count()
-	self._total_game_count = 0
+	self._total_game_count = EntryManager.get_entry_count()
+
+	var game_count: int = 0
 	for group: VNEntryGroup in self._groups.values():
 		_LOGGER.info("Group %s count %s" % [group.group_name, group.entry_count])
-		self._total_game_count += group.entry_count
+		game_count += group.entry_count
+
+	assert(game_count == self._total_game_count, "Game count missmatched!")
+	# TODO: in case multiple Dev studio worked on one game, there might be multiple occurances.
+	# currently dev comma separation is not implemented though.
 
 	self._filter_groups()
 
@@ -275,7 +281,6 @@ func _on_add_button_pressed() -> void:
 func _on_batch_add_button_pressed() -> void:
 	for vn_info: VndbVN in await VNDBClient.async_get_ulist(
 		await UserConfig.async_get_user_id(),
-		UserConfig.title_lang,
 		UserConfig.vndb_tag_min_rating,
 		0,
 		UserConfig.vndb_tag_types,

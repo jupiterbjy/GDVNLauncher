@@ -176,11 +176,14 @@ const _DB_WRITE_CYCLES: int = 300
 ## Play session DB
 var _db := DBWrapper.new("user://data.sqlite")
 
+## Ref table name of EntryManager
+const REF_TABLE := "entries_v2"
+
 ## Namespace for SQL Queries
 class _Query:
 
 	# should I cascade or not, that's the question.
-	# user might delete entry by accident,
+	# user might delete entry by accident.
 	const create_table := """
 	CREATE TABLE IF NOT EXISTS sessions (
 		id TEXT NOT NULL,
@@ -188,7 +191,7 @@ class _Query:
 		end_utc INTEGER NOT NULL,
 		time REAL NOT NULL,
 		PRIMARY KEY(id, start_utc),
-		FOREIGN KEY(id) REFERENCES entries(id)
+		FOREIGN KEY(id) REFERENCES """ + REF_TABLE + """(id)
 	)
 	"""
 
@@ -447,6 +450,39 @@ func unstash_sessions(id: String) -> bool:
 	return self._db.execute(
 		_Query.unstash_sessions, [id, id],
 	).success
+
+
+## Rebuild DB if EntryManager's DB table name was changed.
+## Returns true when updated. Called by EntryManager.
+func rebuild_db() -> bool:
+
+	# sanity check, see if sessions table exists
+	var result := self._db.execute(
+		"SELECT sql FROM sqlite_master WHERE type='table' AND name='sessions'"
+	)
+	if not result.success or not result.rowcount:
+		return false
+
+	# master table contains schema as 'sql' so that can be used to check
+	# see if it (loosely) references table name
+	var existing_schema: String = result.fetchone()["sql"]
+	if "REFERENCES " + REF_TABLE in existing_schema:
+		return false
+
+	# otherwise time to rebuild
+	_LOGGER.info("Rebuilding sessions table")
+
+	# rebuild: create new → copy data → drop old → rename
+	assert(
+		self._db.execute(_Query.create_table.replace("sessions", "sessions_new")).success
+		and self._db.execute('INSERT INTO "sessions_new" SELECT * FROM "sessions"').success
+		and self._db.execute('DROP TABLE "sessions"').success
+		and self._db.execute('ALTER TABLE "sessions_new" RENAME TO "sessions"').success,
+		"DB recreation failed!"
+	)
+
+	_LOGGER.info("Sessions table rebuilt")
+	return true
 
 
 # --- Handlers ---

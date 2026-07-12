@@ -107,9 +107,9 @@ func _reflect_to_ui() -> void:
 	self.vndb_id_line_edit.text = self.entry.vn.id
 	self.title_line_edit.text = self.entry.vn.title
 	self.description_text_edit.text = self.entry.vn.description
-	self.developer_line_edit.text = self.entry.vn.developers
+	self.developer_line_edit.text = ",".join(self.entry.vn.developers)
 	self.release_date_line_edit.text = self.entry.vn.released
-	self.tag_line_edit.text = self.entry.vn.tags
+	self.tag_line_edit.text = ",".join(self.entry.vn.tags)
 	self.label_option_large.selected = self.entry.vn.label
 
 	self.admin_priv_check_box.button_pressed = self.entry.admin
@@ -125,9 +125,9 @@ func _reflect_from_ui() -> void:
 	self.entry.vn.id = self.vndb_id_line_edit.text.strip_edges()
 	self.entry.vn.title = self.title_line_edit.text.strip_edges()
 	self.entry.vn.description = self.description_text_edit.text.strip_edges()
-	self.entry.vn.developers = self.developer_line_edit.text.strip_edges()
+	self.entry.vn.developers = StringUtils.csv_sep(self.developer_line_edit.text, true, ";;")
 	self.entry.vn.released = self.release_date_line_edit.text.strip_edges()
-	self.entry.vn.tags = self.tag_line_edit.text.strip_edges()
+	self.entry.vn.tags = StringUtils.csv_sep(self.tag_line_edit.text, true)
 	self.entry.vn.label = self.label_option_large.selected
 
 	self.entry.admin = self.admin_priv_check_box.button_pressed
@@ -157,7 +157,6 @@ func _on_fetch_vndb_button_pressed() -> void:
 
 	var data := await VNDBClient.async_post_vn(
 		self.vndb_id_line_edit.text,
-		UserConfig.title_lang,
 		UserConfig.vndb_tag_min_rating,
 		self.spoiler_option_button.selected,
 		UserConfig.vndb_tag_types,
@@ -179,8 +178,11 @@ func _on_save_button_pressed() -> void:
 
 	# save results to DB and emit result
 	self._reflect_from_ui()
-	EntryManager.upsert_entry(self.entry)
-	PlaytimeTracker.unstash_sessions(self.entry.id)
+
+	if not EntryManager.upsert_entry(self.entry):
+		_LOGGER.error("SQL Error while updating entry %s" % self.entry.id)
+	else:
+		PlaytimeTracker.unstash_sessions(self.entry.id)
 
 	self.is_edited = true
 	self.ui_manager.pop_ui()

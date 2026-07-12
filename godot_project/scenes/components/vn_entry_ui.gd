@@ -105,7 +105,8 @@ func _ready() -> void:
 
 
 func _on_status_option_button_item_selected(index: int) -> void:
-	EntryManager.update_entry_play_status(self.entry.id, index)
+	self.entry.vn.label = index
+	EntryManager.upsert_entry(self.entry)
 
 
 func _on_mouse_entered() -> void:

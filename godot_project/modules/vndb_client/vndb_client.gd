@@ -111,7 +111,6 @@ static func validate_user_id(id: String) -> bool:
 ## Get entry information from vndb. Returns null on failure.
 static func async_post_vn(
 	vndb_id: String,
-	title_lang: String,
 	tag_min_rating: float = 2.1,
 	tag_max_spoiler: int = 0,
 	tag_types: String = "cont",
@@ -134,7 +133,6 @@ static func async_post_vn(
 	return VndbVN.from_vndb(
 		parsed["results"][0] as Dictionary,
 		[],
-		title_lang,
 		tag_min_rating,
 		tag_max_spoiler,
 		tag_types,
@@ -179,7 +177,6 @@ static func async_get_auth_info(token: String) -> VndbAuthInfo:
 ## Get user vn list
 static func async_get_ulist(
 	u_id: String,
-	title_lang: String,
 	tag_min_rating: float = 2.1,
 	tag_max_spoiler: int = 0,
 	tag_types: String = "cont",
@@ -217,7 +214,6 @@ static func async_get_ulist(
 				VndbVN.from_vndb(
 					_vn_info_data,
 					vn_data["labels"] as Array,
-					title_lang,
 					tag_min_rating,
 					tag_max_spoiler,
 					tag_types,

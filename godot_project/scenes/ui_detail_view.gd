@@ -149,7 +149,7 @@ func _refresh_ui() -> void:
 
 	# set metadata
 	self.description_rich_label.text = self.entry.vn.description
-	self.developer_label.text = self.entry.vn.developers
+	self.developer_label.text = "\n".join(self.entry.vn.developers)
 	self.release_date_label.text = self.entry.vn.released
 	self.title_label.text = self.entry.vn.title
 	self.label_option_large.selected = self.entry.vn.label
@@ -169,7 +169,7 @@ func _refresh_ui() -> void:
 		child.queue_free()
 		self.tag_container.remove_child(child)
 
-	for tag: String in self.entry.vn.tags.split(","):
+	for tag: String in self.entry.vn.tags:
 		self.tag_container.add_child(TagUI.create_instance(tag))
 
 	# update total runtime & sessions
@@ -196,7 +196,8 @@ func _on_close_button_pressed() -> void:
 
 
 func _on_label_option_large_item_selected(index: int) -> void:
-	EntryManager.update_entry_play_status(self.entry.id, index)
+	self.entry.vn.label = index
+	EntryManager.upsert_entry(self.entry)
 
 
 func _on_delete_button_pressed() -> void:

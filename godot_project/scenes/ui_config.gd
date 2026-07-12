@@ -11,6 +11,8 @@ extends MarginContainer
 
 var ui_manager: UIStackManager = null
 
+@onready var _version_label: Label = %VersionLabel
+
 # VNDB CONF --
 @onready var title_lang_option_button: OptionButton = %TitleLangOptionButton
 
@@ -50,6 +52,9 @@ static func create_instance() -> UIConfig:
 ## Return false to abort stacking (the new UI will be freed and previous resumed).
 func start() -> bool:
 	self._reflect_from_config()
+
+	# setup ver string
+	self._version_label.text = "{} - {}" % [Globals.VERSION, Globals.COMMIT_HASH]
 	return true
 
 

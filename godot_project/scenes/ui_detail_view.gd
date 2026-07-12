@@ -118,7 +118,7 @@ func _update_playtime_n_session_count() -> void:
 	self.session_label.text = str(record[1])
 
 
-## Update launch/stop button
+## Update launch/stop button depending on path validity
 func _update_launch_stop_buttons() -> void:
 
 	# user might remove linked executable while still running, should prevent editing
@@ -145,6 +145,7 @@ func _refresh_ui() -> void:
 	self.exec_path_label.text = self.entry.exec_path if self.entry.exec_path else "NOT SET"
 	self.admin_priv_check_box.button_pressed = self.entry.admin
 	self._update_launch_stop_buttons()
+	self.admin_priv_check_box.visible = not self.launch_button.disabled
 
 	# set metadata
 	self.description_rich_label.text = self.entry.vn.description

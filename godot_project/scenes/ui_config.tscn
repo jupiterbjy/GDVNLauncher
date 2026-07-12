@@ -38,7 +38,8 @@ layout_mode = 2
 mouse_default_cursor_shape = 2
 texture_normal = ExtResource("4_m1kfw")
 
-[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/OptionHeader" parent_id_path=PackedInt32Array(795827549) index="0" unique_id=1443416797]
+[node name="VersionLabel" type="Label" parent="PanelContainer/VBoxContainer/OptionHeader" parent_id_path=PackedInt32Array(795827549) index="0" unique_id=1443416797]
+unique_name_in_owner = true
 layout_mode = 2
 text = "TODO: Add tab here"
 

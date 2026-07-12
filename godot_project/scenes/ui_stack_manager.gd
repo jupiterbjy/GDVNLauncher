@@ -10,6 +10,7 @@ extends Control
 
 ## Used to type hint for goose typing by pretending each UI is subclass of this
 class AbstractUIWrapper:
+
 	var ui_node: Control = null
 
 	var ui_name: String:
@@ -17,6 +18,8 @@ class AbstractUIWrapper:
 			return self.ui_node.name
 
 	var ui_flags: int = 0
+
+	var prev_process_mode: Node.ProcessMode = Node.PROCESS_MODE_ALWAYS
 
 	static var _logger := Logging.get_logger(&"AbstractUIWrapper")
 
@@ -45,6 +48,7 @@ class AbstractUIWrapper:
 			self.ui_node.hide()
 
 		if not self.ui_flags & UI_PROCESS_ON_PAUSE:
+			self.prev_process_mode = self.ui_node.process_mode
 			self.ui_node.process_mode = Node.PROCESS_MODE_DISABLED
 
 		if self.ui_node.has_method(&"pause"):
@@ -61,9 +65,8 @@ class AbstractUIWrapper:
 		if not self.ui_flags & UI_POPUP:
 			self.ui_node.show()
 
-		# for now all UI better be always processing..
 		if not self.ui_flags & UI_PROCESS_ON_PAUSE:
-			self.ui_node.process_mode = Node.PROCESS_MODE_ALWAYS
+			self.ui_node.process_mode = self.prev_process_mode
 
 	## Delete action for cleanup. Up to UI on how to handle `force` close.
 	## Return dictionary with arbitary data, with StringName key 'closed' boolean

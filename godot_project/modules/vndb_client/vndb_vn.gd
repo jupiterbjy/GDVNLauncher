@@ -4,10 +4,6 @@ class_name VndbVN
 
 # --- Attributes ---
 
-## Custom CSV separator
-## This is due to some companies are using name with ';', ','... wtf...
-const DEVELOPER_CSV_SEP := ";;"
-
 ## Actual data dict. This overhead is bloated af compared to previous versions.
 ## But is easier to expand & pass around, between other interfaces...
 var raw_dict: Dictionary[String, Variant]
@@ -34,7 +30,8 @@ var title: String:
 var lang_title_map: Dictionary[String, String]:
 	get():
 		var temp: Dictionary[String, String]
-		return self.raw_dict.get_or_add("lang_title_map", temp)
+		temp.assign(self.raw_dict.get_or_add("lang_title_map", temp) as Dictionary)
+		return temp
 
 	set(val):
 		self.raw_dict["lang_title_map"] = val
@@ -60,12 +57,9 @@ var developers: PackedStringArray:
 		var temp: PackedStringArray
 		var data: Variant = self.raw_dict.get_or_add("developers", temp)
 
-		# validate if it's < 0.0.1 data format with raw csv string
-		if data is not String:
-			return data
-
-		# thanks to some company naming has ',', can't use normal CSV here
-		return StringUtils.csv_sep(data as String, false, DEVELOPER_CSV_SEP)
+		# validate if it's < 0.0.1 data format with raw csv string.
+		# then just return whole string without trying to separate that mess
+		return [data] if data is String else data
 
 	set(val):
 		self.raw_dict["developers"] = val

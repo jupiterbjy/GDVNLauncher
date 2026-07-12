@@ -40,6 +40,10 @@ static var _LOGGER := Logging.get_logger("UIDetailEdit")
 
 const _SCENE = preload("res://scenes/ui_detail_edit.tscn")
 
+## Custom separator for Developer names
+## This is due to some companies are using name with ';', ','... wtf...
+const DEV_CSV_SEP := ";;"
+
 
 # --- Interfaces ---
 
@@ -107,7 +111,7 @@ func _reflect_to_ui() -> void:
 	self.vndb_id_line_edit.text = self.entry.vn.id
 	self.title_line_edit.text = self.entry.vn.title
 	self.description_text_edit.text = self.entry.vn.description
-	self.developer_line_edit.text = ",".join(self.entry.vn.developers)
+	self.developer_line_edit.text = DEV_CSV_SEP.join(self.entry.vn.developers)
 	self.release_date_line_edit.text = self.entry.vn.released
 	self.tag_line_edit.text = ",".join(self.entry.vn.tags)
 	self.label_option_large.selected = self.entry.vn.label

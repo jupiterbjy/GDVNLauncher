@@ -1,0 +1,55 @@
+[gd_scene format=3 uid="uid://dhr4qx5xwdwcr"]
+
+[ext_resource type="Texture2D" uid="uid://nwe61b5rei03" path="res://resources/ui/tablet/circle_48dp_E3E3E3_FILL0_wght400_GRAD0_opsz48.svg" id="1_5o6oy"]
+[ext_resource type="Script" uid="uid://ci8j0fhfl7cfc" path="res://scenes/ui_wait.gd" id="1_vonm5"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vonm5"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.1, 0.1, 0.1, 0.6)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+expand_margin_left = 16.0
+expand_margin_top = 16.0
+expand_margin_right = 16.0
+expand_margin_bottom = 16.0
+
+[node name="UIWait" type="PanelContainer" unique_id=2122636520]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_vonm5")
+
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=461583731]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="CenterContainer" unique_id=733958159]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_vonm5")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/PanelContainer" unique_id=1993972088]
+layout_mode = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="CenterContainer/PanelContainer/VBoxContainer" unique_id=1084852137]
+layout_mode = 2
+
+[node name="TextureProgressBar" type="TextureProgressBar" parent="CenterContainer/PanelContainer/VBoxContainer/CenterContainer" unique_id=719508990]
+unique_name_in_owner = true
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+value = 0.5
+fill_mode = 4
+texture_progress = ExtResource("1_5o6oy")
+
+[node name="Label" type="Label" parent="CenterContainer/PanelContainer/VBoxContainer" unique_id=1710198814]
+layout_mode = 2
+text = "Loading..."
+horizontal_alignment = 1

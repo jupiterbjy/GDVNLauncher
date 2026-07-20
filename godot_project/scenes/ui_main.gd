@@ -6,6 +6,9 @@ extends MarginContainer
 
 var ui_manager: UIStackManager = null
 
+## Bitmask of UiStackManager.UI_* flags. Set to customize stack behavior.
+var ui_flags: int = UIStackManager.UI_PROCESS_ON_PAUSE
+
 ## Dict[vn_id, VNEntry]
 var _entries: Dictionary[String, VNEntryUI]
 
@@ -15,6 +18,9 @@ var _groups: Dictionary[String, VNEntryGroup]
 ## For game count display
 var _total_game_count: int = 0
 var _filtered_game_count: int = 0
+
+## Loading UI
+var _loading_ui := UIWait.create_instance()
 
 @onready var _group_list_container: VBoxContainer = %GroupListContainer
 
@@ -51,8 +57,12 @@ func start() -> bool:
 	#EntryManager.entry_added.connect(self._add)
 	EntryManager.entries_removed.connect(self._on_db_entries_removed)
 
-	await self._async_reload_all()
+	# spawn loading screen
+	self.ui_manager.stack_ui.call_deferred(self._loading_ui)
 
+	#await self._async_reload_all()
+	self._async_reload_all.call_deferred()
+	
 	return true
 
 
@@ -177,25 +187,35 @@ func _add(id: String) -> void:
 
 ## Reload all UI Entry from DB. Does not factor in for deletion.
 func _async_reload_all() -> void:
+	await self.get_tree().process_frame
+	await self.get_tree().process_frame
+	
 	_LOGGER.debug("Reloading all entries")
 
 	# clear groups
 	#self._remove_groups()
-
-	for id: String in EntryManager.get_entry_ids():
-		if id not in self._entries:
-			self._add(id)
-
+	
+	var ids := EntryManager.get_entry_ids()
+	
+	for idx: int in range(len(ids)):
+		if ids[idx] not in self._entries:
+			self._add(ids[idx])
+			self._loading_ui.set_progress_by_count(len(ids), idx + 1)
+			await self.get_tree().process_frame
+	
 	# reload all, but check for deletion since one could erase before it's fetched
 	var pending := self._entries.keys()
+	
 
 	while pending:
 
 		var callable_param_pairs: Array[Array]
+		
+		var batch_count := mini(len(pending), _MAX_PARALLEL_RELOADS)
 
-		for _idx: int in mini(len(pending), _MAX_PARALLEL_RELOADS):
+		for _idx: int in range(batch_count):
 			callable_param_pairs.append([self._entries[pending.pop_back()].async_reload, []])
-
+			
 		await ParallelAwait.async_join(callable_param_pairs)
 
 	# was not allowing empty groups to be created in first place but this is cleaner

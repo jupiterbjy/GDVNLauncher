@@ -44,6 +44,32 @@ static func create_instance(entry_: EntryManager.Entry) -> VNEntryUI:
 	return instance
 
 
+## batch version of async_reload
+static func batch_reload(entry_uis: Array[VNEntryUI]) -> Array[bool]:
+	
+	# TODO: optimize this into one SQL batched call with size limit
+	# this is fooking trash
+	
+	var id_ui_map: Dictionary[String, VNEntryUI]
+	
+	var reload_callables: Array[Array]
+	var results: Array[bool]
+	
+	for entry_ui in entry_uis:
+		id_ui_map[entry_ui.entry.id] = entry_ui
+		reload_callables.append([entry_ui.async_reload,])
+	
+	for db_entry: EntryManager.Entry in EntryManager.get_entries():
+		if db_entry.id not in id_ui_map:
+			continue
+		
+		id_ui_map[db_entry.id].entry = db_entry
+	
+	results.assign(
+		await ParallelAwait.async_join(reload_callables)
+	)
+	return results
+
 ## Load and apply data from db index. Returns false on failure
 func async_reload() -> bool:
 	_LOGGER.debug("Reloading %s" % self.entry)
@@ -53,7 +79,13 @@ func async_reload() -> bool:
 	# if failed it's deleted
 	if not entry:
 		return false
+	
+	await self._reload_ui()
+	return true
 
+
+## Reload UI from self.entry
+func _reload_ui() -> void:
 	self._label_option.selected = self.entry.vn.label
 
 	if self._current_img_url != self.entry.vn.cover_url:
@@ -62,8 +94,6 @@ func async_reload() -> bool:
 
 	self.update_playtime_from_db()
 	self.update_playtime_live()
-
-	return true
 
 
 ## Update playtime from DB

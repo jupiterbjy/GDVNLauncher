@@ -41,11 +41,10 @@ class AbstractUIWrapper:
 		return true
 
 	## Pause action.
-	func pause() -> void:
+	func pause(new_ui_flag: int) -> void:
 		self._logger.debug("Pausing %s" % self.ui_name)
-
-		if not self.ui_flags & UI_POPUP:
-			self.ui_node.hide()
+		
+		self.ui_node.visible = new_ui_flag & UI_POPUP
 
 		if not self.ui_flags & UI_PROCESS_ON_PAUSE:
 			self.prev_process_mode = self.ui_node.process_mode
@@ -62,8 +61,7 @@ class AbstractUIWrapper:
 		if self.ui_node.has_method(&"resume"):
 			self.ui_node.call(&"resume", data)
 
-		if not self.ui_flags & UI_POPUP:
-			self.ui_node.show()
+		self.ui_node.show()
 
 		if not self.ui_flags & UI_PROCESS_ON_PAUSE:
 			self.ui_node.process_mode = self.prev_process_mode
@@ -122,7 +120,7 @@ func stack_ui(instanced_scene: Control) -> bool:
 	var new_ui := AbstractUIWrapper.new(instanced_scene)
 
 	if self.stack:
-		self.stack[-1].pause()
+		self.stack[-1].pause(new_ui.ui_flags)
 
 	if not await new_ui.start():
 		_LOGGER.info("Failed to start %s" % instanced_scene.name)
@@ -160,6 +158,19 @@ func cascade_ui(force := false) -> bool:
 			return false
 
 	return true
+
+
+## Get UI in stack relative to caller
+func get_ui_relative(current: Control, offset: int) -> Control:
+	var idx := self.stack.find(current)
+	assert(idx != -1, "Given UI '%s' is not in stack" % current.name)
+	
+	idx += offset
+	assert(
+		idx < len(self.stack),
+		"UI index out of range (idx %s >= %s)" % [idx, len(self.stack)]
+	)
+	return self.stack[idx].ui_node
 
 
 # --- Handlers ---

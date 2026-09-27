@@ -1,6 +1,8 @@
 # root level temp dirs
 /_*/
+!/_readme_res/
 
 # etc
 .vscode/
 _builds/
+

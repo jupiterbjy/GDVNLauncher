@@ -4,34 +4,74 @@ extends Node
 
 # --- Atrributes ---
 
+const _CONFIG_TEMPLATE: Dictionary[StringName, Variant] = {
+	&"title_lang": "en",
+	&"vndb_token": "",
+	&"vndb_tag_min_rating": 2.1,
+	&"vndb_tag_types": "cont",
+	&"poll_interval": 3000,
+	&"custom": {},
+}
+
+## Raw JSON Config as it was annoying to manage stuffs
+## Performance will be shete but less annoying for me
+## Performance will be shete but less annoying for me
+var _config_raw: Dictionary[StringName, Variant] = _CONFIG_TEMPLATE.duplicate_deep()
+
 ## Preferred title language
-var title_lang: String = "en"
+var title_lang: String:
+	get():
+		return self._config_raw[&"title_lang"]
+	
+	set(val):
+		self._config_raw[&"title_lang"] = val
+
 
 ## VNDB Token. Will be used to sync play status to VNDB in turue
-var vndb_token: String = ""
+var vndb_token: String:
+	get():
+		return self._config_raw[&"vndb_token"]
+	
+	set(val):
+		self._config_raw[&"vndb_token"] = val
+
 
 ## Config used to remove VNDB tags below given score.
-var vndb_tag_min_rating: float = 2.1
+var vndb_tag_min_rating: float:
+	get():
+		return self._config_raw[&"vndb_tag_min_rating"]
+	
+	set(val):
+		self._config_raw[&"vndb_tag_min_rating"] = val
+
 
 #var vndb_tag_max_spoiler: int = 0
 
-## Config used to filter VNDB tags via type. Comma Separated.
-var vndb_tag_types: String = "cont"
-#var vndb_tag_types: Array[String] = ["cont"]
+
 # wish to use bitflag or enum but that would be unreadable
+## Config used to filter VNDB tags via type. Comma Separated.
+var vndb_tag_types: String:
+	get():
+		return self._config_raw[&"vndb_tag_types"]
+	
+	set(val):
+		self._config_raw[&"vndb_tag_types"] = val
+
 
 ## Config used to determine playtime polling interval in msec
-var poll_interval: int = 3000
+var poll_interval: int:
+	get():
+		return self._config_raw[&"poll_interval"]
 
-## Attribute whitelist for config. Since it's more annoying to make a lot of properties!
-const _ATTR_WHITELIST: Array[StringName] = [
-	"title_lang",
-	"vndb_token",
-	"vndb_tag_min_level",
-	#"vndb_tag_max_spoiler",
-	"vndb_tag_type",
-	"poll_interval",
-]
+	set(val):
+		self._config_raw[&"poll_interval"] = val
+
+
+## Per UI config
+var custom: Dictionary:
+	get():
+		return self._config_raw[&"custom"]
+
 
 ## Non-saved param
 var _user_id: String = ""
@@ -51,22 +91,21 @@ func load_config() -> bool:
 	if not fp:
 		_LOGGER.info("Config file open failed; This is normal for first run")
 		return false
-
-	# if parsing failes or has invalid data abort
-	var data: Variant = JSON.parse_string(fp.get_as_text())
-
-	if not data or data is not Dictionary:
-		_LOGGER.warn("Config file parsing failed")
+	
+	# wont factor in for arr json case..
+	var data: Dictionary = JSON.parse_string(fp.get_as_text())
+	if not data:
+		_LOGGER.error("Config file parsing failed")
 		return false
 
-	# fetch values
-	for key in (data as Dictionary):
+	# simple sanity check on keys
+	for key: StringName in (data as Dictionary):
 
-		if key not in _ATTR_WHITELIST:
+		if key not in _CONFIG_TEMPLATE:
 			_LOGGER.warn("Unknown key %s found while loading; Skipping" % key)
 			continue
 
-		var self_t := typeof(self.get(key as StringName))
+		var self_t := typeof(_CONFIG_TEMPLATE[key])
 		var saved_t := typeof((data as Dictionary)[key])
 
 		# if not same type but neither both are numbers throw tantrum
@@ -83,9 +122,9 @@ func load_config() -> bool:
 				]
 			)
 			continue
-
-		self.set(key as StringName, (data as Dictionary)[key])
-
+		
+		self._config_raw[key] = data[key]
+	
 	_LOGGER.info("Load success")
 	return true
 
@@ -100,7 +139,7 @@ func save_config() -> bool:
 
 	var config: Dictionary[String, Variant]
 
-	for key in _ATTR_WHITELIST:
+	for key in _CONFIG_TEMPLATE:
 		config[key] = self.get(key)
 
 	fp.store_string(JSON.stringify(config))
@@ -137,5 +176,5 @@ func _init() -> void:
 
 
 func _notification(what: int) -> void:
-	if what == NOTIFICATION_PREDELETE:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
 		self.save_config()

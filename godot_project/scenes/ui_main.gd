@@ -4,6 +4,15 @@ extends MarginContainer
 
 # --- Attributes ---
 
+## Name used as key in UserConfig.custom
+static var _CONF_NAME: StringName = ""
+
+const _CONF_TEMPLATE: Dictionary[StringName, Variant] = {
+	&"filter_show_unplayable": true,
+	#&"filter_keyword": "",
+	&"sort_ascending": true,
+}
+
 var ui_manager: UIStackManager = null
 
 ## Bitmask of UiStackManager.UI_* flags. Set to customize stack behavior.
@@ -65,6 +74,8 @@ func start() -> bool:
 	#await self._async_reload_all()
 	self._async_reload_all.call_deferred()
 	
+	self._ensure_config()
+	
 	# sync configs
 	self._batch_add_button.disabled = not UserConfig.vndb_token
 	return true
@@ -90,6 +101,12 @@ func resume(data: Dictionary) -> void:
 
 
 # --- Methods ---
+
+## Just makes sure config data structure exists, and no I wont do thorough check
+func _ensure_config() -> void:
+	if _CONF_NAME not in UserConfig.custom:
+		UserConfig.custom[_CONF_NAME] = _CONF_TEMPLATE.duplicate_deep()
+
 
 ## Fetch group. Creates new if missing.
 func _get_group(key: String) -> VNEntryGroup:
@@ -284,6 +301,8 @@ func _filter_groups() -> void:
 # --- Handlers ---
 
 func _ready() -> void:
+	self._CONF_NAME = (self.get_script() as Script).get_global_name()
+	
 	# cleanup viewport placeholder
 	for child: Control in self._group_list_container.get_children():
 		child.free()

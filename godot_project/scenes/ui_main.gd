@@ -78,6 +78,13 @@ func start() -> bool:
 	
 	# sync configs
 	self._batch_add_button.disabled = not UserConfig.vndb_token
+	
+	self._show_unplayable_check_box.button_pressed = (
+		UserConfig.custom[_CONF_NAME][&"filter_show_unplayable"]
+	)
+	
+	self._sort_button.button_pressed = UserConfig.custom[_CONF_NAME][&"sort_ascending"]
+	
 	return true
 
 
@@ -97,6 +104,7 @@ func resume(data: Dictionary) -> void:
 
 	if &"ui_config" in data:
 		self._batch_add_button.disabled = not UserConfig.vndb_token
+		
 		return
 
 
@@ -206,7 +214,7 @@ func _add(id: String) -> void:
 		self._get_group(dev).add_entry(instance)
 
 
-## Reload all UI Entry from DB. Does not factor in for deletion.
+## Reload all UI Entry from DB
 func _async_reload_all() -> void:
 	await self.get_tree().process_frame
 	await self.get_tree().process_frame
@@ -384,11 +392,18 @@ func _on_playtime_live_update(vn_ids: Array[String]) -> void:
 		self._entries[id].update_playtime_live()
 
 
-func _on_sort_button_pressed() -> void:
-	self._sort_groups(self._sort_button.button_pressed)
+
+func _on_sort_button_toggled(toggled_on: bool) -> void:
+	
+	UserConfig.custom[_CONF_NAME][&"sort_ascending"] = toggled_on
+	
+	self._sort_groups(toggled_on)
 
 
-func _on_show_unplayable_check_box_toggled(_toggled_on: bool) -> void:
+func _on_show_unplayable_check_box_toggled(toggled_on: bool) -> void:
+	
+	UserConfig.custom[_CONF_NAME][&"filter_show_unplayable"] = toggled_on
+	self._LOGGER.info("conf: filter_show_unplayable = %s" % toggled_on)
 	self._filter_groups()
 
 

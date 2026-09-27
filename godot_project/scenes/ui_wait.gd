@@ -54,12 +54,14 @@ func close(_force := false) -> Dictionary:
 
 # --- Methods ---
 
+## Set progress by percent (0~1).
 func set_progress_by_percent(perc: float) -> void:
 	self._progress_bar.value = clampf(perc, 0, 1)
-	if perc == 1.0:
-		self.ui_manager.pop_ui()
+	#if perc == 1.0:
+		#self.ui_manager.pop_ui()
 
 
+## Set progress by total & count.
 func set_progress_by_count(total: int, done: int) -> void:
 	self.set_progress_by_percent(float(done) / float(total))
 

@@ -28,9 +28,6 @@ var _groups: Dictionary[String, VNEntryGroup]
 var _total_game_count: int = 0
 var _filtered_game_count: int = 0
 
-## Loading UI
-var _loading_ui := UIWait.create_instance()
-
 @onready var _group_list_container: VBoxContainer = %GroupListContainer
 
 @onready var _batch_add_button: TextureButton = %BatchAddButton
@@ -69,7 +66,7 @@ func start() -> bool:
 	EntryManager.entries_removed.connect(self._on_db_entries_removed)
 
 	# spawn loading screen
-	self.ui_manager.stack_ui.call_deferred(self._loading_ui)
+	# self.ui_manager.stack_ui.call_deferred(self._loading_ui)
 
 	#await self._async_reload_all()
 	self._async_reload_all.call_deferred()
@@ -227,16 +224,22 @@ func _async_reload_all() -> void:
 	
 	var ids := EntryManager.get_entry_ids()
 	
+	var wait_ui := UIWait.create_instance()
+	assert(await self.ui_manager.stack_ui(wait_ui), "Wait UI stack failed")
+	# ^^^ never saw this case but just in case
+	
 	for idx: int in range(len(ids)):
 		if ids[idx] not in self._entries:
 			self._add(ids[idx])
-			self._loading_ui.set_progress_by_count(len(ids), idx + 1)
+			
+			wait_ui.set_progress_by_count(len(ids), idx + 1)
 			await self.get_tree().process_frame
+	
+	self.ui_manager.pop_ui()
 	
 	# reload all, but check for deletion since one could erase before it's fetched
 	var pending := self._entries.keys()
 	
-
 	while pending:
 
 		var callable_param_pairs: Array[Array]
@@ -331,18 +334,31 @@ func _on_add_button_pressed() -> void:
 
 
 func _on_batch_add_button_pressed() -> void:
-	for vn_info: VndbVN in await VNDBClient.async_get_ulist(
+	
+	var wait_ui := UIWait.create_instance()
+	await self.ui_manager.stack_ui(wait_ui)
+	
+	var vn_list: Array[VndbVN] = await VNDBClient.async_get_ulist(
 		await UserConfig.async_get_user_id(),
 		UserConfig.vndb_tag_min_rating,
 		0,
 		UserConfig.vndb_tag_types,
-	):
+	)
+	
+	for idx: int in range(len(vn_list)):
+		var vn_info := vn_list[idx]
+		
 		EntryManager.upsert_entry_from_vndb(vn_info)
 		PlaytimeTracker.unstash_sessions(vn_info.id)
 
 		if vn_info.id not in self._entries:
 			self._add(vn_info.id)
-
+		
+		wait_ui.set_progress_by_count(len(vn_list), idx + 1)
+		await self.get_tree().process_frame
+	
+	self.ui_manager.pop_ui()
+	
 	await self._async_reload_all()
 
 

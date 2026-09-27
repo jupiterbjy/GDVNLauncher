@@ -66,10 +66,10 @@ class AbstractUIWrapper:
 		if not self.ui_flags & UI_PROCESS_ON_PAUSE:
 			self.ui_node.process_mode = self.prev_process_mode
 
-	## Delete action for cleanup. Up to UI on how to handle `force` close.
+	## Cleanup action for pre deletion. Up to UI on how to handle `force` close.
 	## Return dictionary with arbitary data, with StringName key 'closed' boolean
 	## indicating whether ui has closed or not.
-	func close(force := false) -> Dictionary:
+	func close(force: bool) -> Dictionary:
 		self._logger.debug("Closing %s (force=%s)" % [self.ui_name, force])
 
 		var data: Dictionary = (
@@ -77,16 +77,18 @@ class AbstractUIWrapper:
 			if self.ui_node.has_method(&"close")
 			else {&"closed": true}
 		)
-
-		# asserted below so should be fine
-		if data[&"closed"]:
-			self.ui_node.get_parent().remove_child(self.ui_node)
-			self.ui_node.queue_free()
-
+		assert(&"closed" in data, "'closed' key is missing from close response")
+		
+		if not data[&"closed"]:
+			self._logger.debug("Rejecting close")
+		
 		return data
 
-	func free() -> void:
+	func ui_queue_free() -> void:
 		self._logger.debug("Freeing %s" % self.ui_name)
+		
+		if self.ui_node.get_parent():
+			self.ui_node.get_parent().remove_child(ui_node)
 
 		if self.ui_node:
 			self.ui_node.queue_free()
@@ -139,10 +141,13 @@ func stack_ui(instanced_scene: Control) -> bool:
 
 ## Pop UI in stack and destroy it
 func pop_ui(force := false) -> bool:
-	var data := self.stack[-1].close(force)
-	assert(&"closed" in data, "Close call's returned dictionary is missing 'closed' StringName!")
-
+	
+	var ui_wrapper := self.stack[-1]
+	var data := ui_wrapper.close(force)
+	
 	if data[&"closed"]:
+		ui_wrapper.ui_queue_free()
+		
 		# refcounted so it'll free itself later
 		self.stack.pop_back()
 		self.stack[-1].resume(data)

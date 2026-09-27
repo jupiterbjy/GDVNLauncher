@@ -3,5 +3,4 @@
 /android/
 
 # ignore godot-sqlite debug template
-addons/godot-sqlite/bin/~*
-addons/godot-sqlite/bin/*.so
+

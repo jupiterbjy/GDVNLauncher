@@ -24,15 +24,20 @@ bg_color = Color(0, 0, 0, 0.3137255)
 [node name="VNEntryUI" type="PanelContainer" unique_id=718660803]
 offset_right = 144.0
 offset_bottom = 256.0
-mouse_default_cursor_shape = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_o1c4u")
 script = ExtResource("1_bm6hf")
 
+[node name="CoverButton" type="Button" parent="." unique_id=565702169]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=963014030]
 layout_mode = 2
+mouse_filter = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=121475258]
 layout_mode = 2
+mouse_filter = 2
 
 [node name="LabelOption" parent="VBoxContainer/HBoxContainer" unique_id=1460323894 instance=ExtResource("2_cbc2e")]
 unique_name_in_owner = true
@@ -51,6 +56,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(130, 200)
 layout_mode = 2
 size_flags_vertical = 3
+mouse_filter = 2
 texture = ExtResource("6_xpcvn")
 expand_mode = 4
 stretch_mode = 6
@@ -84,6 +90,4 @@ layout_mode = 2
 text = "12.3m"
 horizontal_alignment = 1
 
-[connection signal="gui_input" from="." to="." method="_on_gui_input"]
-[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
-[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]
+[connection signal="pressed" from="CoverButton" to="." method="_on_cover_button_pressed"]

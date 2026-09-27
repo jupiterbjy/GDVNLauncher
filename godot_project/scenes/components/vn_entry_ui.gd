@@ -147,15 +147,13 @@ func _on_mouse_exited() -> void:
 	self.modulate = Color.WHITE
 
 
-func _on_gui_input(event: InputEvent) -> void:
-
+func _on_cover_button_pressed() -> void:
+	
 	# if option is hovered or expanded ignore
 	if (
 		self._label_option.is_hovered()
 		or self._label_option.get_popup().visible
 	):
 		return
-
-	# detect non-cover clicks
-	if event.is_action_pressed("mouse_l"):
-		self.cover_clicked.emit(self.entry.id)
+	
+	self.cover_clicked.emit(self.entry.id)

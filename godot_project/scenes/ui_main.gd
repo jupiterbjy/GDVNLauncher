@@ -84,6 +84,7 @@ func start() -> bool:
 	)
 	
 	self._sort_button.button_pressed = UserConfig.custom[_CONF_NAME][&"sort_ascending"]
+	self._sort_button.flip_v = self._sort_button.button_pressed
 	
 	return true
 
@@ -395,6 +396,7 @@ func _on_playtime_live_update(vn_ids: Array[String]) -> void:
 
 func _on_sort_button_toggled(toggled_on: bool) -> void:
 	
+	self._sort_button.flip_v = toggled_on
 	UserConfig.custom[_CONF_NAME][&"sort_ascending"] = toggled_on
 	
 	self._sort_groups(toggled_on)

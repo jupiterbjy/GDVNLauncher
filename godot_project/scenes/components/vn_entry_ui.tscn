@@ -74,9 +74,11 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_cbc2e")
 
 [node name="CenterContainer" type="CenterContainer" parent="VBoxContainer/CoverTextureRect/PlayStatusOverlay" unique_id=238613802]
 layout_mode = 2
+mouse_filter = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/CoverTextureRect/PlayStatusOverlay/CenterContainer" unique_id=1027536727]
 layout_mode = 2
+mouse_filter = 2
 
 [node name="Label" type="Label" parent="VBoxContainer/CoverTextureRect/PlayStatusOverlay/CenterContainer/VBoxContainer" unique_id=50769230]
 layout_mode = 2
@@ -90,4 +92,6 @@ layout_mode = 2
 text = "12.3m"
 horizontal_alignment = 1
 
+[connection signal="mouse_entered" from="CoverButton" to="." method="_on_cover_button_mouse_entered"]
+[connection signal="mouse_exited" from="CoverButton" to="." method="_on_cover_button_mouse_exited"]
 [connection signal="pressed" from="CoverButton" to="." method="_on_cover_button_pressed"]

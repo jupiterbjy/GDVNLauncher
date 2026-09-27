@@ -139,14 +139,6 @@ func _on_status_option_button_item_selected(index: int) -> void:
 	EntryManager.upsert_entry(self.entry)
 
 
-func _on_mouse_entered() -> void:
-	self.modulate = Color(1.2, 1.2, 1.2)
-
-
-func _on_mouse_exited() -> void:
-	self.modulate = Color.WHITE
-
-
 func _on_cover_button_pressed() -> void:
 	
 	# if option is hovered or expanded ignore
@@ -157,3 +149,11 @@ func _on_cover_button_pressed() -> void:
 		return
 	
 	self.cover_clicked.emit(self.entry.id)
+
+
+func _on_cover_button_mouse_entered() -> void:
+	self.modulate = Color(1.2, 1.2, 1.2)
+
+
+func _on_cover_button_mouse_exited() -> void:
+	self.modulate = Color.WHITE

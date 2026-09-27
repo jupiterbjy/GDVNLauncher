@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://c3v7a5u0781aj" path="res://scenes/ui_main.gd" id="2_fq0td"]
 [ext_resource type="Texture2D" uid="uid://bq70qy26xakfu" path="res://resources/ui/add_48dp_E3E3E3_FILL0_wght400_GRAD0_opsz48.svg" id="3_1n2n3"]
 [ext_resource type="Texture2D" uid="uid://dkw5647cw2l8l" path="res://resources/ui/tablet/cloud_download_48dp_E3E3E3_FILL0_wght400_GRAD0_opsz48.svg" id="4_dvmt8"]
+[ext_resource type="Texture2D" uid="uid://pbmmcfmaoyu2" path="res://resources/ui/tablet/cloud_download_48dp_666666_FILL0_wght400_GRAD0_opsz48.svg" id="5_fq0td"]
 [ext_resource type="Texture2D" uid="uid://ctyd5gwmuh13a" path="res://resources/ui/sort_48dp_E3E3E3_FILL0_wght400_GRAD0_opsz48.svg" id="5_srbhr"]
 [ext_resource type="Texture2D" uid="uid://bwo3vfdqxend7" path="res://resources/ui/settings_48dp_E3E3E3_FILL0_wght400_GRAD0_opsz48.svg" id="6_8qu2a"]
 [ext_resource type="Texture2D" uid="uid://d1cde510jm5lf" path="res://resources/ui/expand_content_48dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg" id="7_hajj7"]
@@ -38,9 +39,13 @@ mouse_default_cursor_shape = 2
 texture_normal = ExtResource("3_1n2n3")
 
 [node name="BatchAddButton" type="TextureButton" parent="PanelContainer/VBoxContainer/Header/HBoxContainer" index="1" unique_id=15381441]
+unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Fetch from VNDB account.
+Requires VNDB token."
 mouse_default_cursor_shape = 2
 texture_normal = ExtResource("4_dvmt8")
+texture_disabled = ExtResource("5_fq0td")
 
 [node name="SortButton" type="TextureButton" parent="PanelContainer/VBoxContainer/Header/HBoxContainer" index="2" unique_id=666175480]
 unique_name_in_owner = true
@@ -138,7 +143,7 @@ layout_mode = 2
 
 [connection signal="pressed" from="PanelContainer/VBoxContainer/Header/HBoxContainer/AddButton" to="." method="_on_add_button_pressed"]
 [connection signal="pressed" from="PanelContainer/VBoxContainer/Header/HBoxContainer/BatchAddButton" to="." method="_on_batch_add_button_pressed"]
-[connection signal="pressed" from="PanelContainer/VBoxContainer/Header/HBoxContainer/SortButton" to="." method="_on_sort_button_pressed"]
+[connection signal="toggled" from="PanelContainer/VBoxContainer/Header/HBoxContainer/SortButton" to="." method="_on_sort_button_toggled"]
 [connection signal="text_changed" from="PanelContainer/VBoxContainer/Header/HBoxContainer/SearchLineEdit" to="." method="_on_search_line_edit_text_changed"]
 [connection signal="text_submitted" from="PanelContainer/VBoxContainer/Header/HBoxContainer/SearchLineEdit" to="." method="_on_search_line_edit_text_submitted"]
 [connection signal="pressed" from="PanelContainer/VBoxContainer/Header/HBoxContainer/ConfigButton" to="." method="_on_config_button_pressed"]

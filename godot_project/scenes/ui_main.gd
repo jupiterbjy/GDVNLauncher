@@ -24,6 +24,8 @@ var _loading_ui := UIWait.create_instance()
 
 @onready var _group_list_container: VBoxContainer = %GroupListContainer
 
+@onready var _batch_add_button: TextureButton = %BatchAddButton
+
 @onready var _sort_button: TextureButton = %SortButton
 
 @onready var _playtime_label: Label = %PlaytimeLabel
@@ -63,6 +65,8 @@ func start() -> bool:
 	#await self._async_reload_all()
 	self._async_reload_all.call_deferred()
 	
+	# sync configs
+	self._batch_add_button.disabled = not UserConfig.vndb_token
 	return true
 
 
@@ -81,7 +85,7 @@ func resume(data: Dictionary) -> void:
 		return
 
 	if &"ui_config" in data:
-		# TODO
+		self._batch_add_button.disabled = not UserConfig.vndb_token
 		return
 
 
